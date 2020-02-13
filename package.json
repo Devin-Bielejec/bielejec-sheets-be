@@ -1,0 +1,40 @@
+{
+  "name": "backendTemplate",
+  "version": "1.0.0",
+  "description": "Creating the template for a backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "server": "nodemon index.js",
+    "test": "cross-env DB_ENV=testing jest --watch --verbose"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }, 
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devin-Bielejec/backendTemplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Devin-Bielejec/backendTemplate/issues"
+  },
+  "homepage": "https://github.com/Devin-Bielejec/backendTemplate#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.19.5",
+    "pg": "^7.12.1",
+    "sqlite3": "^4.1.0"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.3",
+    "supertest": "^4.0.2"
+  }
+}
