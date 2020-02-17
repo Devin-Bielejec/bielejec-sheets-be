@@ -10,28 +10,49 @@ server.use(express.json());
 server.use("/", authRouter);
 server.use("/users", usersRouter);
 
-//Testing child processes with Python
-server.get("/name", callName);
+server.post("/getImage", (req, res) => {
+  const name = req.body.name;
+  if (!name) {
+    res.status(400).json({ message: "You need to supply a name!" });
+  }
 
-function callName(req, res) {
-  // Use child_process.spawn method from
-  // child_process module and assign it
-  // to variable spawn
-  var spawn = require("child_process").spawn;
+  spawnChild(name)
+    .then(data => {
+      res.status(200).json({
+        message: "Success",
+        src: `./creatingWorksheets/${name}.jpg`
+      });
+    })
+    .catch(err => {
+      res.status(400).json({ message: `there was an error ${err}` });
+    });
+});
 
-  test1 = "Chicken";
-  test2 = "Tacos";
-  var process = spawn("python", [
-    "../bielejecSheets-python/hello.py",
-    test1,
-    test2
+async function spawnChild(name) {
+  const { spawn } = require("child_process");
+  const child = spawn("python", [
+    "./creatingWorksheets/createSingleImage.py",
+    name
   ]);
 
-  // Takes stdout data from script which executed
-  // with arguments and send this data to res object
-  process.stdout.on("data", function(data) {
-    res.send(data.toString());
+  let data = "";
+  for await (const chunk of child.stdout) {
+    console.log("stdout chunk: " + chunk);
+    data += chunk;
+  }
+  let error = "";
+  for await (const chunk of child.stderr) {
+    console.error("stderr chunk: " + chunk);
+    error += chunk;
+  }
+  const exitCode = await new Promise((resolve, reject) => {
+    child.on("close", resolve);
   });
+
+  if (exitCode) {
+    throw new Error(`subprocess error exit ${exitCode}, ${error}`);
+  }
+  return data;
 }
 
 //Make node send shit to python file, which creates a file, then send that file to the user through react
