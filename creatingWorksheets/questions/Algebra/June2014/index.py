@@ -29,12 +29,15 @@ class June2014_1():
         
         name = random.choice(["Emily", "David", "Jakim", "Joe", "John"])
 
-        
+        #Let's see if it works without anything in particular
+        equationString = rf"{a}(x^{2}+{c})-{d}={e}x^{2}"
 
 
     def addAnswer(self, doc = None):
         #Junk here where you add to the document
-
+        pass
+    
     def addSolution(self, doc = None):
+        pass
         #Junk here where you would add to the solution
 
