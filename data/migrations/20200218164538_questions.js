@@ -1,6 +1,6 @@
 exports.up = function(knex) {
   return knex.schema.createTable("questions", tbl => {
-    tbl.string("id").primary();
+    tbl.uuid("id").primary();
   });
 };
 

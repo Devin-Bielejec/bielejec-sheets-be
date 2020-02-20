@@ -1,10 +1,13 @@
 import random
+import uuid
+
+__all__ = ["June2014_1"]
 
 class June2014_1():
     #Initialize class with info to store in database, then we can dyamically add it to the database
     def __init__(self):
         #ID is topic + MAIN SKILL
-        self.ID = "Randomly generated from SQL DB"
+        self.id = uuid.uuid4()
         self.standard = "some string"
         self.state = "New York"
         self.exam = "some string"
@@ -40,4 +43,3 @@ class June2014_1():
     def addSolution(self, doc = None):
         pass
         #Junk here where you would add to the solution
-
