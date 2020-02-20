@@ -1,7 +1,11 @@
 import random
 import uuid
 
-__all__ = ["June2014_1"]
+# __all__ = ["June2014_1", "June2014_12"]
+
+class June2014_12():
+    def __init__(self):
+        self.id = "chck"
 
 class June2014_1():
     #Initialize class with info to store in database, then we can dyamically add it to the database
@@ -43,3 +47,9 @@ class June2014_1():
     def addSolution(self, doc = None):
         pass
         #Junk here where you would add to the solution
+
+
+questionsAlgebraJune2014Dict = {
+    "June2014_12": June2014_12,
+    "June2014_1": June2014_1
+}

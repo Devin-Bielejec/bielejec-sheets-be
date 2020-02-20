@@ -3,10 +3,16 @@
 #Adding those same questions to the database
 
 import sys
+import importlib
 
 from questions.Algebra.June2014 import *
 
-test = June2014_1()
+questionsDict = {}
 
-print(test.id)
+def updateQuestionsDict(questionsDict, newDict):
+    questionsDict = {**questionsDict, **newDict}
+    return questionsDict
 
+questionsDict = updateQuestionsDict(questionsDict, questionsAlgebraJune2014Dict)
+
+print(questionsDict)
