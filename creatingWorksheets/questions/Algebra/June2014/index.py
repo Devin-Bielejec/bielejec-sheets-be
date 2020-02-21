@@ -8,7 +8,7 @@ class June2014_1():
     def __init__(self):
         #ID is topic + MAIN SKILL
         self.subject = "Algebra"
-        self.standard = "some string"
+        self.standards = ["some string", "some other string"]
         self.state = "New York"
         self.exam = "June2014"
         self.topics = ["#1Topic", "#2Topic"]
@@ -51,7 +51,7 @@ class June2014_2():
     def __init__(self):
         #ID is topic + MAIN SKILL
         self.subject = "Algebra"
-        self.standard = "some string"
+        self.standards = ["some string", "some other string"]
         self.state = "New York"
         self.exam = "June2014"
         self.topics = ["#4Topic", "#3Topic"]
@@ -94,7 +94,7 @@ class June2014_3():
     def __init__(self):
         #ID is topic + MAIN SKILL
         self.subject = "Algebra"
-        self.standard = "some string"
+        self.standards = ["some string", "some other string"]
         self.state = "New York"
         self.exam = "June2014"
         self.topics = ["#5Topic", "#6Topic"]

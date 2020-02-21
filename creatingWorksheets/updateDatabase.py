@@ -40,10 +40,9 @@ for key in questionsDict:
             else:
                 #Add property to each dictionary already exisiting
                 currentListToAdd.append({**curDict, **{arg: instanceOfClassProperty}})
-                
+
     #For each of the class questions, we're spreading in the objects that we need
     questionsList = [*questionsList, *currentListToAdd]
 
-print(len(questionsList))
 questionsList = json.dumps(questionsList)
 print(questionsList)

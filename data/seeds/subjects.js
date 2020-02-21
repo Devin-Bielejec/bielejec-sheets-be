@@ -2,18 +2,19 @@ exports.seed = function(knex) {
   const { spawn } = require("child_process");
   const child = spawn("python", [
     "./creatingWorksheets/updateDatabase.py",
-    "id"
+    "id",
+    "subject"
   ]);
 
-  let questions;
+  let subjects;
   child.stdout.on("data", function(data) {
-    questions = JSON.parse(data);
+    subjects = JSON.parse(data);
   });
 
-  return knex("questions")
+  return knex("subjects")
     .del()
     .then(function() {
       // Inserts seed entries
-      return knex("questions").insert([...questions]);
+      return knex("subjects").insert([...subjects]);
     });
 };
