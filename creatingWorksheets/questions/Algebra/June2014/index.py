@@ -13,6 +13,7 @@ class June2014_1():
         self.exam = "June2014"
         self.topics = ["#1Topic", "#2Topic"]
         self.questionNumber = 1
+        self.type = "MC"
 
         self.id = "Algebra.NY.June2014.1"
         #This can get convoluted, so maybe don't worry about it so much right now
@@ -56,6 +57,8 @@ class June2014_2():
         self.exam = "June2014"
         self.topics = ["#4Topic", "#3Topic"]
         self.questionNumber = 2
+        self.type = "MC"
+
 
         self.id = "Algebra.NY.June2014.2"
         #This can get convoluted, so maybe don't worry about it so much right now
@@ -99,6 +102,8 @@ class June2014_3():
         self.exam = "June2014"
         self.topics = ["#5Topic", "#6Topic"]
         self.questionNumber = 3
+        self.type = "MC"
+
 
         self.id = "Algebra.NY.June2014.3"
         #This can get convoluted, so maybe don't worry about it so much right now
