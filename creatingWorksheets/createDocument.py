@@ -15,4 +15,10 @@ def updateQuestionsDict(questionsDict, newDict):
 
 questionsDict = updateQuestionsDict(questionsDict, questionsAlgebraJune2014Dict)
 
-print(questionsDict)
+questionsList = []
+for key in questionsDict:
+    instance = questionsDict[key]()
+
+    questionList.append({"id": instance.id})
+
+print(questionsList)
