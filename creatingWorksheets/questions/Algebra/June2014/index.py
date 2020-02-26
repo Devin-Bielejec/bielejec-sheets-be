@@ -1,5 +1,8 @@
 import random
 import uuid
+from pylatex import (Document, TikZ, TikZNode,
+                     TikZDraw, TikZCoordinate,
+                     TikZUserPath, TikZOptions)
 
 # __all__ = ["June2014_1", "June2014_12"]
 
@@ -37,6 +40,7 @@ class June2014_1():
 
         #Let's see if it works without anything in particular
         equationString = rf"{a}(x^{2}+{c})-{d}={e}x^{2}"
+        doc.append("Hi")
 
 
     def addAnswer(self, doc = None):
@@ -82,6 +86,47 @@ class June2014_2():
 
         #Let's see if it works without anything in particular
         equationString = rf"{a}(x^{2}+{c})-{d}={e}x^{2}"
+            # add our sample drawings
+        with doc.create(TikZ()) as pic:
+
+            # options for our node
+            node_kwargs = {'align': 'center',
+                        'minimum size': '100pt',
+                        'fill': 'black!20'}
+
+            # create our test node
+            box = TikZNode(text='My block',
+                        handle='box',
+                        options=TikZOptions('draw',
+                                            'rounded corners',
+                                            **node_kwargs))
+
+            # add to tikzpicture
+            pic.append(box)
+
+            # draw a few paths
+            pic.append(TikZDraw([TikZCoordinate(0, -6),
+                                'rectangle',
+                                TikZCoordinate(2, -8)],
+                                options=TikZOptions(fill='red')))
+
+            # show use of anchor, relative coordinate
+            pic.append(TikZDraw([box.west,
+                                '--',
+                                '++(-1,0)']))
+
+            # demonstrate the use of the with syntax
+            with pic.create(TikZDraw()) as path:
+
+                # start at an anchor of the node
+                path.append(box.east)
+
+                # necessary here because 'in' is a python keyword
+                path_options = {'in': 90, 'out': 0}
+                path.append(TikZUserPath('edge',
+                                        TikZOptions('-latex', **path_options)))
+
+                path.append(TikZCoordinate(1, 0, relative=True))
 
 
     def addAnswer(self, doc = None):
@@ -127,6 +172,7 @@ class June2014_3():
 
         #Let's see if it works without anything in particular
         equationString = rf"{a}(x^{2}+{c})-{d}={e}x^{2}"
+        doc.append("Hi")
 
 
     def addAnswer(self, doc = None):
