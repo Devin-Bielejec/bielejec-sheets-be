@@ -10,9 +10,20 @@ const getByFilter = filter => {
     query = query.whereIn(key, filter[key]);
   }
 
-  return query.select("questions.id").distinct();
+  return query.select().distinct();
+};
+
+const getListOfByFilter = (choice, filter) => {
+  return db("questions")
+    .join("topics", "questions.id", "=", "topics.id")
+    .join("standards", "questions.id", "=", "standards.id")
+    .join("subjects", "questions.id", "=", "subjects.id")
+    .whereIn("subject", filter["subject"])
+    .select(choice)
+    .distinct();
 };
 
 module.exports = {
-  getByFilter
+  getByFilter,
+  getListOfByFilter
 };

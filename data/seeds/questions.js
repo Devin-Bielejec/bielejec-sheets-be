@@ -9,6 +9,14 @@ exports.seed = function(knex) {
   let questions;
   child.stdout.on("data", function(data) {
     questions = JSON.parse(data);
+    //Add in imgURL
+    questions = questions.map(question => {
+      let copyQuestion = { ...question };
+
+      copyQuestion.imgURL = `https://storage.googleapis.com/questions-images/${question.id}.jpg`;
+      console.log(copyQuestion);
+      return copyQuestion;
+    });
   });
 
   return knex("questions")
