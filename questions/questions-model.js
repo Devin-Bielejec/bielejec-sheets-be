@@ -7,23 +7,54 @@ const getByFilter = filter => {
     .join("subjects", "questions.id", "=", "subjects.id");
 
   for (let key in filter) {
-    query = query.whereIn(key, filter[key]);
+    //if they come in empty
+    console.log(key, filter);
+    if (filter[key].length > 0) {
+      query = query.whereIn(key, filter[key]);
+    }
   }
 
-  return query.select().distinct();
+  return query.select("questions.id", "questions.imgURL").distinct();
 };
 
-const getListOfByFilter = (choice, filter) => {
+const getAll = () => {
+  let query = db("questions")
+    .join("topics", "questions.id", "=", "topics.id")
+    .join("standards", "questions.id", "=", "standards.id")
+    .join("subjects", "questions.id", "=", "subjects.id");
+
+  return query.select("questions.id", "questions.imgURL").distinct();
+};
+
+const getSideBarByFilter = filter => {
+  //so far
+  let choices = ["standard", "topic", "type", "subject"];
+  console.log("filter", filter);
   return db("questions")
     .join("topics", "questions.id", "=", "topics.id")
     .join("standards", "questions.id", "=", "standards.id")
     .join("subjects", "questions.id", "=", "subjects.id")
-    .whereIn("subject", filter["subject"])
-    .select(choice)
+    .whereIn("subject", filter)
+    .select(choices)
+    .distinct();
+};
+
+//assuming no subject is selected, getting topics, standards, types of questions
+const getSideBarDefaults = () => {
+  //so far
+  let choices = ["standard", "topic", "type", "subject"];
+
+  return db("questions")
+    .join("topics", "questions.id", "=", "topics.id")
+    .join("standards", "questions.id", "=", "standards.id")
+    .join("subjects", "questions.id", "=", "subjects.id")
+    .select(choices)
     .distinct();
 };
 
 module.exports = {
   getByFilter,
-  getListOfByFilter
+  getSideBarByFilter,
+  getSideBarDefaults,
+  getAll
 };
