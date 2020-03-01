@@ -4,8 +4,10 @@
 
 import sys
 import importlib
+import json
 
 from questions.Algebra.June2014 import *
+from documentCreation import createPDFdocument
 
 questionsDict = {}
 
@@ -15,11 +17,19 @@ def updateQuestionsDict(questionsDict, newDict):
 
 questionsDict = updateQuestionsDict(questionsDict, questionsAlgebraJune2014Dict)
 
-questionsList = []
-for key in questionsDict:
-    instance = questionsDict[key]()
 
-    questionList.append({"id": instance.id})
-
-print(questionsList)
 #Stuff above is to access the questions
+
+#get questions for sys argv
+documentOptions = json.loads(sys.argv[1])
+#Testing
+
+questions = []
+for questionID in documentOptions["ids"]:
+    instance = questionsDict[questionID]()
+    questions.append(instance)
+
+createPDFdocument(path="./creatingWorksheets/pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions)
+print('done')
+
+#TESTING

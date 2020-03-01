@@ -7,11 +7,16 @@ from pylatex.utils import NoEscape, escape_latex
 import time
 import random
 import os
-
-
-#This create the document to which our questions are added
-#Generally, nameOfDoc is only thing I specify.      
-def createDocument(nameOfDoc = 'default', font = 'normalsize', pageNumbers = True, spaceBetween = 'noraml', spaceBetweenMC = 'normal', spaceBetweenSA = 'normal', standalone = False):
+    
+def createDocument(
+	path="/", 
+	nameOfDoc = 'default', 
+	font = 'normalsize', 
+	pageNumbers = True, 
+	spaceBetween = 'normal', 
+	spaceBetweenMC = 'normal', 
+	spaceBetweenSA = 'normal', 
+	standalone = False):
 	
 	if standalone == False:
 		#Can make rmargin bigger for more work etc usually for MC to provide a column of work
@@ -36,9 +41,8 @@ def createDocument(nameOfDoc = 'default', font = 'normalsize', pageNumbers = Tru
 	doc.packages.append(Package('subfig'))
 	doc.append(Command('usetikzlibrary{calc}'))
 	doc.packages.append(Command('usepackage{tkz-euclide}'))
-	doc.append(Command('usetkzobj{all}'))
 	#used
-	'''
+	
 	header = PageStyle('header')
 
 	#LEFT HEADER
@@ -53,20 +57,25 @@ def createDocument(nameOfDoc = 'default', font = 'normalsize', pageNumbers = Tru
 
 	doc.preamble.append(header)
 	doc.change_document_style("header")
-	'''
+	
 	return doc
 
-	
-def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
+def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "normalsize"):
+	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
+	for question in questions:
+		question.addQuestion(doc = doc)
+	
+	doc.generate_pdf(path + nameOfDoc, clean=True)
+
+def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
+	print(path, nameOfDoc, questions)
 	#This is for displaying a single question, so it can them be converted to an image.
-	geometry_options = {"headsep":"2in", 'border':'{0mm 0mm 0mm 0mm}'}
 	doc = Document(documentclass='standalone', indent=False, font_size=font)
 
 	doc.packages.append(Package('tikz'))
 	doc.packages.append(Command('usetikzlibrary{calc}'))
 	doc.packages.append(Command('usepackage{tkz-euclide}'))
-	# doc.packages.append(Command('usetkzobj{all}'))
 	doc.packages.append(Package('subfig'))
 	
 	# header = PageStyle('header')
@@ -105,7 +114,7 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'no
 	question = questions[0]
 	question.addQuestion(doc = doc)
 
-	print(path + nameOfDoc)
+	print(nameOfDoc)
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 	
 def addHeader(doc = None, nameOfDoc = "Default"):
