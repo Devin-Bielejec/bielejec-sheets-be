@@ -1,28 +1,22 @@
+const spawnChild = require("../utils/index.js");
+
 exports.seed = function(knex) {
-  const { spawn } = require("child_process");
-  const child = spawn("python", [
-    "./creatingWorksheets/updateDatabase.py",
-    "id",
-    "type"
-  ]);
-
-  let questions;
-  child.stdout.on("data", function(data) {
-    questions = JSON.parse(data);
-    //Add in imgURL
-    questions = questions.map(question => {
-      let copyQuestion = { ...question };
-
-      copyQuestion.imgURL = `https://storage.googleapis.com/questions-images/${question.id}.jpg`;
-      console.log(copyQuestion);
-      return copyQuestion;
+  let items;
+  return spawnChild("id", "type").then(data => {
+    console.log("RES", data);
+    items = JSON.parse(data);
+    items = items.map(item => {
+      let copyItem = { ...item };
+      copyItem.imgURL = `https://storage.googleapis.com/questions-images/${item.id}.jpg`;
+      console.log(copyItem);
+      return copyItem;
     });
+
+    return knex("questions")
+      .del()
+      .then(function() {
+        // Inserts seed entries
+        return knex("questions").insert([...items]);
+      });
   });
-
-  return knex("questions")
-    .del()
-    .then(function() {
-      // Inserts seed entries
-      return knex("questions").insert([...questions]);
-    });
 };
