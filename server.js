@@ -4,11 +4,13 @@ const cors = require("cors");
 
 const authRouter = require("./auth/auth-router.js");
 const usersRouter = require("./users/users-router.js");
+const questionsRouter = require("./questions/questions-router.js");
 
 server.use(cors());
 server.use(express.json());
 server.use("/", authRouter);
 server.use("/users", usersRouter);
+server.use("/questions", questionsRouter);
 
 server.post("/getImage", (req, res) => {
   const name = req.body.name;
