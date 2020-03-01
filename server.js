@@ -8,9 +8,9 @@ const usersRouter = require("./users/users-router.js");
 const questionsRouter = require("./questions/questions-router.js");
 
 server.use(helmet());
-server.use(cors({ origin: "https://bielejecsheets.netlify.com" }));
+server.use(cors());
 server.use(express.json());
-server.use("/", authRouter);
+server.use("/auth", authRouter);
 server.use("/users", usersRouter);
 server.use("/questions", questionsRouter);
 
