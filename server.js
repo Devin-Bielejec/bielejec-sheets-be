@@ -7,8 +7,8 @@ const authRouter = require("./auth/auth-router.js");
 const usersRouter = require("./users/users-router.js");
 const questionsRouter = require("./questions/questions-router.js");
 
-server.use(helmet());
 server.use(cors());
+server.use(helmet());
 server.use(express.json());
 server.use("/auth", authRouter);
 server.use("/users", usersRouter);
