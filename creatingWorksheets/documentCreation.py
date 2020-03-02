@@ -65,7 +65,7 @@ def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "n
 
 	for question in questions:
 		question.addQuestion(doc = doc)
-	
+	print("path + name", path + nameOfDoc)
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
