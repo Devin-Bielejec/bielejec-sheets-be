@@ -1,5 +1,5 @@
 {
-  "name": "backendTemplate",
+  "name": "bielejec-sheets-be",
   "version": "1.0.0",
   "description": "Creating the template for a backend",
   "main": "index.js",
