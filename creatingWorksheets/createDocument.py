@@ -29,7 +29,7 @@ for questionID in documentOptions["ids"]:
     instance = questionsDict[questionID]()
     questions.append(instance)
 
-createPDFdocument(path="pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions)
+createPDFdocument(path="./creatingWorksheets/pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions)
 print('done')
 
 #TESTING
