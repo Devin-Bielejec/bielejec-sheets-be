@@ -1,8 +1,11 @@
 {
   "name": "bielejec-sheets-be",
   "version": "1.0.0",
-  "description": "Creating the template for a backend",
+  "description": "Helping teachers save time",
   "main": "index.js",
+  "engines": {
+    "node": "10.16.0"
+  },
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
