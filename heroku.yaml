@@ -1,8 +1,8 @@
 build:
   packages:
     - texlive-latex-base
-    - texlive-lastpage
-    - texlive-pgf-base
+    - texlive-macros-latex-contrib-lastpage
+    - texlive-graphics-pgf-base
     - texlive-fonts-extra
     - texlive-latex-extra
     - texlive-fonts-recommended
