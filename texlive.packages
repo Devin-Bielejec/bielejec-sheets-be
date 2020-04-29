@@ -1,4 +1,4 @@
 latex-base
-latex-recommneded
+latex-recommended
 lastpage
-tikz
+pgf-base
