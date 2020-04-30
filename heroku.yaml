@@ -1,8 +1,4 @@
 build:
   packages:
-    - texlive-latex-base
-    - texlive-macros-latex-contrib
-    - texlive-graphics-pgf-base
-    - texlive-fonts-extra
     - texlive-latex-extra
-    - texlive-fonts-recommended
+    - texlive-pictures
