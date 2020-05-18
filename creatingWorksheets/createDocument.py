@@ -20,16 +20,27 @@ questionsDict = updateQuestionsDict(questionsDict, questionsAlgebraJune2014Dict)
 
 #Stuff above is to access the questions
 
-#get questions for sys argv
-documentOptions = json.loads(sys.argv[1])
-#Testing
+#get questions for sys argv - for real
+# documentOptions = json.loads(sys.argv[1])
 
+#Testing BELOW
+documentOptions = {"ids": ["Algebra.NY.June2014.1"], "nameOfDoc": "Tickles"}
 questions = []
 for questionID in documentOptions["ids"]:
     instance = questionsDict[questionID]()
     questions.append(instance)
 
-createPDFdocument(path="./creatingWorksheets/pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions)
-print('done')
+createPDFdocument(path="pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions, solutions = True)
+print('done testing')
 
-#TESTING
+
+#Testing^^^^
+
+# questions = []
+# for questionID in documentOptions["ids"]:
+#     instance = questionsDict[questionID]()
+#     questions.append(instance)
+
+# createPDFdocument(path="./creatingWorksheets/pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions)
+
+

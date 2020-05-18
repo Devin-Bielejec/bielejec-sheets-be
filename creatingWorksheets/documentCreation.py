@@ -60,13 +60,28 @@ def createDocument(
 	
 	return doc
 
-def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "normalsize"):
+def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "normalsize", answers = False, solutions = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
+	if solutions:
+		nameOfDocSolutions = f"solutions - {nameOfDoc}"
+		docSolution = createDocument(path=path, nameOfDoc=nameOfDocSolutions, font=font)
+	elif answers:
+		nameOfDocAnswers = f"answers - {nameOfDoc}"
+		docAnswer = createDocument(path=path, nameOfDoc=nameOfDocAnswers, font=font)
 
 	for question in questions:
 		question.addQuestion(doc = doc)
-	print("path + name", path + nameOfDoc)
+		if solutions:
+			question.addSolution(doc = docSolution)
+		elif answers:
+			question.addAnswer(doc = docAnswer)
+
 	doc.generate_pdf(path + nameOfDoc, clean=True)
+	if solutions:
+		docSolution.generate_pdf(path + nameOfDocSolutions)
+	elif answers:
+		docAnswers.generate_pdf(path + nameOfDocAnswers)
+	
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
 	print(path, nameOfDoc, questions)

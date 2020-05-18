@@ -2,6 +2,11 @@ import random
 from pylatex.utils import NoEscape
 from pylatex import VerticalSpace, NewLine
 
+"""
+Use Alignat to make multiple choice aligned 4 rows, or 2 rows based on number of characters in choices etc
+"""
+
+
 #Always make first choice correct answer
 def multipleChoice(choices = ['1','2','3','4','5'], fifthVariation = False, doc = None):
     correctAnswer = choices[0]
