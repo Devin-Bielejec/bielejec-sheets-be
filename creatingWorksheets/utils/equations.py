@@ -1,51 +1,116 @@
+import re, string
+from fractions import Fraction
+
+
 def formatEquation(data):
     #this is also useful to add a list of different parts rather than concatenate them
     string = ""
     for item in data:
         string += item
     
+    #find the first && sign, remove one &
+    string = string.replace("&&", "&", 1)
     return string
- 
-def formatExpression(data):
-    #data comes in as an array of tuples [(coeffecient, term as string without coefficient)], such as [(4,"x^2")]
-    string = ""
-    startingIndex = 0
 
-    #For aligned - we need the first term to have & infront and && for all preceding
-    for i, pair in enumerate(data):
-        if pair[0] == "&" or pair[0] == "&&":
-            align = pair[0]
-            coVal = pair[1]
-            term = pair[2]
+def toLatexFraction(numerator, denominator, simplified = True):
+    if simplified:
+      newFraction = Fraction(numerator, denominator)
+      numerator = newFraction.numerator
+      denominator = newFraction.denominator
+    
+
+    if denominator == 1:
+        return f"{numerator}"
+    elif numerator < 0:
+        return fr"-1\frac{{{abs(numerator)}}}{{{denominator}}}"
+    else:
+        return fr"\frac{{{numerator}}}{{{denominator}}}"
+
+def RepresentsInt(s):
+  try: 
+    int(s)
+    return True
+  except ValueError:
+    return False
+
+#Runs loop twice to account for --1x situations which resolve to +1x which resolve to x
+def formatMathString(givenString):
+  """
+  +- > -
+
+  endings = [+,-,),}]
+  if -1 or +1 then an ending, keep as -1 and +1
+  else: we do - and +
+
+  if start of expression or =, then 1 then 
+
+  """
+  def format(givenString):
+    newString = ""
+    i = 0
+    while i < len(givenString):
+      char = None
+      nextChar = None
+      nextNextChar = None
+
+      if i <= len(givenString)-1:
+        char = givenString[i]
+      if i+1 <= len(givenString)-1:
+        nextChar = givenString[i+1]
+      if i+2 <= len(givenString)-1:
+        nextNextChar = givenString[i+2]
+
+      endings = ["=", ")", "+", "}","-"]
+      beginningTags = ["(", "\\"] + [x for x in string.ascii_letters]
+
+      #+1 and with a proper ending
+      #Change + - to just one -
+      if char == "+" and nextChar == "-":
+        newString += nextChar
+        i += 2
+      #Change - - to +
+      elif char == "-" and nextChar == "-":
+        newString += "+"
+        i += 2
+      #Beginning or after = followed by a 1 with following characters in endings
+      elif (i == 0 or givenString[i-1] == "=") and char == "1" and nextChar in endings:
+        newString += char + nextChar
+        i += 2
+      #Beginning or after = followed by (, \, or a letter
+      elif (i == 0 or givenString[i-1] == "=") and char == "1" and nextChar in beginningTags:
+        #check for \pm
+        if givenString[i+1:i+4] == "\\pm":
+          newString += char
+          i += 1
         else:
-            align = ""
-            coVal = pair[0]
-            term = pair[1]
-
-        currentString = align
-        
-        if coVal < -1:
-            currentString += f"{coVal}{term}"
-        elif coVal == -1:
-            currentString += f"-{term}"
-        elif coVal == 0:
-            #if first term is 0, we want to treat the second term as the first term
-            currentString += f""
-            if i == startingIndex:
-              startingIndex += 1
-        elif coVal == 1:
-            if startingIndex == i:
-              currentString += f"{term}"
-            else:
-              currentString += f"+{term}"
-        elif coVal > 1:
-            if i == startingIndex:            
-                currentString += f"{coVal}{term}"
-            else:
-                currentString += f"+{coVal}{term}"
+          #skip the 1
+          newString += nextChar
+          i += 2
+      #-+ 1 
+      elif (char == "-" or char == "+") and nextChar == "1":
+        #-+ 1, then ending -> -+ 1
+        if nextNextChar in endings or i+1 == len(givenString)-1:
+          newString += char + nextChar
+          i += 2
+        #-+ 1, then beginningTag -> -+  
+        elif nextNextChar in beginningTags:
+          if givenString[i+2:i+5] == "\\pm":
+            newString += char
+            i += 1
+          else:
+            newString += char
+            i += 2
+        #may be a number
         else:
-            print("coVal is not an integer!")
+          newString += char 
+          i += 1
+      else:
+        newString += char
+        i += 1 
+  
+    return newString
 
-        string += currentString 
-    print(string)
-    return string
+  givenString = format(givenString)
+  newString = format(givenString)
+
+  return "$" + newString + "$"    

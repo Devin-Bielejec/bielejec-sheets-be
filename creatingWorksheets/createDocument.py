@@ -1,21 +1,18 @@
-#Adding questions to a cache
-
-#Adding those same questions to the database
-
 import sys
 import importlib
 import json
+import inspect
 
-from questions.Algebra.June2014 import *
+sys.path.append('../')
+from questions.Algebra.Quadratics import quadraticsQuestionsDict
 from documentCreation import createPDFdocument
-
-questionsDict = {}
 
 def updateQuestionsDict(questionsDict, newDict):
     questionsDict = {**questionsDict, **newDict}
     return questionsDict
 
-questionsDict = updateQuestionsDict(questionsDict, questionsAlgebraJune2014Dict)
+questionsDict = {}
+questionsDict = updateQuestionsDict(questionsDict, quadraticsQuestionsDict)
 
 
 #Stuff above is to access the questions
@@ -23,14 +20,19 @@ questionsDict = updateQuestionsDict(questionsDict, questionsAlgebraJune2014Dict)
 #get questions for sys argv - for real
 # documentOptions = json.loads(sys.argv[1])
 
+newQuestions = []
+for item in list(questionsDict.keys()):
+    for n in range(10):
+        newQuestions.append(item)
+
 #Testing BELOW
-documentOptions = {"ids": ["Algebra.NY.June2014.1"], "nameOfDoc": "Tickles"}
+documentOptions = {"ids": newQuestions, "nameOfDoc": "Tickles"}
 questions = []
 for questionID in documentOptions["ids"]:
     instance = questionsDict[questionID]()
     questions.append(instance)
 
-createPDFdocument(path="pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions, solutions = True)
+createPDFdocument(path="pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions, answers = True)
 print('done testing')
 
 

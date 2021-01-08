@@ -7,6 +7,9 @@ from pylatex.utils import NoEscape, escape_latex
 import time
 import random
 import os
+import sys
+sys.path.append('./utils/')
+from questionFormatting import multipleChoice
     
 def createDocument(
 	path="/", 
@@ -24,19 +27,20 @@ def createDocument(
 		doc = Document(documentclass='article', document_options = 'twoside', geometry_options = geometry_options, indent=False, font_size=font, page_numbers=pageNumbers)
 
 
-	# float separation, does something important
-	doc.append(Command('setlength{\\floatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	doc.append(Command('setlength{\\intextsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	doc.append(Command('setlength{\\textfloatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	doc.append(Command('setcounter{topnumber}{10}'))
-	doc.append(Command('setcounter{bottomnumber}{10}'))
-	doc.append(Command('setcounter{totalnumber}{10}'))
+	# # float separation, does something important
+	# doc.append(Command('setlength{\\floatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
+	# doc.append(Command('setlength{\\intextsep}{1.0pt plus 5.0pt minus 2.0pt}'))
+	# doc.append(Command('setlength{\\textfloatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
+	# doc.append(Command('setcounter{topnumber}{10}'))
+	# doc.append(Command('setcounter{bottomnumber}{10}'))
+	# doc.append(Command('setcounter{totalnumber}{10}'))
 
-	# makes float appear at top of page at the last page
-	doc.append(Command('makeatletter'))
-	doc.append(Command('setlength{\\@fptop}{0pt}'))
-	doc.append(Command('setlength{\\@fpbot}{0pt plus 1fil}'))
-	doc.append(Command('makeatother'))
+	# # makes float appear at top of page at the last page
+	# doc.append(Command('makeatletter'))
+	# doc.append(Command('setlength{\\@fptop}{0pt}'))
+	# doc.append(Command('setlength{\\@fpbot}{0pt plus 1fil}'))
+	# doc.append(Command('makeatother'))
+	doc.append(Command('linespread{1.3}'))
 
 	doc.packages.append(Package('subfig'))
 	doc.append(Command('usetikzlibrary{calc}'))
@@ -62,25 +66,44 @@ def createDocument(
 
 def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "normalsize", answers = False, solutions = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
-	if solutions:
-		nameOfDocSolutions = f"solutions - {nameOfDoc}"
-		docSolution = createDocument(path=path, nameOfDoc=nameOfDocSolutions, font=font)
-	elif answers:
+
+	if answers:
 		nameOfDocAnswers = f"answers - {nameOfDoc}"
 		docAnswer = createDocument(path=path, nameOfDoc=nameOfDocAnswers, font=font)
 
-	for question in questions:
-		question.addQuestion(doc = doc)
-		if solutions:
-			question.addSolution(doc = docSolution)
-		elif answers:
-			question.addAnswer(doc = docAnswer)
+	for i, question in enumerate(questions, start=0):
+		correctAnswerNum = None
+		with doc.create(MiniPage(width=r"\textwidth")): #Preventing questions from splitting between pages
+			doc.append(NoEscape(f"({i+1}) "))
+			#Start with assessment question, then worksheet after
+			for questionParts in question.assessmentData:
+				if "text" in questionParts:
+					doc.append(NoEscape(questionParts["data"]))
+				if "multipleChoice" in questionParts:
+					correctAnswerNum = multipleChoice(choices = questionParts["data"], doc = doc)
+					print(correctAnswerNum, questionParts["data"])
+				doc.append(NewLine())
+			
+		#line break before next question
+		doc.append(LineBreak())
+
+		if answers:
+			with docAnswer.create(MiniPage(width=r"\textwidth")):
+				if correctAnswerNum is not None:
+					docAnswer.append(NoEscape(f"({i+1}) Choice {correctAnswerNum}: {question.answer if question.answer is not None else question.worksheetAnswer}"))
+				else:
+					docAnswer.append(NoEscape(f"({i+1}) {question.answer if question.answer is not None else question.worksheetAnswer}"))
+
+			#line break before next answer
+			docAnswer.append(NewLine())
+			docAnswer.append(LineBreak())
+
 
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 	if solutions:
 		docSolution.generate_pdf(path + nameOfDocSolutions)
 	elif answers:
-		docAnswers.generate_pdf(path + nameOfDocAnswers)
+		docAnswer.generate_pdf(path + nameOfDocAnswers)
 	
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
