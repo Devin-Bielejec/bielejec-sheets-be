@@ -1,6 +1,6 @@
 from pylatex.base_classes import Environment, CommandBase, Arguments
 from pylatex.package import Package
-from pylatex import Document, Section, UnsafeCommand, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package
+from pylatex import Document, Section, UnsafeCommand, NewLine, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package
 from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number
 import math
 from pylatex.utils import NoEscape, escape_latex
@@ -64,7 +64,7 @@ def createDocument(
 	
 	return doc
 
-def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "normalsize", answers = False, solutions = False):
+def createAssessment(path="/", nameOfDoc = "default", questions = [], font = "normalsize", answers = False, solutions = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
 	if answers:
@@ -72,16 +72,17 @@ def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "n
 		docAnswer = createDocument(path=path, nameOfDoc=nameOfDocAnswers, font=font)
 
 	for i, question in enumerate(questions, start=0):
+		print(i)
 		correctAnswerNum = None
 		with doc.create(MiniPage(width=r"\textwidth")): #Preventing questions from splitting between pages
 			doc.append(NoEscape(f"({i+1}) "))
 			#Start with assessment question, then worksheet after
+
 			for questionParts in question.assessmentData:
 				if "text" in questionParts:
 					doc.append(NoEscape(questionParts["data"]))
 				if "multipleChoice" in questionParts:
 					correctAnswerNum = multipleChoice(choices = questionParts["data"], doc = doc)
-					print(correctAnswerNum, questionParts["data"])
 				doc.append(NewLine())
 			
 		#line break before next question
@@ -105,6 +106,42 @@ def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "n
 	elif answers:
 		docAnswer.generate_pdf(path + nameOfDocAnswers)
 	
+def createWorksheet(path="/", nameOfDoc = "default", questions = [], columns = 2, font = "normalsize", answers = False, solutions = False):
+	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
+
+	if answers:
+		nameOfDocAnswers = f"answers - {nameOfDoc}"
+		docAnswer = createDocument(path=path, nameOfDoc=nameOfDocAnswers, font=font)
+
+	#Instructions
+	
+	#Testing
+	for i, question in enumerate(questions, start=0):
+		print(i)
+		if i == 0:
+			doc.append(Command("noindent"))
+
+		with doc.create(MiniPage(width=fr"{1/columns}\textwidth")): #Preventing questions from splitting between pages
+			doc.append(NoEscape(f"({i+1}) "))
+			doc.append(NoEscape(question.worksheetQuestion))
+
+		if (i+1) % columns == 0:
+			#Example: 3 columns, we only have to add vertical space when we're on the 3rd question (i+1) for Q Number
+			#would add vertical space here
+			doc.append(NewLine())
+			doc.append(VerticalSpace("7in", star=False))
+
+		if answers:
+			with docAnswer.create(MiniPage(width=r"\textwidth")):
+				docAnswer.append(NoEscape(f"({i+1}) {question.answer if question.answer is not None else question.worksheetAnswer}"))
+			if (i+1) % columns == 0:
+				doc.append(NewLine())
+				
+	doc.generate_pdf(path + nameOfDoc, clean=True)
+	if solutions:
+		docSolution.generate_pdf(path + nameOfDocSolutions)
+	elif answers:
+		docAnswer.generate_pdf(path + nameOfDocAnswers)
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
 	print(path, nameOfDoc, questions)

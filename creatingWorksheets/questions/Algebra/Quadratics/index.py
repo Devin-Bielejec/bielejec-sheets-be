@@ -98,6 +98,7 @@ class June14Q8(Quadratics):
         """
 
         #Start with correct answer
+        #x^2 + 2dx + d^2 - e = 0
         #(x + d)^2 = e
 
         d = random.choice([x for x in range(-9,10) if x != 0])
@@ -143,7 +144,7 @@ class Jan15Q03(Quadratics):
         #(dx+e)(x+f)=0
 
         d = random.randint(2,3)
-        prime = random.choice(getPrimes(15))
+        prime = random.choice([x for x in getPrimes(15) if x + d != 0 and -x + d != 0])
 
         efChoices =[[-1*prime,1], [prime, -1], [1,prime], [-1,prime]]
         eChosen = random.choice(efChoices)
@@ -173,7 +174,7 @@ class Jan15Q03(Quadratics):
             "data": choices
         }]
 
-        self.answer = choice1
+        self.answer = c1
 
 #168
 class Jan15Q17(Quadratics):
@@ -197,11 +198,11 @@ class Jan15Q17(Quadratics):
         (4) (x - d)^2 = abs(-c - (b/2)^2)
         """
 
-        #Start with correct answer
+        #Start with correcqt answer
         #(x + d)^2 = e
 
         d = random.choice([x for x in range(-9,10) if x != 0])
-        e = random.choice([x**2 for x in range(1,12)])
+        e = random.choice([x**2 for x in range(1,12) if -x**2 + d**2 != 0])
 
         #bx + c
         b = d*2
@@ -359,7 +360,7 @@ class Jan19Q15(Quadratics):
         #(x + d)^2 = e
 
         d = random.choice([x for x in range(-9,10) if x != 0])
-        e = random.choice([x**2 for x in range(1,12)])
+        e = random.choice([x**2 for x in range(1,12) if -x**2 + d**2 != 0])
 
         #bx + c
         b = d*2
@@ -500,17 +501,32 @@ class June15Q23(Quadratics):
         self.skills = ["Complete the square"]
 
         #d +- e sqrt(f)
+        fdeChoices = []
+        for f in notDivisibleByPerfectSquareList(50):
+            for d in range(-10,11):
+                for e in range(-10,11):
+                    b = -d*2
+                    a = 1
+                    c = (4*e**2*f-b**2)//(-4*a)
+                    newC = -c
+                    discriminant = b**2 - 4*a*c
+                    newDiscriminant = b**2 - 4*a*newC
+                    if e != 0 and d != 0 and discriminant > 0 and newDiscriminant > 0:
+                        fdeChoices.append([f,d,e])
 
-        d = random.choice([x for x in range(-5,6) if x != 0])
-        e = random.choice([x for x in range(-6,7) if x != 0])
-        f = random.choice(notDivisibleByPerfectSquareList(50))
-
+        random.shuffle(fdeChoices)
+        f = fdeChoices[0][0]
+        d = fdeChoices[0][1]
+        e = fdeChoices[0][2]
+        
         a = 1
         b = -d*2
+        
+
         c = (4*e**2*f-b**2)//(-4*a)
 
         newC = -c
-        discriminant = b**2 - 4*a*c
+        discriminant = b**2 - 4*a*newC
 
         pSquares = [x**2 for x in range(1,round(discriminant**(1/2))+1)]
         pSquares.reverse()
@@ -520,7 +536,7 @@ class June15Q23(Quadratics):
                 chosenPS = ps
                 break
 
-        newF = discriminant//chosenPS
+        newF = int(discriminant//chosenPS)
         newE = int(chosenPS**(1/2)/2)
         
         self.worksheetQuestion = formatMathString(f"{a}x^2+{b}x={-c}")
@@ -724,7 +740,7 @@ class Jan17Q02(Quadratics):
         self.type = "MC"
 
         #This can get convoluted, so maybe don't worry about it so much right now
-        self.skills = ["Factor trinomials with a = 1"]
+        self.skills = ["Factor a trinomial with a = 1"]
 
         """
         (x+a)(x+var1)
@@ -1001,15 +1017,27 @@ class June15Q18(Quadratics):
         (x-d/2)^2 = e/4
         (x-d/2) = sqrt(e)/2
         x = (d +- sqrt(e))/2
+        
+        x^2 - dx + d^2/4 - e/4 = 0
+        x^2 - dx + (-e+d^2)/4
+        a=1
+        b=-d
+        c= d^2-e/4
         """ 
         
         a = 1
-        d = random.choice([x for x in range(-9,10,2) if x not in [-1,0,1]])
+        deChoices = []
+        for d in range(-9,10,2):
+            for e in notDivisibleByPerfectSquareList(150):
+                if d != 0 and (-e+d**2) != 0 and (-e+d**2) % 4 == 0:
+                    deChoices.append([d,e])
+        
+        print(deChoices)
+        random.shuffle(deChoices)
+        d = deChoices[0][0]
+        e = deChoices[0][1]
         b = -d
-
-        e = random.choice([x for x in getPrimes(50) if x-b**2 != 0])
-
-        c = (e-b**2)//(-4)
+        c = int((-e+d**2)//(4))
 
         self.worksheetQuestion = formatMathString(f"(x+{toLatexFraction(d,2)})^2={toLatexFraction(e,4)}")
         self.worksheetAnswer = formatMathString(fr"x=\frac{{{-1*d}\pm\sqrt{{{e}}}}}{{{2}}}")
@@ -1116,7 +1144,7 @@ class June14Q33(Quadratics):
         B = a*c + b*d
 
         #ensures that f1 and f2 are not 0
-        f1 = random.choice([x for x in range(-10,11) if (B - x) != 0 and x != 0])
+        f1 = random.choice([x for x in range(-10,11) if (B - x) != 0 and x != 0 and (B-x) - b*c != 0])
 
         f2 = B - f1
 
@@ -1654,9 +1682,19 @@ class Aug16Q36(Quadratics):
         (dx+f)(dx+e)
         """ 
 
-        d = random.randint(2,9)
-        f = random.choice([x for x in range(-9,10) if x != 0 and x % d != 0 and d % x != 0])
-        e = random.choice([x for x in range(-9,10) if x != 0 and x != -1*f and x % d != 0 and d % x != 0 and d % (x+f) != 0 and (x+f) % d != 0])
+        defChoices = []
+        for d in range(2,10):
+            for f in range(-9,10):
+                for e in range(-9,10):
+                    fCondition = f != 0 and f % d != 0 and d % f != 0
+                    eCondition = e != 0 and e != -1*f and e % d != 0 and d % e != 0 and d % (e+f) != 0 and (e+f) % d != 0
+                    if fCondition and eCondition:
+                        defChoices.append([d,e,f])
+        random.shuffle(defChoices)
+
+        d = defChoices[0][0]
+        e = defChoices[0][1]
+        f = defChoices[0][2]
 
         a = d**2
         b = (f+e)*d
@@ -1664,7 +1702,7 @@ class Aug16Q36(Quadratics):
         
         self.worksheetQuestion = formatMathString(f"0={a}x^2+{d*(f+e)}x+{f*e}")
         self.worksheetAnswer = formatMathString(f"x={toLatexFraction(-f,d)}") + " and " + formatMathString(f"x={toLatexFraction(-e,d)}")
-        print(self.worksheetAnswer)
+
         self.assessmentData = [{
             "text": True,
             "data": f"Janice is asked to solve {self.worksheetQuestion}. She begins the problem by writing the following steps:"

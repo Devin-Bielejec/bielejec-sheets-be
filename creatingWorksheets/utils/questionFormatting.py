@@ -13,6 +13,7 @@ def multipleChoice(choices = ['1','2','3','4','5'], fifthVariation = False, doc 
     correctAnswer = choices[0]
 
     if len(choices) != len(set(choices)):
+        print(choices)
         return "ERROR"
 
     #All choices will be shuffled - not numerical
