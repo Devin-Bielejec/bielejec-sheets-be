@@ -45,6 +45,7 @@ def multipleChoice(choices = ['1','2','3','4','5'], fifthVariation = False, doc 
             return choices.index(choice) + 1
 
 def multipleChoicePic(choices = ['1','2','3','4','5'], fifthVariation = False, math = True, doc = None):
+    print(choices)
     #choices will be functions
     correctAnswer = choices[0]
 

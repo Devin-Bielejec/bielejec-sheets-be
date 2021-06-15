@@ -15,3 +15,76 @@
    -createSnippets.py will create the snippets for a particular folder
    -then manually add those files (id's as names) to the google site
    -console.cloud.google.com
+
+##Database planning
+
+Tables
+
+\*\*document creation can be stored
+
+Questions -
+id
+Standard
+PrimarySkill
+SecondarySkill
+PrimaryTopic
+SecondaryTopic
+Notes
+Type
+Points
+
+QuestionsKwargs -
+questionID references id in questions
+key
+value
+tooltip
+**if value is bool, assume checkbox
+**if value is not bool, assume group of
+
+Assignments -
+id
+name
+type
+points
+date
+
+AssignmentQuestions -
+assignmentid from id in assignments
+questionnumber
+questionid from id in questions
+
+Students -
+id
+first
+last
+sport
+interest
+birthday
+schoolID
+
+Attendance -
+studentid references id in students
+date
+late - integer late
+present - bool
+
+CompletedAssignments -
+studentid references id in students
+assignmentid refernces id in assignments
+questionnumber ref questionumber in assignments
+
+##What does the document creation app look like
+
+1.Pick questions
+-edit for more specificity
+2.Create Document with document options
+-create document
+
+Behind the Scenes
+-python flask
+-gets specifics for questions
+-gets questions
+-get default already created worksheets
+-creates worksheets
+
+-node BE for authentication login etc

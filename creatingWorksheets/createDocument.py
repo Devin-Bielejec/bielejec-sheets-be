@@ -1,63 +1,50 @@
-import sys
-import importlib
-import json
-import inspect
+import sys, importlib, json, inspect, random
 
 sys.path.append('../')
 from questions.Algebra.Quadratics import quadraticsQuestionsDict
-from documentCreation import createWorksheet, createAssessment
+from questions.Algebra.SolvingEquations import solvingEquationsQuestionsDict
+from questions.Algebra.SystemsOfEquations import systemsOfEquationsQuestionsDict
+from questions.Algebra.MultiplyingPolynomials import multiplyingPolynomialsQuestionsDict
+from questions.Algebra.EvaluatingFunctions import evaluatingFunctionsQuestionsDict
+from questions.Algebra.FactoringTrinomials import factoringTrinomialsQuestionsDict
+from questions.Algebra.SquareRootSolving import squareRootSolvingQuestionsDict
+from questions.Algebra.QuadraticFormula import quadraticFormulaQuestionsDict
+from questions.Algebra.AbsoluteValue import absoluteValueQuestionsDict
+from questions.Algebra.RadicalEquations import radicalEquationsQuestionsDict
+from questions.Algebra.ReduceAlgebraicFractions import reduceAlgebraicFractionsQuestionsDict
+from questions.Algebra.FactorByGrouping import factorByGroupingQuestionsDict
+
+from documentCreation import createVersions
 
 def updateQuestionsDict(questionsDict, newDict):
     questionsDict = {**questionsDict, **newDict}
     return questionsDict
 
+
 questionsDict = {}
-questionsDict = updateQuestionsDict(questionsDict, quadraticsQuestionsDict)
+# questionsDict = updateQuestionsDict(questionsDict, quadraticsQuestionsDict)
+questionsDict = updateQuestionsDict(questionsDict, factorByGroupingQuestionsDict)
 
-
+print(questionsDict)
 #Stuff above is to access the questions
 
 #get questions for sys argv - for real
 # documentOptions = json.loads(sys.argv[1])
 
-newQuestions = []
-for item in list(questionsDict.keys()):
-    if item == "June14Q8":
-        for n in range(20):
-            newQuestions.append(item)
+#WILL BE REPLACED BY THE IDS AND DOCUMENT OPTIONS COMING FROM JS BACKEND
+
+q = []
+k = []
+
+for x in range(15):
+    q.append("FactorByGrouping")
+    k.append({})
 
 #Testing BELOW
-documentOptions = {"ids": newQuestions, "nameOfDoc": "Quadratics-Completing The Square Easy"}
+documentOptions = {"ids": q, "kwargs": k, "nameOfDoc": "Week14.Lesson1-FactorByGrouping", "spacingBetween": ".5in", "font":"Huge"}
+#WILL BE REPLACED BY THE IDS AND DOCUMENT OPTIONS COMING FROM JS BACKEND
+
+
 questions = []
 
-#Testing for duplicates
-hash = {}
-for questionID in documentOptions["ids"]:
-    print(questionID)
-    duplicate = True
-    loop = 0
-    while duplicate:
-        loop += 1
-        if loop == 100:
-            break
-        instance = questionsDict[questionID]()
-
-        if instance.worksheetQuestion+questionID not in hash:
-            hash[instance.worksheetQuestion+questionID] = True
-            questions.append(instance)
-            duplicate = False
-
-createWorksheet(path="pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions, answers = True)
-print('done testing')
-
-
-#Testing^^^^
-
-# questions = []
-# for questionID in documentOptions["ids"]:
-#     instance = questionsDict[questionID]()
-#     questions.append(instance)
-
-# createPDFdocument(path="./creatingWorksheets/pdfs/", nameOfDoc=documentOptions["nameOfDoc"], questions=questions)
-
-
+createVersions(documentOptions, worksheet = True, collatedAnswerKey = False, columns = 1, numberOfVersions = 1, questionsDict=questionsDict)

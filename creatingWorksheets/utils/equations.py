@@ -1,4 +1,4 @@
-import re, string
+import re, string, random
 from fractions import Fraction
 
 
@@ -12,6 +12,9 @@ def formatEquation(data):
     string = string.replace("&&", "&", 1)
     return string
 
+def randomBetweenNot(minNum, maxNum, notList=[]):
+  return random.choice([x for x in range(minNum, maxNum+1) if x not in notList])
+  
 def toLatexFraction(numerator, denominator, simplified = True):
     if simplified:
       newFraction = Fraction(numerator, denominator)
@@ -61,7 +64,7 @@ def formatMathString(givenString):
         nextNextChar = givenString[i+2]
 
       endings = ["=", ")", "+", "}","-"]
-      beginningTags = ["(", "\\"] + [x for x in string.ascii_letters]
+      beginningTags = ["(", "\\","{"] + [x for x in string.ascii_letters]
 
       #+1 and with a proper ending
       #Change + - to just one -
@@ -107,10 +110,24 @@ def formatMathString(givenString):
       else:
         newString += char
         i += 1 
-  
+
+
+    newString = re.sub(r"$1x","x", newString)
+    
+    newString = re.sub(r"\(1x","(x", newString)
+    
+    newString = re.sub(r"=1x","=x", newString)
+
+    newString = re.sub(r"{1x", "{x", newString)
+    print(newString)
+    newString = re.sub(r"x\^1", "x", newString)
+    print("newstring", newString)
     return newString
 
   givenString = format(givenString)
   newString = format(givenString)
+  print(newString)
+  return f"${newString}$"    
 
-  return "$" + newString + "$"    
+def randomBetweenNot(minNum, maxNum, notList=[]):
+  return random.choice([num for num in range(minNum,maxNum+1) if num not in notList])

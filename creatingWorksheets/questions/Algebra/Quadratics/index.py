@@ -109,7 +109,7 @@ class June14Q8(Quadratics):
         c = -e + d**2
 
         self.worksheetQuestion = formatMathString(f"x^2+{b}x+{c}=0")
-        self.worksheetAnswer = formatMathString(f"x=-{d}\pm\sqrt{e}")
+        self.worksheetAnswer = formatMathString(f"x={-d}\pm\sqrt{{{e}}}")
 
         choice1 = formatMathString(f"(x+{d})^2={e}")
         choice2 = formatMathString(f"(x+{-d})^2={e}")
@@ -427,12 +427,12 @@ class June14Q10(Quadratics):
         c = d**2-e**2*f
 
         self.worksheetQuestion = formatMathString(f"{a}x^2+{b}x+{c}=0")
-        self.worksheetAnswer = formatMathString(f"x={d}\pm{e}\sqrt{f}")
+        self.worksheetAnswer = formatMathString(f"x={d}\pm{e}\sqrt{{{f}}}")
 
-        choice1 = formatMathString(f"x={d}\pm{e}\sqrt{f}")
-        choice2 = formatMathString(f"x={-d}\pm{e}\sqrt{f}")
-        choice3 = formatMathString(f"x={d}\pm{2*e}\sqrt{f}")
-        choice4 = formatMathString(f"x={-d}\pm{2*e}\sqrt{f}")
+        choice1 = formatMathString(f"x={d}\pm{e}\sqrt{{{f}}}")
+        choice2 = formatMathString(f"x={-d}\pm{e}\sqrt{{{f}}}")
+        choice3 = formatMathString(f"x={d}\pm{2*e}\sqrt{{{f}}}")
+        choice4 = formatMathString(f"x={-d}\pm{2*e}\sqrt{{{f}}}")
 
         choices = [choice1, choice2, choice3, choice4]
 
@@ -540,12 +540,12 @@ class June15Q23(Quadratics):
         newE = int(chosenPS**(1/2)/2)
         
         self.worksheetQuestion = formatMathString(f"{a}x^2+{b}x={-c}")
-        self.worksheetAnswer = formatMathString(f"x={d}\pm{e}\sqrt{f}")
+        self.worksheetAnswer = formatMathString(f"x={d}\pm{e}\sqrt{{{f}}}")
 
-        choice1 = formatMathString(f"x={d}\pm{e}\sqrt{f}")
-        choice2 = formatMathString(f"x={-d}\pm{e}\sqrt{f}")
-        choice3 = formatMathString(f"x={d}\pm{newE}\sqrt{newF}")
-        choice4 = formatMathString(f"x={-d}\pm{newE}\sqrt{newF}")
+        choice1 = formatMathString(f"x={d}\pm{e}\sqrt{{{f}}}")
+        choice2 = formatMathString(f"x={-d}\pm{e}\sqrt{{{f}}}")
+        choice3 = formatMathString(f"x={d}\pm{newE}\sqrt{{{newF}}}")
+        choice4 = formatMathString(f"x={-d}\pm{newE}\sqrt{{{newF}}}")
 
         choices = [choice1, choice2, choice3, choice4]
 
@@ -578,12 +578,12 @@ class Aug15Q23(Quadratics):
         b = random.choice([x for x in notDivisibleByPerfectSquareList(25) if x != a and x != -a])
         
         self.worksheetQuestion = formatMathString(f"(x+{a})^2={b}")
-        self.worksheetAnswer = formatMathString(f"x={-a}\pm\sqrt{b}")
+        self.worksheetAnswer = formatMathString(f"x={-a}\pm\sqrt{{{b}}}")
 
-        choice1 = formatMathString(f"x={-a}\pm\sqrt{b}")
-        choice2 = formatMathString(f"x={a}\pm\sqrt{b}")
-        choice3 = formatMathString(f"x={-b}\pm\sqrt{a}")
-        choice4 = formatMathString(f"x={b}\pm\sqrt{a}")
+        choice1 = formatMathString(f"x={-a}\pm\sqrt{{{b}}}")
+        choice2 = formatMathString(f"x={a}\pm\sqrt{{{b}}}")
+        choice3 = formatMathString(f"x={-b}\pm\sqrt{{{a}}}")
+        choice4 = formatMathString(f"x={b}\pm\sqrt{{{a}}}")
 
         choices = [choice1, choice2, choice3, choice4]
 
@@ -796,12 +796,12 @@ class June17Q22(Quadratics):
         c = (4*e**2-b**2)//(-4*a)
         
         self.worksheetQuestion = formatMathString(f"{a}x^2+{b}x={-c}")
-        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{e}")
+        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{{{e}}}")
 
-        choice1 = formatMathString(f"{d}\pm\sqrt{e}")
-        choice2 = formatMathString(f"{-d}\pm\sqrt{e}")
-        choice3 = formatMathString(f"{d}\pm\sqrt{-c}")
-        choice4 = formatMathString(f"{-d}\pm\sqrt{-c}")
+        choice1 = formatMathString(f"{d}\pm\sqrt{{{e}}}")
+        choice2 = formatMathString(f"{-d}\pm\sqrt{{{e}}}")
+        choice3 = formatMathString(f"{d}\pm\sqrt{{{-c}}}")
+        choice4 = formatMathString(f"{-d}\pm\sqrt{{{-c}}}")
 
         choices = [choice1, choice2, choice3, choice4]
 
@@ -843,8 +843,8 @@ class Jan18Q14(Quadratics):
 
         choice1 = formatMathString(f"{e-d}") + " and " + formatMathString(f"{-e-d}")
         choice2 = formatMathString(f"{d-e}") + " and " + formatMathString(f"{e+d}")
-        choice3 = formatMathString(f"{d}\pm\sqrt{f*e**2-f}")
-        choice4 = formatMathString(f"{-d}\pm\sqrt{f*e**2-f}")
+        choice3 = formatMathString(f"{d}\pm\sqrt{{{f*e**2-f}}}")
+        choice4 = formatMathString(f"{-d}\pm\sqrt{{{f*e**2-f}}}")
 
         choices = [choice1, choice2, choice3, choice4]
 
@@ -885,7 +885,7 @@ class June18Q12(Quadratics):
         c = p**2 - q
 
         self.worksheetQuestion = formatMathString(f"x^2+{b}x={-c}")
-        self.worksheetAnswer = formatMathString(f"x={-p}\pm\sqrt{q}")
+        self.worksheetAnswer = formatMathString(f"x={-p}\pm\sqrt{{{q}}}")
 
         choice1 = formatMathString(f"{p}")
         choice2 = formatMathString(f"{p**2}")
@@ -933,8 +933,8 @@ class Jan20Q15(Quadratics):
 
         choice1 = formatMathString(f"{e-d}") + " and " + formatMathString(f"{-e-d}")
         choice2 = formatMathString(f"{-e+d}") + " and " + formatMathString(f"{e+d}")
-        choice3 = formatMathString(f"{-d}\pm\sqrt{e**2+f+f}")
-        choice4 = formatMathString(f"{d}\pm\sqrt{e**2+f+f}")
+        choice3 = formatMathString(f"{-d}\pm\sqrt{{{e**2+f+f}}}")
+        choice4 = formatMathString(f"{d}\pm\sqrt{{{e**2+f+f}}}")
 
         choices = [choice1, choice2, choice3, choice4]
 
@@ -1032,7 +1032,6 @@ class June15Q18(Quadratics):
                 if d != 0 and (-e+d**2) != 0 and (-e+d**2) % 4 == 0:
                     deChoices.append([d,e])
         
-        print(deChoices)
         random.shuffle(deChoices)
         d = deChoices[0][0]
         e = deChoices[0][1]
@@ -1270,7 +1269,7 @@ class Aug17Q32(Quadratics):
         c = random.choice([x for x in notDivisibleByPerfectSquareList(25) if (b**2*x-a**2) < 100])
 
         self.worksheetQuestion = formatMathString(f"x^2+{-2*a}x={b**2*c-a**2}")
-        self.worksheetAnswer = formatMathString(f"x={a}\pm{b}\sqrt{c}")
+        self.worksheetAnswer = formatMathString(f"x={a}\pm{b}\sqrt{{{c}}}")
 
         self.assessmentData = [{
             "text": True,
@@ -1340,7 +1339,7 @@ class Aug18Q30(Quadratics):
         e = random.choice(notDivisibleByPerfectSquareList(50))
         
         self.worksheetQuestion = formatMathString(f"x^2+{-2*d}x={e-d**2}")
-        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{e}")
+        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{{{e}}}")
 
         self.assessmentData = [{
             "text": True,
@@ -1408,7 +1407,7 @@ class Jan19Q32(Quadratics):
         e = random.choice([e for e in notDivisibleByPerfectSquareList(15) if e <= e*d**2*f])
         
         self.worksheetQuestion = formatMathString(f"{f}x^2+{g}={f*d**2*e+g}")
-        self.worksheetAnswer = formatMathString(f"x=\pm{d}\sqrt{e}")
+        self.worksheetAnswer = formatMathString(f"x=\pm{d}\sqrt{{{e}}}")
 
         self.assessmentData = [{
             "text": True,
@@ -1470,7 +1469,7 @@ class Aug19Q31(Quadratics):
         d = random.choice(notDivisibleByPerfectSquareList(50))
         
         self.worksheetQuestion = formatMathString(f"{e}x^2-{e*d}=0")
-        self.worksheetAnswer = formatMathString(f"x=\pm\sqrt{d}")
+        self.worksheetAnswer = formatMathString(f"x=\pm\sqrt{{{d}}}")
 
         self.assessmentData = [{
             "text": True,
@@ -1501,7 +1500,7 @@ class Jan20Q31(Quadratics):
         e = random.choice(notDivisibleByPerfectSquareList(50))
         
         self.worksheetQuestion = formatMathString(f"x^2+{-2*d}x+{d**2-e}=0")
-        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{e}")
+        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{{{e}}}")
 
         self.assessmentData = [{
             "text": True,
@@ -1533,7 +1532,7 @@ class Aug14Q32(Quadratics):
         c = d**2-e
 
         self.worksheetQuestion = formatMathString(f"x^2+{-2*d}x+{d**2-e}=0")
-        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{e}")
+        self.worksheetAnswer = formatMathString(f"x={d}\pm\sqrt{{{e}}}")
 
         self.assessmentData = [{
             "text": True,
