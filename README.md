@@ -43,6 +43,8 @@ Tables
 
 \*\*document creation can be stored
 
+eagerSheets.db
+
 Questions -
 id
 Standard
@@ -61,6 +63,11 @@ value
 tooltip
 **if value is bool, assume checkbox
 **if value is not bool, assume group of
+
+dictionary of {idInt: className}
+database holds info including id
+
+gradebook.db
 
 Assignments -
 id
@@ -109,3 +116,11 @@ Behind the Scenes
 -creates worksheets
 
 -node BE for authentication login etc
+
+###Creating Quesitons###
+
+We're going to split questions up by type instead of include them together because most people will be only looking for worksheet questions or test questions
+
+1. Create within subfolder, file etc
+2. Use function to add to database
+3. Add id to dictionary with className
