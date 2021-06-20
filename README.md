@@ -1,20 +1,41 @@
 # bielejec-sheets-be
 
 ##Process
+FE (React)
 
-1. Create python classes in creatingWorksheets/questions
-   -Make sure to add them to the most parent file (createDocument)
-   -export a dictionary of the class (see other files for examples)
+-navbar (login)
 
-2. Knex
-   -migrations should be good for a while, but don't mess up users
-   -seeds get info from classes in updateDatabase.py file
-   -seeds also add a property to link to storage of photo online
+-one page app
 
-3. Image Storage online
-   -createSnippets.py will create the snippets for a particular folder
-   -then manually add those files (id's as names) to the google site
-   -console.cloud.google.com
+-1) Document options
+
+Filling in a small form will store the document options in state for the given user
+
+-2) pick questions
+
+Filter eventually (but for now display all questions)
+
+Store image thumbnails on backend
+
+SQL Grab all questions and kwargs and pictures by id
+
+Render question component (thumbnail with edit for more specifics/+ and int for how many to add
+
+Adding questions add the questions (pushing to the array of in state questions for the document)
+
+3. Review - shows document - can rearrange order etc - multiple versions - create document
+
+-sends data to python BE and sends back pdf
+
+Python BE
+
+/signup
+
+/login
+
+/getQuestionsBy
+
+/createDocument
 
 ##Database planning
 
