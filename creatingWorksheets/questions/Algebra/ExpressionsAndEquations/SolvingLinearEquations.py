@@ -118,11 +118,12 @@ class OneStepEquationWorksheet(SolvingLinearEquations):
 
     self.worksheetDirections = f"Solve for {variable}"
 
-class TwoStepEquation():
+class TwoStepEquationWorksheet(SolvingLinearEquations):
   def __init__(self, firstStep="add", secondStep="multiply", difficulty=1):
+    super().__init__()
     self.kwargs = {"firstStep":["add","subtract"], "secondStep":["multiply", "divide"], "difficulty":[1,2,3]}
-    self.skills = ["Solve 1-step Equations"]
-    self.id = "OneStepEquation"
+    self.toolTips = {"firstStep":{"add": "1st operation to solve","subtract": "1st operation to solve"}, "secondStep":{"multiply": "2nd operation to solve", "divide": "2nd operation to solve"}, "difficulty":{1:"ax+b=c",2:"includes negative numbers and fractions",3:"b+ax=c"}}
+    self.id = "TwoStepEquationWorksheet"
     """
     2 step equations
     add/subtract# divide/multiply
@@ -157,11 +158,9 @@ class TwoStepEquation():
             self.worksheetQuestion = formatMathString(f"{b}+{a}{var}={c}")
         else:
             self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}")
-        choices = [f"{ans}", f"{toLatexFraction(c+b,a)}", f"{(c-b)*a}", f"{(c+b)*a}" ]
 
     elif secondStep == "multiply":
         if difficulty == 1:
-            print(ans)
             a = random.choice([num for num in range(-10,11) if num not in [-1,0,1] and ans % num == 0])
         else:
             a = random.choice([num for num in range(-10,-1) if ans % num == 0])
@@ -170,18 +169,14 @@ class TwoStepEquation():
             self.worksheetQuestion = formatMathString(fr"{b}+\frac{{{var}}}{{{a}}}={c}")
         else:
             self.worksheetQuestion = formatMathString(fr"\frac{{{var}}}{{{a}}}+{b}={c}")
-        choices = [f"{ans}", f"{toLatexFraction(c-b,a)}", f"{toLatexFraction(c+b,a)}", f"{(c+b)*a}" ]
 
-    self.answer = self.worksheetAnswer
-    self.assessmentData = [
-        {"text": True, "data": f"What is the solution to {self.worksheetAnswer}?"}, {"multipleChoice": True, "data": choices}
-    ]
-
-class VariableOnBothSidesEquation():
+class VariableOnBothSidesEquationWorksheet(SolvingLinearEquations):
   def __init__(self, difficulty=1):
+    super().__init__()
     self.kwargs = {"difficulty":[1,2,3]}
-    self.skills = ["Solve Equations with the variable on both sides"]
-    self.id = "VariableOnBothSidesEquation"
+    self.toolTips = {"difficulty":{1:"ax+b=cx",2:"ax+b=cx+d",3:"fractions in answer"}}
+    self.id = "VariableOnBothSidesEquationWorksheet"
+    self.subSkill = "Solve equations with variables on both sides"
     """
     x on both sides equations
     # on both sides equations
@@ -201,7 +196,6 @@ class VariableOnBothSidesEquation():
         b = -1*ans*(a-c)
         self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}{var}")
         self.worksheetAnswer = formatMathString(fr"{var}={ans}")
-        choices = [formatMathString(f"{ans}"), f"{toLatexFraction(b,a-c)}", f"{toLatexFraction(c-b,a)}", f"{-ans}"]
     elif difficulty == 2:
         a = random.choice([num for num in range(-10,11) if num not in [0]])
         c = random.choice([num for num in range(-10,11) if a-num not in [-1,0,1] and num not in [0]])
@@ -210,7 +204,6 @@ class VariableOnBothSidesEquation():
         d = bdDifference + b
         self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
         self.worksheetAnswer = formatMathString(fr"{var}={ans}")
-        choices = [formatMathString(f"{ans}"), f"{toLatexFraction(d+b,a-c)}", f"{toLatexFraction(d-b,a+c)}", f"{-ans}"]
     elif difficulty == 3:
         denos = []
         for ansNum in range(-20,21):
@@ -228,17 +221,14 @@ class VariableOnBothSidesEquation():
         a = ansDenom + c
         self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
         self.worksheetAnswer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
-        choices = [formatMathString(fr"\frac{{{ansNum}}}{{{ansDenom}}}"), f"{toLatexFraction(ansDenom, ansNum)}", f"{toLatexFraction(d-b,a+c)}", f"{toLatexFraction(d+b,a-c)}"]
 
-    self.assessmentData = [{"text": True, "data": f"What are the solutions to {self.worksheetQuestion}?"}, {"multipleChoice": True, "data": choices}]
-
-    self.answer = self.worksheetAnswer
-
-class DistributeEquation():
+class DistributeEquationWorksheet(SolvingLinearEquations):
   def __init__(self, difficulty=1):
+    super().__init__()
     self.kwargs = {"difficulty":[1,2,3]}
-    self.skills = ["Solve Equations with the variable on both sides"]
-    self.id = "VariableOnBothSidesEquation"
+    self.toolTips = {"difficulty": {1:"a(bx+c)=d", 2:"a(bx+c)=dx", 3:"a(bx+c)=d(ex+f)"}}
+    self.subSkill = "Use the Distributive Property"
+    self.id = "DistributeEquationWorksheet"
     """
     a(bx+c) = d diff1 -> abx + ac = d -> (d-ac)/(ab) = ans
     a(bx+c) = dx diff2 -> abx + ac = dx -> (ab-d)x = ac -> ac/(ab-d) = ans
@@ -255,7 +245,6 @@ class DistributeEquation():
         c = random.choice([num for num in range(-10,11) if num not in [0]])
         d = a*(b*ans+c)
         self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})={d}")
-        choices = [formatMathString(f"{ans}"), f"{(d-a*c)*a*b}", f"{toLatexFraction(d-c,a*b)}", f"{-ans}"]
         self.worksheetAnswer = formatMathString(f"{var}={ans}")
 
     elif difficulty == 2:
@@ -269,7 +258,7 @@ class DistributeEquation():
                             if b not in [0] and ans not in [0] and d not in [0] and a not in [0] and c not in [0] and a*b*ans+a*c == d*ans:
                                 choices.append([a,b,d,ans,c])
         random.shuffle(choices)
-        print(choices)
+
         a = choices[0][0]
         b = choices[0][1]
         d = choices[0][2]
@@ -281,7 +270,6 @@ class DistributeEquation():
         c = int(product/-a)
         
         self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})={d}{var}")
-        choices = [formatMathString(f"{ans}"), f"{(d-a*c)*a*b}", f"{toLatexFraction(d-c,a*b)}", f"{-ans}"]
         self.worksheetAnswer = formatMathString(f"{var}={ans}")
 
     elif difficulty == 3:
@@ -308,213 +296,3 @@ class DistributeEquation():
                 co = -1
             self.worksheetAnswer = formatMathString(fr"{var}=\frac{{{co*abs(ansNum)}}}{{{abs(ansDenom)}}}")
         self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})={d}({e}{var}+{f})")
-        choices = [formatMathString(f"{ans}"), f"{(d*f-a*c)*(a*b-d*e)}", f"{toLatexFraction(d*f-a*c,a*b+d*e)}", f"{-ans}"]
-
-    self.answer = self.worksheetAnswer
-    self.assessmentData = [{"text": True, "data": f"What are the solutions to {self.worksheetQuestion}?"}, {"multipleChoice": True, "data": choices}]
-
-class FractionEquation():
-  def __init__(self, difficulty=1):
-    self.kwargs = {"difficulty":[1,2,3]}
-    self.skills = ["Solve Equations with 2 or more fractions"]
-    self.id = "FractionEquation"
-    """
-    diff1 - two fractions
-    diff2 - three fraction int answer
-    diff3 - three fractions fractional answer
-    """
-    #x+a=b
-    var = "x"
-
-    if difficulty == 1:
-        correct = False
-        while not correct:
-            p1 = random.choice([num for num in range(2,10) if num not in [0]])
-            p2 = random.choice([num for num in range(2,10) if num not in [0,p1,-p1]])
-            p3 = 1
-
-            product = p1*p2*p3
-
-            #ax + b = c
-            a = random.choice([num for num in range(-20,21) if num != 0 and num % p1 != 0])
-            b = random.choice([num for num in range(-20,21) if num != 0 and num % p2 != 0])
-            c = random.choice([num*p3 for num in range(-10,10) if num not in [0]])
-
-            #ax/product + b/product = c/product
-
-            aFrac = Fraction(a,p1)
-            bFrac = Fraction(b,p2)
-            cFrac = Fraction(c,p3)
-            #a/p1 x + b/p2 = c/p3
-            #p2p3a x + p1p3b = p1p2c
-            #(p1p2c-p1p3b)/(p2p3a)
-
-            ansFrac = Fraction(p1*p2*c-p1*p3*b,p2*p3*a)
-            ansDeno = ansFrac.denominator
-
-            if ansDeno == 1 and bFrac.denominator != aFrac.denominator:
-                correct = True
-
-        self.worksheetQuestion = formatMathString(f"{toLatexFraction(aFrac.numerator, aFrac.denominator)}{var}+{toLatexFraction(bFrac.numerator, bFrac.denominator)}={cFrac.numerator}")
-        self.answer = formatMathString(f"{ansFrac.numerator}")
-        # choices = [formatMathString(f"{ans}"), f"{(d-a*c)*a*b}", f"{toLatexFraction(d-c,a*b)}", f"{-ans}"]
-        self.worksheetAnswer = formatMathString(f"{var}={ansFrac.numerator}")
-
-    elif difficulty == 2:
-        denominatorsOne = False
-        while not denominatorsOne:
-            p1 = random.choice([num for num in range(2,10) if num not in [0]])
-            p2 = random.choice([num for num in range(2,10) if num not in [0,p1]])
-            p3 = random.choice([num for num in range(2,10) if num not in [0,p1,p2]])
-
-            product = p1*p2*p3
-
-            a = random.choice([num for num in range(-20,21) if num not in [0] and num % p1 != 0])
-            b = random.choice([num for num in range(-20,21) if num != 0 and num % p2 != 0])
-            c = random.choice([num for num in range(-20,21) if num != 0 and num % p3 != 0])
-
-            #ax/product + b/product = c/product
-
-            aFrac = Fraction(a,p1)
-            bFrac = Fraction(b,p2)
-            cFrac = Fraction(c,p3)
-            #a/p1 x + b/p2 = c/p3
-            #p2p3a x + p1p3b = p1p2c
-            #(p1p2c-p1p3b)/(p2p3a)
-
-            ansFrac = Fraction(p1*p2*c-p1*p3*b,p2*p3*a)
-            ansDeno = ansFrac.denominator
-            aDeno = aFrac.denominator
-            bDeno = bFrac.denominator
-            cDeno = cFrac.denominator
-            print(ansDeno, aDeno, bDeno, cDeno)
-            if aDeno != 1 and bDeno != 1 and cDeno != 1 and ansDeno == 1:
-                denominatorsOne = True
-
-        self.worksheetQuestion = formatMathString(f"{toLatexFraction(aFrac.numerator, aFrac.denominator)}{var}+{toLatexFraction(bFrac.numerator, bFrac.denominator)}={toLatexFraction(cFrac.numerator, cFrac.denominator)}")
-        self.answer = formatMathString(f"{ansFrac.numerator}")
-        # choices = [formatMathString(f"{ans}"), f"{(d-a*c)*a*b}", f"{toLatexFraction(d-c,a*b)}", f"{-ans}"]
-        self.worksheetAnswer = formatMathString(f"{var}={ansFrac.numerator}")
-
-    elif difficulty == 3:
-        denominatorsOne = False
-        while not denominatorsOne:
-            p1 = random.choice([num for num in range(2,10) if num not in [0]])
-            p2 = random.choice([num for num in range(2,10) if num not in [0,p1]])
-            p3 = random.choice([num for num in range(2,10) if num not in [0,p1,p2]])
-
-            product = p1*p2*p3
-
-            a = random.choice([num for num in range(-20,21) if num not in [0] and num % p1 != 0])
-            b = random.choice([num for num in range(-20,21) if num != 0 and num % p2 != 0])
-            c = random.choice([num for num in range(-20,21) if num != 0 and num % p3 != 0])
-
-            #ax/product + b/product = c/product
-
-            aFrac = Fraction(a,p1)
-            bFrac = Fraction(b,p2)
-            cFrac = Fraction(c,p3)
-            #aN/aD x + bN/bD = cN/cD
-            #aNbDcD x + bNaDcD = cNaDbN
-            #
-
-            ansFracN = cFrac.numerator * aFrac.denominator * bFrac.denominator - bFrac.numerator * aFrac.denominator * cFrac.denominator
-            ansFracD = aFrac.numerator * bFrac.denominator * cFrac.denominator
-            ansFrac = Fraction(ansFracN,ansFracD)
-            ansDeno = ansFrac.denominator
-            aDeno = aFrac.denominator
-            bDeno = bFrac.denominator
-            cDeno = cFrac.denominator
-            print(ansDeno, aDeno, bDeno, cDeno)
-            #Denominator makes it a fraction
-            if aDeno != 1 and bDeno != 1 and cDeno != 1 and ansDeno != 1:
-                denominatorsOne = True
-
-        #Change order of x in first or second spotq
-        order = random.randint(1,2)
-        if order == 1:
-            self.worksheetQuestion = formatMathString(f"{toLatexFraction(aFrac.numerator, aFrac.denominator)}{var}+{toLatexFraction(bFrac.numerator, bFrac.denominator)}={toLatexFraction(cFrac.numerator, cFrac.denominator)}")
-        else:
-            self.worksheetQuestion = formatMathString(f"{toLatexFraction(bFrac.numerator, bFrac.denominator)}+{toLatexFraction(aFrac.numerator, aFrac.denominator)}{var}={toLatexFraction(cFrac.numerator, cFrac.denominator)}")
-        self.answer = formatMathString(f"{toLatexFraction(ansFracN, ansFracD, simplified=False)}={toLatexFraction(ansFracN,ansFracD)}")
-        # choices = [formatMathString(f"{ans}"), f"{(d-a*c)*a*b}", f"{toLatexFraction(d-c,a*b)}", f"{-ans}"]
-        self.worksheetAnswer = formatMathString(f"{var}={toLatexFraction(ansFracN,ansFracD, simplified=False)}={toLatexFraction(ansFracN, ansFracD)}")
-
-    self.answer = self.worksheetAnswer
-    # self.assessmentData = [{"text": True, "data": f"What are the solutions to {self.worksheetQuestion}?"}, {"multipleChoice": True, "data": choices}]
-
-class LikeTermsEquation():
-  def __init__(self, difficulty=1, termToCombine=1):
-    #1 is var, 2 is num
-    self.kwargs = {"difficulty": [1,2,3], "termToCombine": [1,2]}
-    var = "x"
-
-    if difficulty == 1:
-      if termToCombine == 1:
-        #We'll combine the x's
-        #ax + bx = c
-        x = randomBetweenNot(-10,10,[0])
-        a = randomBetweenNot(-10,10,[0])
-        b = randomBetweenNot(-10,10,[0,-a])
-        c = a*x + b*x
-
-        self.worksheetQuestion = formatMathString(f"{a}{var}+{b}{var}={c}")
-        self.worksheetAnswer = formatMathString(f"{var}={x}")
-      else:
-        #We'll combine the number
-        #a + b = cx
-        x = randomBetweenNot(-10,10,[0])
-        c = randomBetweenNot(-10,10,[0])
-        b = randomBetweenNot(-10,10,[0])
-        a = c*x - b
-
-        self.worksheetQuestion = formatMathString(f"{a}+{b}={c}{var}")
-        self.worksheetAnswer = formatMathString(f"{var}={x}")
-    elif difficulty == 2:
-      if termToCombine == 1:
-        #ax+bx+c=dx+ex
-        #(a+b-d-e)x = -c
-        x = randomBetweenNot(-10,10,[0])
-        a = randomBetweenNot(-10,10,[0])
-        b = randomBetweenNot(-10,10,[0])
-        
-        d = randomBetweenNot(-10,10,[0])
-        e = randomBetweenNot(-10,10,[0,(a+b-d)])
-        
-        c = (a+b-d-e)*x*-1
-        
-        self.worksheetQuestion = formatMathString(f"{a}{var}+{b}{var}+{c}={d}{var}+{e}{var}")
-        self.worksheetAnswer = formatMathString(f"{var}={x}")
-      else:
-        #a+b+cx=d+e+fx
-        #(a+b-d-e) = (-c+f)x
-        x = randomBetweenNot(-10,10,[0])
-        f = randomBetweenNot(-10,10,[0])
-        c = randomBetweenNot(-10,10,[0,f])
-        
-        d = randomBetweenNot(-10,10,[0])
-        e = randomBetweenNot(-10,10,[0])
-        a = randomBetweenNot(-10,10,[0])
-        b = (-c+f)*x - a + d + e
-
-        c = (a+b-d-e)*x*-1
-        
-        self.worksheetQuestion = formatMathString(f"{a}+{b}+{c}{var}={d}+{e}+{f}{x}")
-        self.worksheetAnswer = formatMathString(f"{var}={x}")        
-    else:
-      #distribute twice on one side
-      #a(bx+c)+d(ex+f)=g
-      x = randomBetweenNot(-10,10,[0])
-      a = randomBetweenNot(-10,10,[0,1])
-      b = randomBetweenNot(-10,10,[0])
-      c = randomBetweenNot(-10,10,[0])
-      
-      d = randomBetweenNot(-10,10,[0,1])
-      e = randomBetweenNot(-10,10,[0])
-      f = randomBetweenNot(-10,10,[0])
-      
-      g = a*(b*x+c) + d*(e*x+f)
-      
-      self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})+{d}({e}{var}+{f})={g}")
-      self.worksheetAnswer = formatMathString(f"{var}={x}")
-    self.answer = self.worksheetAnswer

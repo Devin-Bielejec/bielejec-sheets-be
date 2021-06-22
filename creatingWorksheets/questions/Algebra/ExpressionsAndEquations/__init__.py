@@ -1,5 +1,8 @@
-from .SolvingLinearEquations import OneStepEquationWorksheet
+from .SolvingLinearEquations import OneStepEquationWorksheet, TwoStepEquationWorksheet, VariableOnBothSidesEquationWorksheet, DistributeEquationWorksheet
 
 expressionsAndEquationsQuestionsDict = {
-    "OneStepEquationWorksheet": OneStepEquationWorksheet
+    "OneStepEquationWorksheet": OneStepEquationWorksheet,
+    "TwoStepEquationWorksheet": TwoStepEquationWorksheet,
+    "VariableOnBothSidesEquationWorksheet": VariableOnBothSidesEquationWorksheet,
+    "DistributeEquationWorksheet": DistributeEquationWorksheet
 }

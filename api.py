@@ -2,6 +2,7 @@ from flask import Flask, g
 from flask_restful import Resource, Api
 from requests import put, get
 import sqlite3
+from flask_cors import CORS
 
 DATABASE = 'eagerSheets.db'
 
@@ -22,6 +23,7 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 class Questions(Resource):
@@ -48,12 +50,12 @@ class Questions(Resource):
             d["kwargs"] = {}
             for row in kwargs:
                 key = row[1]
+                if not key in d["kwargs"]:
+                    d["kwargs"][key] = {}
                 value = row[2]
                 toolTip = row[3]
-                if key in d["kwargs"]:
-                    d["kwargs"][key].append({"value": value, "toolTip": toolTip})
-                else:
-                    d["kwargs"][key] = [{"value": value, "toolTip": toolTip}]
+                d["kwargs"][key][value] = {"value": value, "toolTip": toolTip}
+                
             
             questionsDicts.append(d)
 
