@@ -23,7 +23,7 @@ class OneStepEquationWorksheet(SolvingLinearEquations):
     self.notes = ""
     #x+a=b
     var = variable
-
+    print(firstStep, difficulty, variable)
     if firstStep == "subtract":
         #whole number b - a easy subtraction
         if difficulty == 1:
