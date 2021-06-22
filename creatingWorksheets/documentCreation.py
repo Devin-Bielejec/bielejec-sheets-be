@@ -8,8 +8,8 @@ import time
 import random
 import os
 import sys
-sys.path.append('./utils/')
-from questionFormatting import multipleChoice
+# sys.path.append('./utils/')
+# from questionFormatting import multipleChoice
     
 def createDocument(
 	path="/", 
@@ -228,8 +228,7 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 	createPDF(worksheet=worksheet, path="pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns)
 	
 
-def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
-	print(path, nameOfDoc, questions)
+def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', questionClass = "", questionKwargs = {}):
 	#This is for displaying a single question, so it can them be converted to an image.
 	doc = Document(documentclass='standalone', indent=False, font_size=font)
 
@@ -271,10 +270,37 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'no
 	# doc.change_document_style("header")    
 
 	#Add instance of question from questions list
-	question = questions[0]
-	question.addQuestion(doc = doc)
+		#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
+	if questionKwargs:
+		questionInstance = questionClass(**questionKwargs)
+	else:
+		questionInstance = questionClass()
 
-	print(nameOfDoc)
+	print(questionInstance.skill)
+	#.answer means it's not a worksheet
+	if hasattr(questionInstance, "answer"):
+		#Each question has a list of dictionaries called assessmentData
+		for questionPartsIndex, questionParts in enumerate(questionInstance.assessmentData, start=0):
+			if "text" in questionParts:
+				doc.append(NoEscape(questionParts["data"]))
+			if "multipleChoice" in questionParts:
+				correctAnswerNum = multipleChoice(choices = questionParts["data"], doc = doc)
+
+			#Add new line inbetween
+			doc.append(NewLine())
+
+	else:
+		#Allow worksheets to have different parts
+		if type(questionInstance.worksheetQuestion) == list:
+			#TEMP for now
+			with doc.create(Center()):
+				for part in question.worksheetQuestion:
+					doc.append(NoEscape(part["data"]))
+					doc.append(NewLine())
+		else:
+			doc.append(NoEscape(questionInstance.worksheetQuestion))
+
+			
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 	
 def addHeader(doc = None, nameOfDoc = "Default"):
