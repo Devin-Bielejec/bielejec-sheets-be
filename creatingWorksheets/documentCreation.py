@@ -8,6 +8,8 @@ import time
 import random
 import os
 import sys
+from importlib import import_module
+import questions
 # sys.path.append('./utils/')
 # from questionFormatting import multipleChoice
     
@@ -64,36 +66,45 @@ def createDocument(
 	
 	return doc
 
+
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
 	#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
 	answerKeyVersions = []
 
-	print("before outer loop versionQuestions", versionQuestions)
+	curDirections = None
+
+	#Loop through each set of questions representing each version	
 	for i, version in enumerate(versionQuestions, start=0):
 		#Version is a list of questions
 		answerKeyQuestions = []
+		
 		#Question is the question from that specific version
 		for j, question in enumerate(versionQuestions[i], start=0):
-			print(f"Version{i}: Question {j+1}")
+
 			#Force first line to not indent
 			if i == 0:
 				doc.append(Command("noindent"))
 			
 			correctAnswerNum = None
 
+			#If Directions, create new line, add directions
+			if question.directions and question.directions != curDirections:
+				doc.append(NewLine())
+				doc.append(NoEscape(question.directions))
+				
 			with doc.create(MiniPage(width=fr"{1/columns}\textwidth")):
 				#Add Question Number
 				doc.append(NoEscape(f"({j+1}) "))
-
-				if worksheet == False:
-					#Each question has a list of dictionaries called assessmentData
-					for questionPartsIndex, questionParts in enumerate(question.assessmentData, start=0):
+				
+				#If question contains multiple parts
+				if type(question.question) == list:
+					for questionPartsIndex, questionParts in enumerate(question.question, start=0):
 						if "text" in questionParts:
-							doc.append(NoEscape(questionParts["data"]))
+							doc.append(NoEscape(questionParts["text"]))
 						if "multipleChoice" in questionParts:
-							correctAnswerNum = multipleChoice(choices = questionParts["data"], doc = doc)
+							correctAnswerNum = multipleChoice(choices = questionParts["multipleChoice"], doc = doc)
 
 						#Add new line inbetween
 						doc.append(NewLine())
@@ -101,16 +112,9 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 					#Add answer to answerKey
 					answerKeyQuestions.append(correctAnswerNum)
 				else:
-					#Allow worksheets to have different parts
-					if type(question.worksheetQuestion) == list:
-						#TEMP for now
-						with doc.create(Center()):
-							for part in question.worksheetQuestion:
-								doc.append(NoEscape(part["data"]))
-								doc.append(NewLine())
-					else:
-						doc.append(NoEscape(question.worksheetQuestion))
-
+					#question is a single string
+					doc.append(NoEscape(question.question))
+					
 			if (j+1) % columns == 0:
 				#Example: 3 columns, we only have to add vertical space when we're on the 3rd question (i+1) for Q Number
 				#would add vertical space here
@@ -205,15 +209,24 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 				#If finite number of versions, this will prevent infinite loop
 				if loop == 100:
 					break
-				instance = questionsDict[questionID](**kwargs)
+
+				#Get class from file based on integer id
+				mod = import_module(f"questions.{questionID}")
+       			class_ = getattr(mod, f"_{questionID}")
+				instance = class_(**kwargs)
 
 				question = ""
+
+				#For duplicates and questions with multiple parts - only look at text parts
 				if type(instance.worksheetQuestion) == list:
 					for part in instance.worksheetQuestion:
-						question += part["data"]
+						if "text" in part:
+							question += part["data"]
 				else:
 					question = instance.worksheetQuestion
+				
 				print(question)
+				
 				if question+questionID not in hash:
 					print("not in hash", question)
 					hash[question+questionID] = True
