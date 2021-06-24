@@ -1,37 +1,15 @@
-class findCubeVolume(): #need to fix answer key!!!!!!!!! self.l... and docs etc
-	def __init__(self, default = False, wholeFigureRotation = 0, sideLabeledOnDiagram = True, rounding = ['whole number', 'tenth', 'hundredth', 'thousandth'], pictureDrawn = True, option = ['Cube'], partsGivenInWords = True):
+class _5():
+	def __init__(self, wholeFigureRotation = 0, sideLabeledOnDiagram = True, rounding = "whole number", pictureDrawn = True,  partsGivenInWords = True):
 		#Oblique
+        self.kwargs = {"wholeFigureRotation": [0, 90], "edgeLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "edgeGivenInWords": True}
+        self.toolTips = {
+                    "wholeFigureRotation": {0: "normal orientation", 90: "turned on side"}, 
+                    "edgeLabeled": "Edge of Cube is labeled", 
+                    "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth"}, 
+                    "pictureDrawn": "Picture is drawn", 
+                    "edgeGivenInWords": "Edge length described in question"}
 
-		if default == True:
-			self.wholeFigureRotation = 0
-			
-			self.sideLabeledOnDiagram = True
-
-			self.rounding = ['whole number']
-			self.pictureDrawn = True
-			self.option = ['Cube']
-			self.partsGivenInWords = True
-		else:
-			self.defaultKwargs = {'default':False, 
-			'wholeFigureRotation':0, 
-
-			'sideLabeledOnDiagram':True, 
-			'rounding':['whole number', 'tenth', 'hundredth', 'thousandth'],
-			'pictureDrawn':True,
-			'option':['Cube'],
-			'partsGivenInWords':True}
-
-			self.wholeFigureRotation = wholeFigureRotation
-			self.rounding = rounding
-			self.pictureDrawn = pictureDrawn
-			self.option = option
-			self.partsGivenInWords = partsGivenInWords
-
-			self.sideLabeledOnDiagram = sideLabeledOnDiagram
-
-		self.topics = ['3D']
-		self.skills = ['Determine the volume of a cube']
-		self.ID = self.topics[0] + 'determineVolumeCube'
+		
 
 	def addQuestion(self, doc = None):
 		roundingChosen = random.choice(self.rounding)

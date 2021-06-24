@@ -184,7 +184,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 
-def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False, questionsDict=[]):
+def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False):
 	#Attempt for no duplicates
 	hash = {}
 	defaultDocName = documentOptions["nameOfDoc"]
