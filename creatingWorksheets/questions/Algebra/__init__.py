@@ -1,3 +1,0 @@
-from .ExpressionsAndEquations import expressionsAndEquationsQuestionsDict
-
-questionsDict = {**expressionsAndEquationsQuestionsDict}

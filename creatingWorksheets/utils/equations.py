@@ -119,14 +119,14 @@ def formatMathString(givenString):
     newString = re.sub(r"=1x","=x", newString)
 
     newString = re.sub(r"{1x", "{x", newString)
-    print(newString)
+
     newString = re.sub(r"x\^1", "x", newString)
-    print("newstring", newString)
+
     return newString
 
   givenString = format(givenString)
   newString = format(givenString)
-  print(newString)
+
   return f"${newString}$"    
 
 def randomBetweenNot(minNum, maxNum, notList=[]):
