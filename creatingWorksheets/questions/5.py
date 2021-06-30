@@ -1,11 +1,10 @@
 import random
 
 class _5():
-	def __init__(self, wholeFigureRotation = 0, sideLabeledOnDiagram = True, rounding = "whole number", pictureDrawn = True,  edgeGivenInWords = True):
+	def __init__(self, sideLabeledOnDiagram = True, rounding = "whole number", pictureDrawn = True,  edgeGivenInWords = True):
 		#Oblique
-		self.kwargs = {"wholeFigureRotation": [0, 90], "edgeLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "edgeGivenInWords": True}
+		self.kwargs = {"edgeLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "edgeGivenInWords": True}
 		self.toolTips = {
-                    "wholeFigureRotation": {0: "normal orientation", 90: "turned on side"}, 
                     "edgeLabeled": "Edge of Cube is labeled", 
                     "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth"}, 
                     "pictureDrawn": "Picture is drawn", 
@@ -43,7 +42,7 @@ class _5():
 			self.question = [
 			{"text": introString},
 			{"picture": {
-				"cube": {"wholeFigureRotation": wholeFigureRotation, "sideLabeledOnDiagram": sideLabeledOnDiagram, "sideValue": side}
+				"cube": {"wholeFigureRotation": 0, "sideLabeledOnDiagram": sideLabeledOnDiagram, "sideValue": side}
 			}}
 		]
 		else:

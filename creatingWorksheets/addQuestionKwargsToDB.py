@@ -13,6 +13,12 @@ def addQuestionKwargsToDB():
     cur.execute("SELECT id FROM questions")
     ids = [i[0] for i in cur.fetchall()]
 
+    cur.execute("SELECT questionID FROM questionsKwargs")
+    idsFromKwargs = [i[0] for i in cur.fetchall()]
+    print(ids)
+    
+    print(idsFromKwargs)
+    ids = [x for x in ids if x not in idsFromKwargs]
     print(ids)
 
     #instantiate class instances to get kwargs and toolTips
@@ -20,7 +26,6 @@ def addQuestionKwargsToDB():
         print(_id)
         mod = import_module(f"questions.{_id}")
         class_ = getattr(mod, f"_{_id}")
-
         i = class_()
 
         for key in i.kwargs:
@@ -37,8 +42,7 @@ def addQuestionKwargsToDB():
             else:
                 cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)", (_id,key,i.kwargs[key],i.toolTips[key]))
 
-        if _id == "6":
-            createSnippet(_id, class_, {})
+        createSnippet(_id, class_, {})
 
     # # Save (commit) the changes
     db.commit()
