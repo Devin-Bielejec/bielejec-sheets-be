@@ -10,3 +10,7 @@ self.question
 -string
 -List of dict
 [{"text":"blah blah"},{"picture":}]
+
+self.answer
+
+self.directions (if for worksheet)

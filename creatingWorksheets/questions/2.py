@@ -27,8 +27,8 @@ class _2():
 
     ans = random.choice([num for num in range(-10,11) if num not in [-1,0,1]])
 
-    self.worksheetAnswer = formatMathString(f"{var}={ans}")
-
+    self.answer = formatMathString(f"{var}={ans}")
+    self.directions = f"Solve for {var}"
     if firstStep == "subtract":
         b = random.randint(1,10)
     elif firstStep == "add":
@@ -42,9 +42,9 @@ class _2():
 
         c = ans*a+b
         if difficulty == 3:
-            self.worksheetQuestion = formatMathString(f"{b}+{a}{var}={c}")
+            self.question = formatMathString(f"{b}+{a}{var}={c}")
         else:
-            self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}")
+            self.question = formatMathString(f"{a}{var}+{b}={c}")
 
     elif secondStep == "multiply":
         if difficulty == 1:
@@ -53,6 +53,6 @@ class _2():
             a = random.choice([num for num in range(-10,-1) if ans % num == 0])
         c = int(ans/a)+b
         if difficulty == 3:
-            self.worksheetQuestion = formatMathString(fr"{b}+\frac{{{var}}}{{{a}}}={c}")
+            self.question = formatMathString(fr"{b}+\frac{{{var}}}{{{a}}}={c}")
         else:
-            self.worksheetQuestion = formatMathString(fr"\frac{{{var}}}{{{a}}}+{b}={c}")
+            self.question = formatMathString(fr"\frac{{{var}}}{{{a}}}+{b}={c}")

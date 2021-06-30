@@ -25,8 +25,8 @@ class _4():
         b = random.choice([num for num in range(-10,11) if num not in [0]])
         c = random.choice([num for num in range(-10,11) if num not in [0]])
         d = a*(b*ans+c)
-        self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})={d}")
-        self.worksheetAnswer = formatMathString(f"{var}={ans}")
+        self.question = formatMathString(f"{a}({b}{var}+{c})={d}")
+        self.answer = formatMathString(f"{var}={ans}")
 
     elif difficulty == 2:
         #abx+ac = dx, abx - dx = -ac, so define a,b,d,answer
@@ -50,8 +50,8 @@ class _4():
         product = a*b*ans - d*ans
         c = int(product/-a)
         
-        self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})={d}{var}")
-        self.worksheetAnswer = formatMathString(f"{var}={ans}")
+        self.question = formatMathString(f"{a}({b}{var}+{c})={d}{var}")
+        self.answer = formatMathString(f"{var}={ans}")
 
     elif difficulty == 3:
         #a(bx+c) = d(ex+f)
@@ -66,7 +66,7 @@ class _4():
         ansNum = d*f-a*c
         ansDenom = a*b-d*e
         if ansNum % ansDenom == 0:
-            self.worksheetAnswer = formatMathString(f"{var}={int(ansNum/ansDenom)}")
+            self.answer = formatMathString(f"{var}={int(ansNum/ansDenom)}")
         else:
 
             if ansNum < 0 and ansDenom < 0:
@@ -75,5 +75,7 @@ class _4():
                 co = 1
             else:
                 co = -1
-            self.worksheetAnswer = formatMathString(fr"{var}=\frac{{{co*abs(ansNum)}}}{{{abs(ansDenom)}}}")
-        self.worksheetQuestion = formatMathString(f"{a}({b}{var}+{c})={d}({e}{var}+{f})")
+            self.answer = formatMathString(fr"{var}=\frac{{{co*abs(ansNum)}}}{{{abs(ansDenom)}}}")
+        self.question = formatMathString(f"{a}({b}{var}+{c})={d}({e}{var}+{f})")
+    
+    self.directions = f"Solve for {var}"

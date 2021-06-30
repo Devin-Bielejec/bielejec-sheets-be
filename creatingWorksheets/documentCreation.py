@@ -10,8 +10,9 @@ import os
 import sys
 from importlib import import_module
 import questions
-# sys.path.append('./utils/')
-# from questionFormatting import multipleChoice
+sys.path.append('./utils/')
+from utils.questionFormatting import multipleChoice
+from utils.shapes import cube, rectangularPrism
     
 def createDocument(
 	path="/", 
@@ -66,6 +67,37 @@ def createDocument(
 	
 	return doc
 
+def handleQuestionPart(doc, questionPart):
+	# {"text": "followingText"
+	# {"multipleChoice": choices}
+
+	if "text" in questionPart:
+		doc.append(NoEscape(questionPart["text"]))
+	elif "multipleChoice" in questionPart:
+		correctAnswerNum = multipleChoice(choices = questionPart["multipleChoice"], doc = doc)
+	elif "picture" in questionPart:
+		dicty = questionPart["picture"]
+		if "cube" in dicty:
+			kwargs = dicty["cube"]
+			with doc.create(Center()):
+				cube(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					sideLabeledOnDiagram = kwargs["sideLabeledOnDiagram"], 
+					sideValue = kwargs["sideValue"])
+		elif "rectangular prism" in dicty:
+			kwargs = dicty["rectangular prism"]
+			print(kwargs)
+			with doc.create(Center()):
+				rectangularPrism(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					heightLabeledOnDiagram = kwargs["diagramLabeled"], 
+					widthLabeledOnDiagram = kwargs["diagramLabeled"],
+					lengthLabeledOnDiagram = kwargs["diagramLabeled"], 
+					heightValue = kwargs["height"],
+					widthValue = kwargs["width"],
+					lengthValue = kwargs["length"],
+					baseRotation = kwargs["baseRotation"])
+
 
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
@@ -90,9 +122,10 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 			correctAnswerNum = None
 
 			#If Directions, create new line, add directions
-			if question.directions and question.directions != curDirections:
+			if hasattr(question, "directions") and question.directions != curDirections:
 				doc.append(NewLine())
 				doc.append(NoEscape(question.directions))
+				curDirections = question.directions
 				
 			with doc.create(MiniPage(width=fr"{1/columns}\textwidth")):
 				#Add Question Number
@@ -100,15 +133,9 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 				
 				#If question contains multiple parts
 				if type(question.question) == list:
-					for questionPartsIndex, questionParts in enumerate(question.question, start=0):
-						if "text" in questionParts:
-							doc.append(NoEscape(questionParts["text"]))
-						if "multipleChoice" in questionParts:
-							correctAnswerNum = multipleChoice(choices = questionParts["multipleChoice"], doc = doc)
-
-						#Add new line inbetween
-						doc.append(NewLine())
-
+					for questionPart in question.question:
+						handleQuestionPart(doc, questionPart)
+						
 					#Add answer to answerKey
 					answerKeyQuestions.append(correctAnswerNum)
 				else:
@@ -142,9 +169,9 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 					correctAnswerNum = None
 
 				if correctAnswerNum is not None:
-					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {question.answer if question.answer is not None else question.worksheetAnswer}"))
+					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {question.answer}"))
 				else:
-					doc.append(NoEscape(f"({j+1}) {question.answer if question.answer is not None else question.worksheetAnswer}"))
+					doc.append(NoEscape(f"({j+1}) {question.answer}"))
 				doc.append(NewLine())
 				doc.append(NewLine())
 
@@ -168,21 +195,13 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 				else:
 					correctAnswerNum = answerKeyVersions[i][j]
 				if correctAnswerNum is not None:
-					if hasattr(question, "answer"):
-						answer = question.answer
-					else:
-						answer = question.worksheetAnswer
-					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {answer}"))
+					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {question.answer}"))
 				else:
-					if hasattr(question, "answer"):
-						answer = question.answer
-					else:
-						answer = question.worksheetAnswer
-
+					answer = question.answer
+					
 					doc.append(NoEscape(f"({j+1}) {answer}"))
 				doc.append(NewLine())
-				doc.append(NewLine())
-
+	
 			#Clear Page Before next Version Answer Key
 			doc.append(Command("clearpage"))
 
@@ -212,18 +231,18 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 
 				#Get class from file based on integer id
 				mod = import_module(f"questions.{questionID}")
-       			class_ = getattr(mod, f"_{questionID}")
+				class_ = getattr(mod, f"_{questionID}")
 				instance = class_(**kwargs)
 
 				question = ""
 
 				#For duplicates and questions with multiple parts - only look at text parts
-				if type(instance.worksheetQuestion) == list:
-					for part in instance.worksheetQuestion:
+				if type(instance.question) == list:
+					for part in instance.question:
 						if "text" in part:
-							question += part["data"]
+							question += part["text"]
 				else:
-					question = instance.worksheetQuestion
+					question = instance.question
 				
 				print(question)
 				
@@ -285,33 +304,18 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', quest
 	#Add instance of question from questions list
 		#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
 	if questionKwargs:
-		questionInstance = questionClass(**questionKwargs)
+		question = questionClass(**questionKwargs)
 	else:
-		questionInstance = questionClass()
+		question = questionClass()
 
-	print(questionInstance.skill)
 	#.answer means it's not a worksheet
-	if hasattr(questionInstance, "answer"):
-		#Each question has a list of dictionaries called assessmentData
-		for questionPartsIndex, questionParts in enumerate(questionInstance.assessmentData, start=0):
-			if "text" in questionParts:
-				doc.append(NoEscape(questionParts["data"]))
-			if "multipleChoice" in questionParts:
-				correctAnswerNum = multipleChoice(choices = questionParts["data"], doc = doc)
-
-			#Add new line inbetween
-			doc.append(NewLine())
-
-	else:
-		#Allow worksheets to have different parts
-		if type(questionInstance.worksheetQuestion) == list:
-			#TEMP for now
-			with doc.create(Center()):
-				for part in question.worksheetQuestion:
-					doc.append(NoEscape(part["data"]))
-					doc.append(NewLine())
+	with doc.create(MiniPage(width=fr"{1/1}\textwidth")):
+		if type(question.question) == list:		
+			for questionPart in question.question:
+				handleQuestionPart(doc, questionPart)
 		else:
-			doc.append(NoEscape(questionInstance.worksheetQuestion))
+			#question is a single string
+			doc.append(NoEscape(question.question))
 
 			
 	doc.generate_pdf(path + nameOfDoc, clean=True)

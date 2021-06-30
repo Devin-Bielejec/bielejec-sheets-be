@@ -1,9 +1,8 @@
-from pdfFunctions import com
+from .pdfFunctions import com, graphPolygon
 from pylatex import VerticalSpace, NewLine, Center, TikZ
 import math
 import random
-from transformations import rotateCoordinatesAsList
-from pdfFunctions import graphPolygon
+from .transformations import rotateCoordinatesAsList
 '''
 cone (upright, sideways left, sideways right, upside down) - angle of rotation
 
@@ -289,7 +288,9 @@ def determinePrismVertices(length = 10, width = 10, height = 10, baseRotation = 
 	coordinates = {}
 
 	coordinates['scaledLength'] = scaledLength
-	coordinates['scaledWidth'] = scaledWidth
+	#Testing *2 to make it look more cube like
+	coordinates['scaledWidth'] = scaledWidth*2
+	scaledWidth = scaledWidth*2
 	coordinates['scaledHeight'] = scaledHeight
 
 	coordinates[1] = (0,0,0)
@@ -711,26 +712,16 @@ def rectangularPrism(options = 'rotate=0, scale=1', doc = None, wholeFigureRotat
 	ADD THIS OPTION TO TIKZ rotate=wholeFigureRotation
 	'''
 	with doc.create(TikZ(options=options)): # length, length makes the graph square
-
-
 		prismCoords = determinePrismVertices(length = lengthValue, width = widthValue, height = heightValue, typeOfPrism = 'rectangle')
 		print(prismCoords)
 		#Draw bottom shape, draw top shape, connect with 4 lines
 		print('here')
 		com('draw %s -- %s -- %s -- %s -- cycle' % (str(prismCoords[1]), str(prismCoords[2]), str(prismCoords[3]), str(prismCoords[4])), doc = doc)
-
-
 		com('draw %s -- %s -- %s -- %s -- cycle' % (str(prismCoords[5]), str(prismCoords[6]), str(prismCoords[7]), str(prismCoords[8])), doc = doc)
-
 		com('draw %s -- %s' % (str(prismCoords[1]), str(prismCoords[5])), doc = doc)
 		com('draw %s -- %s' % (str(prismCoords[2]), str(prismCoords[6])), doc = doc)
 		com('draw %s -- %s' % (str(prismCoords[3]), str(prismCoords[7])), doc = doc)
 		com('draw %s -- %s' % (str(prismCoords[4]), str(prismCoords[8])), doc = doc)
-
-		'''
-		com('draw %s -- %s -- %s -- %s -- %s -- %s %s -- %s -- %s -- %s -- %s -- %s' % (coordA, coordB, coordC, coordG, coordF, coordB, coordA, coordE, coordF, coordG, coordH, coordE), doc = doc)
-		com('draw %s -- %s -- %s %s -- %s' % (coordA, coordD, coordC, coordD, coordH), doc = doc)
-		'''
 
 		if lengthLabeledOnDiagram == True: #X
 			com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[4]), str(lengthValue), str(prismCoords[3])), doc = doc)

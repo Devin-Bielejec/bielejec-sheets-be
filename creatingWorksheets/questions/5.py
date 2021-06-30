@@ -1,55 +1,53 @@
+import random
+
 class _5():
-	def __init__(self, wholeFigureRotation = 0, sideLabeledOnDiagram = True, rounding = "whole number", pictureDrawn = True,  partsGivenInWords = True):
+	def __init__(self, wholeFigureRotation = 0, sideLabeledOnDiagram = True, rounding = "whole number", pictureDrawn = True,  edgeGivenInWords = True):
 		#Oblique
-        self.kwargs = {"wholeFigureRotation": [0, 90], "edgeLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "edgeGivenInWords": True}
-        self.toolTips = {
+		self.kwargs = {"wholeFigureRotation": [0, 90], "edgeLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "edgeGivenInWords": True}
+		self.toolTips = {
                     "wholeFigureRotation": {0: "normal orientation", 90: "turned on side"}, 
                     "edgeLabeled": "Edge of Cube is labeled", 
                     "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth"}, 
                     "pictureDrawn": "Picture is drawn", 
                     "edgeGivenInWords": "Edge length described in question"}
 
-		
+		#If picture is not drawn, words need to be in question and vice versa
+		if pictureDrawn == False:
+			edgeGivenInWords = True
+		if edgeGivenInWords == False:
+			pictureDrawn = True
+			edgeGivenInWords = True
 
-	def addQuestion(self, doc = None):
-		roundingChosen = random.choice(self.rounding)
-		optionChosen = random.choice(self.option)
+		side = random.randint(10,20)
 
-		#If picture: Given the right circular cone below, if the radius is 4 and the height is 10, what is the volume rounded to the nearest whole number?
-		length = random.randint(10,20)
-		width = length
-		height = length
-		shape = 'cube'
+		volume = side**3
 
-		volume = length * width * height
-		roundedVolume = roundGivenString(string = roundingChosen, value = volume)
+		introString = ""
 
-		if self.pictureDrawn == True:
-			introString = 'Given the %s below, ' % shape
+		if pictureDrawn:
+			introString = f'Given the cube below '
 		else:
-			introString = 'Given a %s, ' % shape
+			introString = 'Given a cube '
 
-		if self.partsGivenInWords == True:
-			givenString = 'the side length is %g, ' % (length)
+		if edgeGivenInWords == True:
+			introString += f'with a side length of {side}, '
+
+		#Add rounding string
+		introString += rf'find the volume rounded to the nearest \textit{{{rounding}}}.'
+
+		roundingStrings = ["whole number", "tenth", "hundredth", "thousandth"]
+
+		self.answer = round(volume, roundingStrings.index(rounding))
+
+		if pictureDrawn:
+			self.question = [
+			{"text": introString},
+			{"picture": {
+				"cube": {"wholeFigureRotation": wholeFigureRotation, "sideLabeledOnDiagram": sideLabeledOnDiagram, "sideValue": side}
+			}}
+		]
 		else:
-			givenString = ""
+			self.question = introString
+			
+	
 
-		roundingString = 'find the volume rounded to the nearest %s.' % (roundingChosen)
-		self.answer = roundedVolume
-
-		doc.append(NoEscape(r'' + introString + givenString + roundingString))
-
-		doc.append(NewLine())
-
-		if self.pictureDrawn == True:
-			with doc.create(Center()):
-				cube(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (self.wholeFigureRotation), 
-					doc = doc, 
-					sideLabeledOnDiagram = self.sideLabeledOnDiagram, 
-					sideValue = length)
-		else:
-			doc.append(VerticalSpace('2in'))
-
-
-	def addAnswer(self, docAnswer = None):
-		docAnswer.append(NoEscape(r'' + str(self.answer)))

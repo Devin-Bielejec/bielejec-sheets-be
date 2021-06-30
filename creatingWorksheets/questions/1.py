@@ -35,8 +35,8 @@ class _1():
             b = abChoices[0][1]
             a = abChoices[0][0]
 
-        self.worksheetQuestion = formatMathString(f"{var}+{a}={b}")
-        self.worksheetAnswer = formatMathString(f"{var}={b-a}")
+        self.question = formatMathString(f"{var}+{a}={b}")
+        self.answer = formatMathString(f"{var}={b-a}")
     elif firstStep == "add":
         #whole number b - a easy addition
         if difficulty == 1:
@@ -58,26 +58,26 @@ class _1():
             b = abChoices[0][1]
             a = abChoices[0][0]
 
-        self.worksheetQuestion = formatMathString(f"{var}-{a}={b}")
-        self.worksheetAnswer = formatMathString(f"{var}={b+a}")
+        self.question = formatMathString(f"{var}-{a}={b}")
+        self.answer = formatMathString(f"{var}={b+a}")
 
     elif firstStep == "multiply":
         #x/a = b
         if difficulty == 1:
             a = random.randint(2,15)
             b = random.randint(1,15)
-            self.worksheetAnswer = formatMathString(f"{var}={a*b}")
+            self.answer = formatMathString(f"{var}={a*b}")
         #x/-a = b
         elif difficulty == 2:
             a = -1*random.randint(2,15)
             b = random.randint(1,15)
-            self.worksheetAnswer = formatMathString(fr"{var}={b*-a}")
+            self.answer = formatMathString(fr"{var}={b*-a}")
         #x/-a = -b
         elif difficulty == 3:
             a = -1*random.randint(2,15)
             b = -1*random.randint(1,15)
-            self.worksheetAnswer = formatMathString(fr"{var}={b*a}")
-        self.worksheetQuestion = formatMathString(fr"\frac{{{var}}}{{{a}}}={b}")
+            self.answer = formatMathString(fr"{var}={b*a}")
+        self.question = formatMathString(fr"\frac{{{var}}}{{{a}}}={b}")
 
     elif firstStep == "divide":
         #b/a=ans, so ans*a = b
@@ -85,14 +85,14 @@ class _1():
             ans = random.choice([num for num in range(-20,20) if num != 0])
             a = random.choice([num for num in range(-10,10) if num != 0])
             b = ans * a
-            self.worksheetAnswer = formatMathString(f"{var}={int(b/a)}")
+            self.answer = formatMathString(f"{var}={int(b/a)}")
         #b/a reduced fraction
         elif difficulty == 2:
             ansNum = random.choice([num for num in range(-100,101) if num != 0])
             ansDenom = random.choice([num for num in range(-100,101) if num != 0 and math.gcd(ansNum, num) == 1 or math.gcd(ansNum,num) == -1])
             b = ansNum
             a = ansDenom
-            self.worksheetAnswer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
+            self.answer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
         #b - a have to reduce fraction
         elif difficulty == 3:
             ansNum = random.choice([num for num in range(-100,101) if num != 0])
@@ -102,8 +102,8 @@ class _1():
 
             b = ansNum*gcf
             a = ansDenom*gcf
-            self.worksheetAnswer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
+            self.answer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
 
-        self.worksheetQuestion = formatMathString(f"{a}{var}={b}")
+        self.question = formatMathString(f"{a}{var}={b}")
 
-    self.worksheetDirections = f"Solve for {variable}"
+    self.directions = f"Solve for {variable}"

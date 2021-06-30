@@ -27,16 +27,16 @@ class _3():
         a = random.choice([num for num in range(-10,11) if num not in [0]])
         c = random.choice([num for num in range(-10,11) if a-num not in [-1,0,1] and num not in [0]])
         b = -1*ans*(a-c)
-        self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}{var}")
-        self.worksheetAnswer = formatMathString(fr"{var}={ans}")
+        self.question = formatMathString(f"{a}{var}+{b}={c}{var}")
+        self.answer = formatMathString(fr"{var}={ans}")
     elif difficulty == 2:
         a = random.choice([num for num in range(-10,11) if num not in [0]])
         c = random.choice([num for num in range(-10,11) if a-num not in [-1,0,1] and num not in [0]])
         bdDifference = ans*(a-c)
         b = random.choice([num for num in range(-10,11) if num not in [0,-bdDifference]])
         d = bdDifference + b
-        self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
-        self.worksheetAnswer = formatMathString(fr"{var}={ans}")
+        self.question = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
+        self.answer = formatMathString(fr"{var}={ans}")
     elif difficulty == 3:
         denos = []
         for ansNum in range(-20,21):
@@ -52,5 +52,7 @@ class _3():
 
         c = random.choice([num for num in range(-10,11) if num not in [0,-ansDenom]])
         a = ansDenom + c
-        self.worksheetQuestion = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
-        self.worksheetAnswer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
+        self.question = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
+        self.answer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
+    
+    self.directions = f"Solve for {var}"

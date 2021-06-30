@@ -2,6 +2,7 @@ import sqlite3
 import sys
 from importlib import import_module
 import questions
+from createSnippet import createSnippet
 
 def addQuestionKwargsToDB():
     db = sqlite3.connect('../eagerSheets.db')
@@ -35,6 +36,9 @@ def addQuestionKwargsToDB():
                         cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)",(_id,key,item,i.toolTips[key]))
             else:
                 cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)", (_id,key,i.kwargs[key],i.toolTips[key]))
+
+        if _id == "6":
+            createSnippet(_id, class_, {})
 
     # # Save (commit) the changes
     db.commit()
