@@ -131,6 +131,17 @@ def handleQuestionPart(doc, questionPart):
 					radiusValue = kwargs["radius"], 
 					diameterValue = kwargs["diameter"], 
 					heightValue = kwargs["height"])
+		elif "sphere" in dicty:
+			kwargs = dicty["sphere"]
+			with doc.create(Center()):
+				sphere(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					radiusDrawn = kwargs["radiusDrawn"], 
+					diameterDrawn = kwargs["diameterDrawn"], 
+					radiusLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["radiusDrawn"], 
+					diameterLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["diameterDrawn"], 
+					radiusValue = kwargs["radius"], 
+					diameterValue = kwargs["diameter"])
 
 
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):
