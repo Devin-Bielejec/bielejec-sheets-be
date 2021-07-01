@@ -12,7 +12,7 @@ from importlib import import_module
 import questions
 sys.path.append('./utils/')
 from utils.questionFormatting import multipleChoice
-from utils.shapes import cube, rectangularPrism
+from utils.shapes import cube, rectangularPrism, regularPyramid
     
 def createDocument(
 	path="/", 
@@ -86,7 +86,6 @@ def handleQuestionPart(doc, questionPart):
 					sideValue = kwargs["sideValue"])
 		elif "rectangular prism" in dicty:
 			kwargs = dicty["rectangular prism"]
-			print(kwargs)
 			with doc.create(Center()):
 				rectangularPrism(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
 					doc = doc, 
@@ -97,6 +96,15 @@ def handleQuestionPart(doc, questionPart):
 					widthValue = kwargs["width"],
 					lengthValue = kwargs["length"],
 					baseRotation = kwargs["baseRotation"])
+		elif "regular square pyramid" in dicty:
+			kwargs = dicty["regular square pyramid"]
+			with doc.create(Center()):
+				regularPyramid(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					sideLabeledOnDiagram = kwargs["diagramLabeled"], 
+					sideValue = kwargs["sideValue"],
+					heightLabeledOnDiagram = kwargs["diagramLabeled"],
+					heightValue = kwargs["height"])
 
 
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):

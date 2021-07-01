@@ -349,7 +349,7 @@ def determinePyramidVertices(typeOfPyramid = 'rectangle', length = 10, width = 1
 	#starting at 0,0,0, we will go clockwise counting coord1, coord2, etc then onto top
 
 	if size == 'small':
-		scaleFactor = 2 #width of bottom is appr. 2 cm
+		scaleFactor = 1 #width of bottom is appr. 2 cm
 	#originalLength * x = scaleFactor, so 
 	scaledLength = scaleFactor
 	scaledWidth = scaleFactor / length * width

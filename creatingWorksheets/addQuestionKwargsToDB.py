@@ -18,11 +18,11 @@ def addQuestionKwargsToDB():
     print(ids)
     
     print(idsFromKwargs)
-    ids = [x for x in ids if x not in idsFromKwargs]
+    idsToAdd = [x for x in ids if x not in idsFromKwargs]
     print(ids)
 
     #instantiate class instances to get kwargs and toolTips
-    for _id in ids:
+    for _id in idsToAdd:
         print(_id)
         mod = import_module(f"questions.{_id}")
         class_ = getattr(mod, f"_{_id}")
@@ -42,7 +42,14 @@ def addQuestionKwargsToDB():
             else:
                 cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)", (_id,key,i.kwargs[key],i.toolTips[key]))
 
-        createSnippet(_id, class_, {})
+    #Make snippet if doesn't exists - nice for troulbe shooting
+    for _id in ids:
+        from pathlib import Path
+        if not Path(f"../creatingWorksheets/images/{_id}.jpg").is_file():
+            mod = import_module(f"questions.{_id}")
+            class_ = getattr(mod, f"_{_id}")
+            i = class_()
+            createSnippet(_id, class_, {})
 
     # # Save (commit) the changes
     db.commit()
