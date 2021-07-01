@@ -12,7 +12,7 @@ from importlib import import_module
 import questions
 sys.path.append('./utils/')
 from utils.questionFormatting import multipleChoice
-from utils.shapes import cube, rectangularPrism, regularPyramid
+from utils.shapes import cube, rectangularPrism, regularPyramid, cylinder
     
 def createDocument(
 	path="/", 
@@ -104,6 +104,19 @@ def handleQuestionPart(doc, questionPart):
 					sideLabeledOnDiagram = kwargs["diagramLabeled"], 
 					sideValue = kwargs["sideValue"],
 					heightLabeledOnDiagram = kwargs["diagramLabeled"],
+					heightValue = kwargs["height"])
+		elif "cylinder" in dicty:
+			kwargs = dicty["cylinder"]
+			with doc.create(Center()):
+				cylinder(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					radiusDrawn = kwargs["radiusDrawn"], 
+					diameterDrawn = kwargs["diameterDrawn"], 
+					radiusLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["radiusDrawn"], 
+					heightLabeledOnDiagram = kwargs["diagramLabeled"], 
+					diameterLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["diameterDrawn"], 
+					radiusValue = kwargs["radius"], 
+					diameterValue = kwargs["diameter"], 
 					heightValue = kwargs["height"])
 
 
