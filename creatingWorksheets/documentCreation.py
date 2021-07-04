@@ -170,6 +170,8 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 			if hasattr(question, "directions") and question.directions != curDirections:
 				doc.append(NewLine())
 				doc.append(NoEscape(question.directions))
+				doc.append(NewLine())
+				 
 				curDirections = question.directions
 				
 			with doc.create(MiniPage(width=fr"{1/columns}\textwidth")):
@@ -182,7 +184,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 						handleQuestionPart(doc, questionPart)
 						
 					#Add answer to answerKey
-					answerKeyQuestions.append(correctAnswerNum)
+					answerKeyQuestions.append(question.answer)
 				else:
 					#question is a single string
 					doc.append(NoEscape(question.question))
@@ -262,8 +264,6 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 	for v in range(numberOfVersions):
 		versionQuestions = []
 		nameOfDoc = documentOptions["nameOfDoc"]
-		if numberOfVersions > 1:
-			nameOfDoc = nameOfDoc + f" with {v+1} Versions"
 
 		for questionID, kwargs in zip(documentOptions["ids"], documentOptions["kwargs"]):
 			duplicate = True
@@ -302,12 +302,12 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 		questions.append(versionQuestions)
 
 	#Now have createWorksheet or Assessment take a list of lists
-	createPDF(worksheet=worksheet, path="./creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns)
+	createPDF(worksheet=worksheet, path="creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns)
 	
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', questionClass = "", questionKwargs = {}):
 	#This is for displaying a single question, so it can them be converted to an image.
-	doc = Document(documentclass='standalone', indent=False, font_size=font)
+	doc = Document(documentclass='standalone', document_options="preview", indent=False, font_size=font)
 
 	doc.packages.append(Package('tikz'))
 	doc.packages.append(Command('usetikzlibrary{calc}'))
@@ -354,13 +354,13 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', quest
 		question = questionClass()
 
 	#.answer means it's not a worksheet
-	with doc.create(MiniPage(width=fr"{1/1}\textwidth")):
+	with doc.create(MiniPage(width=fr"{1/2}\textwidth")):
 		if type(question.question) == list:		
 			for questionPart in question.question:
 				handleQuestionPart(doc, questionPart)
 		else:
 			#question is a single string
-			doc.append(NoEscape(question.question))
+			doc.append(NoEscape(question.directions + ": " + question.question))
 
 			
 	doc.generate_pdf(path + nameOfDoc, clean=True)

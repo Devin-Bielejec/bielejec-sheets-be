@@ -1,5 +1,7 @@
 import random
-from equations import formatMathString
+import sys
+sys.path.append("../creatingWorksheets")
+from utils.equations import formatMathString
 import math
 
 class _8():
@@ -26,9 +28,9 @@ class _8():
 
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
         if roundingChosen != "in terms of pi":
-            self.answer = round(volume, roundingStrings.index(rounding))   
+            self.answer = round(volume, roundingStrings.index(roundingChosen))   
         else:
-            self.answer = formatMathString(f"{volume}\pi")
+            self.answer = formatMathString(f"{radius ** 2 * height}\pi")
 
         #If picture is not drawn, words need to be in question and vice versa
         if pictureDrawn == False:
@@ -56,8 +58,8 @@ class _8():
         if roundingChosen != "in terms of pi":
             self.question += 'find the volume rounded to the nearest %s.' % (roundingChosen)
         else:
-            self.question += "find the volume in terms of \pi"
-            self.question = formatMathString(self.question)
+            self.question += "find the volume in terms of "
+            self.question += formatMathString("\pi.")
 
         if pictureDrawn == True:
             self.question = [{"text": self.question}, {"picture": {"cylinder": {"wholeFigureRotation": 0, "diagramLabeled": diagramLabeled, "height": height, "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]

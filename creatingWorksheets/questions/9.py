@@ -1,5 +1,7 @@
 import random
-from equations import formatMathString
+import sys
+sys.path.append("../creatingWorksheets")
+from utils.equations import formatMathString
 import math
 
 class _9():
@@ -14,7 +16,7 @@ class _9():
 
         roundingChosen = random.choice(self.kwargs["rounding"])
 
-        height = random.randint(6, 12)
+        height = random.choice([6,9,12,15,18])
         diameter = random.randint(height-4, height+2) #keeps cone right size
         radius = diameter/2 #radius shoudl be smaller than height??
         #keep int etc
@@ -26,9 +28,9 @@ class _9():
 
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
         if roundingChosen != "in terms of pi":
-            self.answer = round(volume, roundingStrings.index(rounding))   
+            self.answer = round(volume, roundingStrings.index(roundingChosen))   
         else:
-            self.answer = formatMathString(f"{volume}\pi")
+            self.answer = formatMathString(f"{radius **2 * height * 1/3}\pi")
 
         #If picture is not drawn, words need to be in question and vice versa
         if pictureDrawn == False:
@@ -56,8 +58,8 @@ class _9():
         if roundingChosen != "in terms of pi":
             self.question += 'find the volume rounded to the nearest %s.' % (roundingChosen)
         else:
-            self.question += "find the volume in terms of \pi"
-            self.question = formatMathString(self.question)
+            self.question += "find the volume in terms of "
+            self.question += formatMathString("\pi.")
 
         if pictureDrawn == True:
             self.question = [{"text": self.question}, {"picture": {"cone": {"wholeFigureRotation": 0, "diagramLabeled": diagramLabeled, "height": height, "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]

@@ -182,6 +182,8 @@ def determineConeVertices(radius, height, size = 'small'):
 	leftPointX = 0
 	leftPointY = 0
 	if size == 'small':
+		scaleFactor = 1
+	elif size == "medium":
 		scaleFactor = 2
 	#let's dilate the figure so it's a certain height of 4cm, originalHeight * x = 4cm, so 4cm/originalHeight
 	#new radius = originalHeight * x = 4, so scale factor is 4/originalHeight
@@ -210,7 +212,10 @@ def determineCylinderVertices(radius, height, size = 'small'):
 	leftPointX = 0
 	leftPointY = 0
 	if size == 'small':
+		scaleFactor = 1
+	elif size == "medium":
 		scaleFactor = 2
+
 	#let's dilate the figure so it's a certain height of 4cm, originalHeight * x = 4cm, so 4cm/originalHeight
 	#new radius = originalHeight * x = 4, so scale factor is 4/originalHeight
 	scaledHeight = scaleFactor
@@ -247,6 +252,8 @@ def determineSphereVertices(radius, size = 'small'):
 	leftPointY = 0
 	if size == 'small':
 		scaleFactor = 1
+	elif size == "medium":
+		scaleFactor = 2
 	#let's dilate the figure so it's a certain height of 4cm, originalHeight * x = 4cm, so 4cm/originalHeight
 	#new radius = originalHeight * x = 4, so scale factor is 4/originalHeight
 	scaledRadius = scaleFactor
@@ -275,7 +282,9 @@ def determinePrismVertices(length = 10, width = 10, height = 10, baseRotation = 
 	#starting at 0,0,0, we will go clockwise counting coord1, coord2, etc then onto top
 
 	if size == 'small':
-		scaleFactor = 2 #width of bottom is appr. 2 cm
+		scaleFactor = 1
+	elif size == "medium":
+		scaleFactor = 2
 	#originalLength * x = scaleFactor, so 
 	scaledLength = scaleFactor
 	scaledWidth = scaleFactor / length * width
@@ -349,7 +358,9 @@ def determinePyramidVertices(typeOfPyramid = 'rectangle', length = 10, width = 1
 	#starting at 0,0,0, we will go clockwise counting coord1, coord2, etc then onto top
 
 	if size == 'small':
-		scaleFactor = 1 #width of bottom is appr. 2 cm
+		scaleFactor = 1
+	elif size == "medium":
+		scaleFactor = 2
 	#originalLength * x = scaleFactor, so 
 	scaledLength = scaleFactor
 	scaledWidth = scaleFactor / length * width

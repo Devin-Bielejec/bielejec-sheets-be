@@ -13,6 +13,7 @@ def createSnippet(questionID, questionClass, questionKwargs):
         path += key + "-" + questionKwargs[key] + "-"
 
     path = path[:-1]    
+
     #Convert to image
     pages = convert_from_path(f"./images/{path}.pdf", 500)
     for page in pages:

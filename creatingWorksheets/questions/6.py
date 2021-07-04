@@ -12,7 +12,7 @@ class _6():
         roundingChosen = random.choice(self.kwargs["rounding"])
 
         dimensions = [x for x in range(1,30)]
-        length = random.choice([x for x in dimensions if x > 5])
+        length = random.choice([x for x in dimensions if x > 5 and x < 24])
         width = random.choice([x for x in dimensions if x > length + 5])
         height = random.choice([x for x in dimensions if x != length and x != width])
         shape = 'rectangular prism'

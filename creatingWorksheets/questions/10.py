@@ -1,5 +1,7 @@
 import random
-from equations import formatMathString
+import sys
+sys.path.append("../creatingWorksheets")
+from utils.equations import formatMathString
 import math
 
 class _10():
@@ -14,18 +16,15 @@ class _10():
 
         roundingChosen = random.choice(self.kwargs["rounding"])
 
-        diameter = random.randint(4, 20) #keeps cone right size
-        radius = diameter/2 #radius shoudl be smaller than height??
-        #keep int etc
-        if diameter % radius == 0:
-            radius = int(radius)
-        
+        radius = random.choice([x for x in range(3,30,3)])
+        diameter = radius * 2
+
         volume = math.pi * 4/3 * radius ** 3
         shape = 'sphere'
 
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
         if roundingChosen != "in terms of pi":
-            self.answer = round(volume, roundingStrings.index(rounding))   
+            self.answer = round(volume, roundingStrings.index(roundingChosen))   
         else:
             self.answer = formatMathString(f"{volume}\pi")
 
@@ -55,8 +54,8 @@ class _10():
         if roundingChosen != "in terms of pi":
             self.question += 'find the volume rounded to the nearest %s.' % (roundingChosen)
         else:
-            self.question += "find the volume in terms of \pi"
-            self.question = formatMathString(self.question)
+            self.question += "find the volume in terms of "
+            self.question += formatMathString("\pi.")
 
         if pictureDrawn == True:
             self.question = [{"text": self.question}, {"picture": {"sphere": {"wholeFigureRotation": 0, "diagramLabeled": diagramLabeled,  "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]
