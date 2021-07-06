@@ -777,8 +777,8 @@ def cube(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, sid
 			elif sideToLabel == 3: #Y
 				com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[2]), str(sideValue), str(prismCoords[6]) ), doc = doc)
 		
-def regularPyramid(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, heightValue = 30, heightLabeledOnDiagram = True, sideValue = 10, sideLabeledOnDiagram = True):
-	
+def regularPyramid(options = 'rotate=90, scale=1', doc = None, wholeFigureRotation = 0, heightValue = 30, heightLabeledOnDiagram = True, sideValue = 10, sideLabeledOnDiagram = True):
+	options = 'rotate=90'
 	with doc.create(TikZ(options=options)): # length, length makes the graph square
 		pyramidCoords = determinePyramidVertices(length = sideValue, width = sideValue, height = heightValue, typeOfPyramid = 'square')
 		

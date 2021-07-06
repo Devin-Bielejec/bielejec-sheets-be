@@ -5,16 +5,13 @@ from utils.equations import formatMathString
 import math
 
 class _8():
-    def __init__(self, diagramLabeled = True, rounding = "whole number", pictureDrawn = True, partsGivenInWords = True, option = "Given radius"):
-        self.kwargs = {"diagramLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth", "in terms of pi"], "pictureDrawn": True, "partsGivenInWords": True, "option": ["Given radius", "Given diameter"]}
+    def __init__(self, option = "Given radius", wholeFigureRotation = 0, roundingInTermsOfPi = False):
+        self.kwargs = {"roundingInTermsOfPi": True, "wholeFigureRotation": [None, 0, 45, 90, 135, 180], "option": ["Given radius", "Given diameter"]}
         self.toolTips = {
-        "diagramLabeled": "Length of prism is labeled",            
-        "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth", "in terms of pi": "pi in answer"}, 
         "pictureDrawn": "Picture is drawn", 
-        "partsGivenInWords": "Parts described in question",
-        "option": "Given Information"}
-
-        roundingChosen = random.choice(self.kwargs["rounding"])
+        "option": "Given Information",
+        "roundingInTermsOfPi": "Round final answer in terms of pi", 
+        "wholeFigureRotation": "Degrees Rotated"}
 
         height = random.randint(6, 12)
         diameter = random.randint(height-4, height+2) #keeps cone right size
@@ -27,40 +24,34 @@ class _8():
         shape = 'cylinder'
 
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
-        if roundingChosen != "in terms of pi":
+        roundingChosen = random.choice(roundingStrings)
+        if not roundingInTermsOfPi:
             self.answer = round(volume, roundingStrings.index(roundingChosen))   
         else:
             self.answer = formatMathString(f"{radius ** 2 * height}\pi")
 
-        #If picture is not drawn, words need to be in question and vice versa
-        if pictureDrawn == False:
-            partsGivenInWords = True
-        if partsGivenInWords == False:
-            pictureDrawn = True
-            diagramLabeled = True
-
         self.question = ""
 
-        if pictureDrawn == True:
-            self.question = 'Given the %s below, ' % shape
-        else:
+        if wholeFigureRotation is None:
             self.question = 'Given a %s, ' % shape
 
-        #Starting Info
-        if option == "Given radius":
-            startingInfo = "the radius is %g" % radius
+            #Starting Info
+            if option == "Given radius":
+                startingInfo = "the radius is %g" % radius
+            else:
+                startingInfo = "the diameter is %g" % diameter
+
+            self.question += f'{startingInfo} and the height is {height}, '
+
+            if not roundingInTermsOfPi:
+                self.question += rf'find the volume rounded to the nearest \textit{{{roundingChosen}}}.'
+            else:
+                self.question += "find the volume in terms of "
+                self.question += formatMathString("\pi.")
         else:
-            startingInfo = "the diameter is %g" % diameter
-
-        if partsGivenInWords == True:
-            self.question += f'the {startingInfo} and the height is {height}, '
-
-        if roundingChosen != "in terms of pi":
-            self.question += 'find the volume rounded to the nearest %s.' % (roundingChosen)
-        else:
-            self.question += "find the volume in terms of "
-            self.question += formatMathString("\pi.")
-
-        if pictureDrawn == True:
-            self.question = [{"text": self.question}, {"picture": {"cylinder": {"wholeFigureRotation": 0, "diagramLabeled": diagramLabeled, "height": height, "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]
+            self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
+        self.directions = "Find the volume:"
+        
+        if wholeFigureRotation is not None:
+            self.question = [{"text": self.question}, {"picture": {"cylinder": {"wholeFigureRotation": wholeFigureRotation, "diagramLabeled": True, "height": height, "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]
        

@@ -10,7 +10,6 @@ class _2():
   def __init__(self, firstStep="add", secondStep="multiply", difficulty=1):
     self.kwargs = {"firstStep":["add","subtract"], "secondStep":["multiply", "divide"], "difficulty":[1,2,3]}
     self.toolTips = {"firstStep":{"add": "1st operation to solve","subtract": "1st operation to solve"}, "secondStep":{"multiply": "2nd operation to solve", "divide": "2nd operation to solve"}, "difficulty":{1:"ax+b=c",2:"includes negative numbers and fractions",3:"b+ax=c"}}
-    self.id = "TwoStepEquationWorksheet"
     """
     2 step equations
     add/subtract# divide/multiply
@@ -28,7 +27,7 @@ class _2():
     ans = random.choice([num for num in range(-10,11) if num not in [-1,0,1]])
 
     self.answer = formatMathString(f"{var}={ans}")
-    self.directions = f"Solve for {var}"
+    self.directions = f"Solve:"
     if firstStep == "subtract":
         b = random.randint(1,10)
     elif firstStep == "add":

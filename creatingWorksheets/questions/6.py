@@ -1,15 +1,11 @@
 import random
 
 class _6():
-    def __init__(self, diagramLabeled = True, rounding = "whole number", pictureDrawn = True, partsGivenInWords = True):
-        self.kwargs = {"diagramLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "partsGivenInWords": True}
+    def __init__(self, pictureDrawn = True):
+        self.kwargs = {"pictureDrawn": True}
         self.toolTips = {
-        "diagramLabeled": "Length of prism is labeled",            
-        "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth"}, 
         "pictureDrawn": "Picture is drawn", 
-        "partsGivenInWords": "Parts described in question"}
-
-        roundingChosen = random.choice(self.kwargs["rounding"])
+        }
 
         dimensions = [x for x in range(1,30)]
         length = random.choice([x for x in dimensions if x > 5 and x < 24])
@@ -19,30 +15,19 @@ class _6():
 
         volume = length * width * height
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
-        self.answer = round(volume, roundingStrings.index(rounding))
+        roundingChosen = random.choice(roundingStrings)
 
-        #If picture is not drawn, words need to be in question and vice versa
-        if pictureDrawn == False:
-            partsGivenInWords = True
-        if partsGivenInWords == False:
-            pictureDrawn = True
-            diagramLabeled = True
+        self.answer = round(volume, roundingStrings.index(roundingChosen))
 
         self.question = ""
 
-        if pictureDrawn == True:
-            self.question = 'Given the %s below, ' % shape
-        else:
+        if not pictureDrawn:
             self.question = 'Given a %s, ' % shape
-
-
-        if partsGivenInWords == True:
-            self.question += 'the length is %g, the width is %g, and the height is %g, ' % (length, width, height)
-
-        self.question += 'find the volume rounded to the nearest %s.' % (roundingChosen)
-
-
-
+            self.question += f'with a length of{length}, width of {width}, and the height of {height}, '
+            self.question += rf'find the volume rounded to the nearest \textit{{{roundingChosen}}}.'
+        else:
+            self.question = fr"round to the nearest \textit{{{roundingChosen}}}"
+        
         if pictureDrawn == True:
-            self.question = [{"text": self.question}, {"picture": {"rectangular prism": {"wholeFigureRotation": 0, "diagramLabeled": diagramLabeled, "height": height, "length": length, "width": width, "baseRotation": 0}}}]
-       
+            self.question = [{"text": self.question}, {"picture": {"rectangular prism": {"wholeFigureRotation": 0, "diagramLabeled": True, "height": height, "length": length, "width": width, "baseRotation": 0}}}]
+        self.directions = "Find the volume:"

@@ -1,52 +1,41 @@
 import random
 
 class _5():
-	def __init__(self, sideLabeledOnDiagram = True, rounding = "whole number", pictureDrawn = True,  edgeGivenInWords = True):
+	def __init__(self, pictureDrawn = True):
 		#Oblique
-		self.kwargs = {"edgeLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "edgeGivenInWords": True}
+		self.kwargs = {"pictureDrawn": True}
 		self.toolTips = {
-                    "edgeLabeled": "Edge of Cube is labeled", 
-                    "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth"}, 
                     "pictureDrawn": "Picture is drawn", 
-                    "edgeGivenInWords": "Edge length described in question"}
-
-		#If picture is not drawn, words need to be in question and vice versa
-		if pictureDrawn == False:
-			edgeGivenInWords = True
-		if edgeGivenInWords == False:
-			pictureDrawn = True
-			edgeGivenInWords = True
+					}
 
 		side = random.randint(10,20)
 
 		volume = side**3
-
-		introString = ""
-
-		if pictureDrawn:
-			introString = f'Given the cube below '
-		else:
-			introString = 'Given a cube '
-
-		if edgeGivenInWords == True:
-			introString += f'with a side length of {side}, '
-
+		self.question = ""
+		if not pictureDrawn:
+			self.question = f'Given a cube, with a side length of {side}'
+		
 		#Add rounding string
-		introString += rf'find the volume rounded to the nearest \textit{{{rounding}}}.'
-
 		roundingStrings = ["whole number", "tenth", "hundredth", "thousandth"]
-
-		self.answer = round(volume, roundingStrings.index(rounding))
+		roundingChosen = random.choice(roundingStrings)
+		
+		if not pictureDrawn:
+			self.question += rf'find the volume rounded to the nearest \textit{{{roundingChosen}}}.'
+		else:
+			self.question += rf'round to the nearest \textit{{{roundingChosen}}}'
+		
+		self.answer = round(volume, roundingStrings.index(roundingChosen))
 
 		if pictureDrawn:
 			self.question = [
-			{"text": introString},
+			{"text": self.question},
 			{"picture": {
-				"cube": {"wholeFigureRotation": 0, "sideLabeledOnDiagram": sideLabeledOnDiagram, "sideValue": side}
+				"cube": {"wholeFigureRotation": 0, "sideLabeledOnDiagram": True, "sideValue": side}
 			}}
 		]
-		else:
-			self.question = introString
+
+
+		self.directions = "Find the volume:"
 			
 	
 

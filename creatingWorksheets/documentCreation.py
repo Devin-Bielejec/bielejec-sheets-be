@@ -1,7 +1,7 @@
 from pylatex.base_classes import Environment, CommandBase, Arguments
 from pylatex.package import Package
 from pylatex import Document, Section, UnsafeCommand, NewLine, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package, LargeText
-from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number
+from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number, Subsection
 import math
 from pylatex.utils import NoEscape, escape_latex
 import time
@@ -182,6 +182,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 				if type(question.question) == list:
 					for questionPart in question.question:
 						handleQuestionPart(doc, questionPart)
+						doc.append(NewLine())
 						
 					#Add answer to answerKey
 					answerKeyQuestions.append(question.answer)
@@ -352,15 +353,16 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', quest
 		question = questionClass(**questionKwargs)
 	else:
 		question = questionClass()
-
-	#.answer means it's not a worksheet
+	
+	doc.append(NoEscape(question.directions))
+	doc.append(NewLine())
 	with doc.create(MiniPage(width=fr"{1/2}\textwidth")):
 		if type(question.question) == list:		
 			for questionPart in question.question:
 				handleQuestionPart(doc, questionPart)
 		else:
 			#question is a single string
-			doc.append(NoEscape(question.directions + ": " + question.question))
+			doc.append(NoEscape(question.question))
 
 			
 	doc.generate_pdf(path + nameOfDoc, clean=True)

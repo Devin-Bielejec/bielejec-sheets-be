@@ -55,4 +55,4 @@ class _3():
         self.question = formatMathString(f"{a}{var}+{b}={c}{var}+{d}")
         self.answer = formatMathString(fr"{var}=\frac{{{ansNum}}}{{{ansDenom}}}")
     
-    self.directions = f"Solve for {var}"
+    self.directions = f"Solve:"

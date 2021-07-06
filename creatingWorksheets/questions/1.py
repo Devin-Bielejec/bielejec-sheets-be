@@ -7,12 +7,12 @@ import string
 import random
 
 class _1():
-  def __init__(self, firstStep="add", difficulty=1, variable="x"):
-    self.kwargs = {"firstStep": ["add","subtract", "multiply", "divide"], "difficulty":[1,2,3], "variable":[letter for letter in string.ascii_lowercase if letter not in ["o","b","f","a","q","t","u","v","i","l","c"]]}
+  def __init__(self, firstStep="add", difficulty=1):
+    self.kwargs = {"firstStep": ["add","subtract", "multiply", "divide"], "difficulty":[1,2,3]}
     self.toolTips = {"variable":"Variable to use","firstStep": "Operation to solve", "difficulty": {1: "Positive number result", 2:"Postive number result with larger numbers", 3:"Negative number result"}}
-    self.id = "1"
+
     #x+a=b
-    var = variable
+    var = random.choice([letter for letter in string.ascii_lowercase if letter not in ["o","b","f","a","q","t","u","v","i","l","c","d"]])
 
     if firstStep == "subtract":
         #whole number b - a easy subtraction
@@ -106,4 +106,4 @@ class _1():
 
         self.question = formatMathString(f"{a}{var}={b}")
 
-    self.directions = f"Solve for {variable}"
+    self.directions = f"Solve:"

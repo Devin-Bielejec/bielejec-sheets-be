@@ -78,4 +78,4 @@ class _4():
             self.answer = formatMathString(fr"{var}=\frac{{{co*abs(ansNum)}}}{{{abs(ansDenom)}}}")
         self.question = formatMathString(f"{a}({b}{var}+{c})={d}({e}{var}+{f})")
     
-    self.directions = f"Solve for {var}"
+    self.directions = f"Solve:"

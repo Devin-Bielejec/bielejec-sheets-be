@@ -1,49 +1,41 @@
 import random
 
 class _7():
-    def __init__(self, diagramLabeled = True, rounding = "whole number", pictureDrawn = True, partsGivenInWords = True):
-        self.kwargs = {"diagramLabeled": True, "rounding": ["whole number", "tenth", "hundredth", "thousandth"], "pictureDrawn": True, "partsGivenInWords": True}
+    def __init__(self, wholeFigureRotation = 0):
+        self.kwargs = {"wholeFigureRotation": [0,45,90,135,180]}
         self.toolTips = {
-        "diagramLabeled": "Length of prism is labeled",            
-        "rounding": {"whole number": "Whole Number", "tenth": "Tenth", "hundredth": "Hundredth", "thousandth": "Thousandth"}, 
-        "pictureDrawn": "Picture is drawn", 
-        "partsGivenInWords": "Parts described in question"}
+        "pictureDrawn": "Picture is drawn", "wholeFigureRotation": "Degrees Rotated"}
 
-        roundingChosen = random.choice(self.kwargs["rounding"])
+        if wholeFigureRotation is not None:
+            pictureDrawn = True
+        else:
+            pictureDrawn = False
 
         dimensions = [x for x in range(1,30)]
         length = random.choice([x for x in dimensions if x > 5])
         width = length
+
         #Will make a nice looking pyramid
         height = int(random.choice([x/10 for x in range(11,19)])*length)
         shape = 'regular square pyramid'
 
         volume = length * width * height * 1/3
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
-        self.answer = round(volume, roundingStrings.index(rounding))
+        roundingChosen = random.choice(roundingStrings)
 
-        #If picture is not drawn, words need to be in question and vice versa
-        if pictureDrawn == False:
-            partsGivenInWords = True
-        if partsGivenInWords == False:
-            pictureDrawn = True
-            diagramLabeled = True
+        self.answer = round(volume, roundingStrings.index(roundingChosen))
 
         self.question = ""
 
-        if pictureDrawn == True:
-            self.question = 'Given the %s below, ' % shape
-        else:
+        if not pictureDrawn:
             self.question = 'Given a %s, ' % shape
-
-
-        if partsGivenInWords == True:
             self.question += 'the side of the base is %g and the height is %g, ' % (width, height)
+            self.question += rf'find the volume rounded to the nearest  \textit{{{roundingChosen}}}.' % (roundingChosen)
+        else:
+            self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
 
-        self.question += 'find the volume rounded to the nearest %s.' % (roundingChosen)
-
-
-
+        self.directions = "Find the volume:"
+        
         if pictureDrawn == True:
-            self.question = [{"text": self.question}, {"picture": {"regular square pyramid": {"wholeFigureRotation": 0, "diagramLabeled": diagramLabeled, "height": height, "sideValue": length, "baseRotation": 0}}}]
+            self.question = [{"text": self.question}, {"picture": {"regular square pyramid": {"wholeFigureRotation": wholeFigureRotation, "diagramLabeled": True, "height": height, "sideValue": length, "baseRotation": 0}}}]
        
