@@ -744,7 +744,7 @@ def sphere(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, r
 
 		if diameterLabeledOnDiagram == True:
 			#label diameter with another arc or thingy - coordinate of point that is midway(so center) and lower cause height is in way
-			labelWholeSide(x2 = spherePoints['left'][0], x1 = spherePoints['right'][0], y2 = spherePoints['left'][1] - .2*scaledRadius-.2, y1 = spherePoints['right'][1] - .2*scaledRadius-.2, nodePosition = 'below', nodeLabel = str(diameterValue), doc = doc)
+			node(x1 = spherePoints['left'][0] + scaledRadius, y1 = spherePoints["left"][1], label = str(diameterValue), position = 'below', doc = doc)
 
 		if diameterDrawn == True:
 			#create diameter dashed
