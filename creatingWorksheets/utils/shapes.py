@@ -557,9 +557,9 @@ def cone(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, hei
 		if radiusLabeledOnDiagram == True:
 			#label radius midway - coordinate of point that is midway but higher
 			if radiusDirection == 'left':
-				node(x1 = conePoints['left'][0] + scaledRadius*.5, y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
+				labelWholeSide(x2 = conePoints['left'][0], x1 = conePoints['center'][0], y2 = conePoints['left'][1] - .2*scaledRadius -.2, y1 = conePoints['center'][1] - .2*scaledRadius-.2, nodePosition = 'below', nodeLabel = str(diameterValue), doc = doc)
 			else:
-				node(x1 = conePoints['right'][0] - scaledRadius*.5, y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
+				labelWholeSide(x2 = conePoints['center'][0], x1 = conePoints['right'][0], y2 = conePoints['center'][1] - .2*scaledRadius -.2, y1 = conePoints['right'][1] - .2*scaledRadius-.2, nodePosition = 'below', nodeLabel = str(diameterValue), doc = doc)
 
 		if slantHeightLabeledOnDiagram == True:
 			#label slant height left or right
