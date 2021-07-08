@@ -13,7 +13,7 @@ class _5():
 		volume = side**3
 		self.question = ""
 		if not pictureDrawn:
-			self.question = f'Given a cube, with a side length of {side}'
+			self.question = f'Given a cube, with a side length of {side} '
 		
 		#Add rounding string
 		roundingStrings = ["whole number", "tenth", "hundredth", "thousandth"]

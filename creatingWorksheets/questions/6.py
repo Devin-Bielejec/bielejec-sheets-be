@@ -22,8 +22,8 @@ class _6():
         self.question = ""
 
         if not pictureDrawn:
-            self.question = 'Given a %s, ' % shape
-            self.question += f'with a length of{length}, width of {width}, and the height of {height}, '
+            self.question = 'Given a %s ' % shape
+            self.question += f'with a length of {length}, width of {width}, and the height of {height}, '
             self.question += rf'find the volume rounded to the nearest \textit{{{roundingChosen}}}.'
         else:
             self.question = fr"round to the nearest \textit{{{roundingChosen}}}"

@@ -439,7 +439,22 @@ def rightAngle(x1,y1,x2,y2,x3,y3, size = .2, doc = None):
 	com('tkzMarkRightAngle[draw=black,size=%g](A,B,C)' % (size), doc = doc)
 
 def node(x1, y1, label, position = '', doc = None):
-	com('node at (%g,%g) [%s] {\small $%s$}' % (x1, y1, position, label), doc = doc)
+	nodeXChange = 0
+	nodeYChange = 0
+	
+	nodeDist = .1
+	if position == "below":
+		nodeYChange = -1 * nodeDist
+	elif position == "above":
+		nodeYChange = 1 * nodeDist
+	elif position == "left":
+		nodeXChange = -1 * nodeDist
+	elif position == "right":
+		nodeXChange = 1 * nodeDist
+
+	nodeX = x1 + nodeXChange
+	nodeY = y1 + nodeYChange
+	com('node at (%g,%g) {\small $%s$}' % (nodeX, nodeY, label), doc = doc)
 
 def circle(centerX, centerY, radius, doc = None, type = 'circle'):
 	if type == 'circle':
@@ -465,7 +480,26 @@ def point(x1, y1, doc = None):
 def labelWholeSide(x1, y1, x2, y2, nodePosition, nodeLabel, doc = None):
 	#braces are drawn always up starting at first point, so will face upleft if (0,0) -- (4,4)
 	#but down if (4,4) -- (0,0)
-	com('draw[|-|] (%g,%g) -- (%g,%g) node [midway, %s] {%s}' % (x1, y1, x2, y2, nodePosition, nodeLabel), doc = doc)
+
+	nodeXChange = 0
+	nodeYChange = 0
+	
+	nodeDist = .1
+	if nodePosition == "below":
+		nodeYChange = -1 * nodeDist
+	elif nodePosition == "above":
+		nodeYChange = 1 * nodeDist
+	elif nodePosition == "left":
+		nodeXChange = -1 * nodeDist
+	elif nodePosition == "right":
+		nodeXChange = 1 * nodeDist
+
+	nodeX = (x1 + x2)/2 + nodeXChange
+	nodeY = (y1+y2)/2 + nodeYChange
+	# com('draw[|-|] (%g,%g) -- (%g,%g) node [midway, %s] {%s}' % (x1, y1, x2, y2, nodePosition, nodeLabel), doc = doc)
+	com('draw[|-|] (%g,%g) -- (%g,%g)' % (x1, y1, x2, y2), doc = doc)
+	com('node at (%g,%g) {%s}' % (nodeX, nodeY, nodeLabel), doc=doc)
+
 
 def roundGivenString(string = 'tenth', value = 0):
 	if string == 'tenth':
@@ -650,11 +684,10 @@ def cylinder(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0,
 
 
 		if radiusLabeledOnDiagram == True:
-			#label radius midway - coordinate of point that is midway but higher
 			if radiusDirection == 'left':
-				node(x1 = cylinderPoints['left'][0] + scaledRadius*.5, y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
+				labelWholeSide(x2 = cylinderPoints['left'][0], x1 = cylinderPoints['center'][0], y2 = cylinderPoints['left'][1] - .2*scaledRadius-.2, y1 = cylinderPoints['center'][1] - .2*scaledRadius-.2, nodePosition = 'below', nodeLabel = str(radiusValue), doc = doc)
 			else:
-				node(x1 = cylinderPoints['right'][0] - scaledRadius*.5, y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
+				labelWholeSide(x2 = cylinderPoints['right'][0], x1 = cylinderPoints['center'][0], y2 = cylinderPoints['right'][1] - .2*scaledRadius-.2, y1 = cylinderPoints['center'][1] - .2*scaledRadius-.2, nodePosition = 'below', nodeLabel = str(radiusValue), doc = doc)
 
 		#height labeled
 		if heightLabeledOnDiagram == True:
@@ -736,7 +769,7 @@ def rectangularPrism(options = 'rotate=0, scale=1', doc = None, wholeFigureRotat
 
 		if lengthLabeledOnDiagram == True: #X
 			com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[4]), str(lengthValue), str(prismCoords[3])), doc = doc)
-		
+			
 		if widthLabeledOnDiagram == True: #Z
 			com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[3]), str(widthValue), str(prismCoords[2])), doc = doc)
 		
