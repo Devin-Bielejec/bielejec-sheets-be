@@ -272,95 +272,57 @@ def determineSphereVertices(radius, size = 'small'):
 
 	return coordinates	
 
-def determinePrismVertices(length = 10, width = 10, height = 10, baseRotation = 0, typeOfPrism = 'rectangle', size = 'small'):
-	#X Y Z coordinates
-	#X goes to the right
-	#Y goes up
-	#Z goes at you (downleftish)
+def determinePrismVertices(length = 5, width = 10, height = 15, typeOfPrism = 'rectangle', size = 'small'):
+  #start on front face bottom left corner with a front facing look
 
-	#The plan - make shape on bottom, which is (x,z) face
-	#starting at 0,0,0, we will go clockwise counting coord1, coord2, etc then onto top
+  if size == 'small':
+    scaleFactor = 1
+  elif size == "medium":
+    scaleFactor = 2
 
-	if size == 'small':
-		scaleFactor = 1
-	elif size == "medium":
-		scaleFactor = 2
-	#originalLength * x = scaleFactor, so 
-	scaledLength = scaleFactor
-	scaledWidth = scaleFactor / length * width
-	scaledHeight = scaleFactor / length * height
+  #originalLength * x = scaleFactor, so 
+  scaledLength = scaleFactor
+  scaledWidth = scaleFactor / length * width
+  scaledHeight = scaleFactor / length * height
 
-	if typeOfPrism == 'cube':
-		scaledWidth = scaledLength
-		scaledHeight = scaledLength
+  if typeOfPrism == 'cube':
+    scaledWidth = scaledLength
+    scaledHeight = scaledLength
 
-	coordinates = {}
+  coordinates = {}
 
-	coordinates['scaledLength'] = scaledLength
-	#Testing *2 to make it look more cube like
-	coordinates['scaledWidth'] = scaledWidth*2
-	scaledWidth = scaledWidth*2
-	coordinates['scaledHeight'] = scaledHeight
+  coordinates['scaledLength'] = scaledLength
+  #Testing *2 to make it look more cube like
+  coordinates['scaledWidth'] = scaledWidth
+  coordinates['scaledHeight'] = scaledHeight
 
-	coordinates[1] = (0,0,0)
-	coordinates[2] = (scaledLength, 0, 0) #X is length
-	coordinates[3] = (scaledLength, 0, scaledWidth) #Z is width
+  coordinates[1] = (0,0)
+  coordinates[2] = (scaledLength, 0) #X is length
+  coordinates[3] = (scaledLength, scaledHeight) #Z is width
+  coordinates[4] = (0, scaledHeight)
 
-	#same as 1,2,3, but with the new height
-	coordinates[5] = (0, scaledHeight, 0) #this is the tip
-	coordinates[6] = (scaledLength, scaledHeight, 0)
-	coordinates[7] = (scaledLength, scaledHeight, scaledWidth)
+  #same as 1,2,3,4 but pushed farther back but with an angle of 45 degrees
+  #cos(45) and sin(45) = sqrt(2)/2
+  xPush = (2**(1/2)/2)*scaledHeight
+  yPush = (2**(1/2)/2)*scaledHeight
 
-	if typeOfPrism != 'triangle':
-		coordinates[4] = (0, 0, scaledWidth)
-		coordinates[8] = (0, scaledHeight, scaledWidth)
-		baseRotation = 0
-	else:
-		baseRotation = 0
+  #back and up
+  coordinates[5] = (-1*xPush, yPush) #this is the tip
+  coordinates[6] = (scaledLength-xPush, yPush)
+  coordinates[7] = (scaledLength-xPush, scaledHeight+yPush)
+  coordinates[8] = (-1*xPush, scaledHeight+yPush)
 
-	#To rotate the base of the shape
-	xToRotate = []
-	zToRotate = []
-	if typeOfPrism != 'triangle':
-		useNumber = 5
-	else:
-		useNumber = 4
-	for item in range(1, useNumber):
-		xToRotate.append(coordinates[item][0])
-		zToRotate.append(coordinates[item][2])
+  print(coordinates)
+  return coordinates
 
-	#Looking at the axes (3D), it seems like x is better as y, and z is better as x, who knows
-	rotZ, rotX = rotateCoordinatesAsList(xAsList = zToRotate, yAsList = xToRotate, centerX = 0, centerY = 0, direction = 'clockwise', degrees = baseRotation)
-
-	#Changes the new coordinates
-	coordinates[1] = (rotX[0],0,rotZ[0])
-	coordinates[2] = (rotX[1], 0, rotZ[1]) #X is length
-	coordinates[3] = (rotX[2], 0, rotZ[2]) #Z is width
-
-	coordinates[5] = (rotX[0], scaledHeight, rotZ[0])
-	coordinates[6] = (rotX[1], scaledHeight, rotZ[1])
-	coordinates[7] = (rotX[2], scaledHeight, rotZ[2])
-
-	if typeOfPrism != 'triangle':
-		coordinates[4] = (rotX[3], 0, rotZ[3])
-		coordinates[8] = (rotX[3], scaledHeight, rotZ[3])
-
-	print(coordinates)
-	return coordinates
-
-def determinePyramidVertices(typeOfPyramid = 'rectangle', length = 10, width = 10, height = 10, baseRotation = 0, size = 'small'):
-	#X Y Z coordinates
-	#X goes to the right
-	#Y goes up
-	#Z goes at you (downleftish)
-
-	#The plan - make shape on bottom, which is (x,z) face
-	#starting at 0,0,0, we will go clockwise counting coord1, coord2, etc then onto top
+def determinePyramidVertices(typeOfPyramid = 'rectangle', length = 10, width = 10, height = 10, size = 'small'):
+	#start on front face bottom left corner with a front facing look
 
 	if size == 'small':
 		scaleFactor = 1
 	elif size == "medium":
 		scaleFactor = 2
+
 	#originalLength * x = scaleFactor, so 
 	scaledLength = scaleFactor
 	scaledWidth = scaleFactor / length * width
@@ -368,58 +330,32 @@ def determinePyramidVertices(typeOfPyramid = 'rectangle', length = 10, width = 1
 
 	if typeOfPyramid == 'square':
 		scaledWidth = scaledLength
+		scaledHeight = scaledLength
 
 	coordinates = {}
 
 	coordinates['scaledLength'] = scaledLength
+	#Testing *2 to make it look more cube like
 	coordinates['scaledWidth'] = scaledWidth
 	coordinates['scaledHeight'] = scaledHeight
 
-	coordinates[1] = (0,0,0)
-	coordinates[2] = (scaledLength, 0, 0) #X is length
-	coordinates[3] = (scaledLength, 0, scaledWidth) #Z is width
-	
-	if typeOfPyramid != 'triangle':
-		coordinates[4] = (0, 0, scaledWidth)
+	if scaledHeight < 2*scaledLength:
+		scaledHeight *= 2
 
-	coordinates[5] = (scaledLength/2, 0, scaledWidth/2) #this is the tip
+	#draw slanted base with length and width
+	coordinates[1] = (0,0)
+	coordinates[2] = (scaledLength, 0) #X is length
+	coordinates[3] = (scaledLength, scaledWidth) #Z is width
+	coordinates[4] = (0,scaledWidth)
 
-	if typeOfPyramid == 'triangle':
-		baseRotation = 0
-	else:
-		baseRotation = 0
+	#top of pyramid
+	coordinates[5] = (scaledLength/2, scaledHeight)
 
-	xToRotate = []
-	zToRotate = []
-	if typeOfPyramid != 'triangle':
-		useNumber = 5
-	else:
-		useNumber = 4
-	for item in range(1, useNumber):
-		xToRotate.append(coordinates[item][0])
-		zToRotate.append(coordinates[item][2])
+	#center of bottom shape
+	coordinates[6] = (scaledLength/2,scaledWidth/2)
 
-	#Looking at the axes (3D), it seems like x is better as y, and z is better as x, who knows
-	rotZ, rotX = rotateCoordinatesAsList(xAsList = zToRotate, yAsList = xToRotate, centerX = 0, centerY = 0, direction = 'clockwise', degrees = baseRotation)
-
-	coordinates[1] = (rotX[0],0,rotZ[0])
-	coordinates[2] = (rotX[1], 0, rotZ[1]) #X is length
-	coordinates[3] = (rotX[2], 0, rotZ[2]) #Z is width
-	if typeOfPyramid != 'triangle':
-		coordinates[4] = (rotX[3], 0, rotZ[3])
-
-	if typeOfPyramid != 'triangle':
-		coordinates[5] = (scaledLength/2, scaledHeight, scaledWidth/2)#TOP
-		coordinates[6] = (scaledLength/2, 0, scaledWidth/2)#BOTTOM CENTER
-		coordinates[7] = (scaledLength, 0, scaledWidth/2)#middle side of right side to use for right angle
-	else:
-		#calculate center of triangle, which is called centroid
-		#x's / 3, y/3
-		coordinates[5] = ( (rotX[0]+rotX[1]+rotX[2]) / 3, scaledHeight, (rotZ[0] + rotZ[1] + rotZ[2]) / 3)
-		coordinates[6] = ( (rotX[0]+rotX[1]+rotX[2]) / 3, 0, (rotZ[0] + rotZ[1] + rotZ[2]) / 3)
-		coordinates[7] = (scaledLength, 0, scaledWidth/2)#middle side of right side to use for right angle
-
-	print(coordinates)
+	#ending coordinate for altitude right angle
+	coordinates[7] = (0, scaledWidth/2)
 	return coordinates
 
 def lineSegment(x1, y1, x2, y2, dashed = False, doc = None):
@@ -628,9 +564,9 @@ def cylinderHemisphere(options = 'rotate=0, scale=1', doc = None, wholeFigureRot
 		if radiusLabeledOnDiagram == True:
 			#label radius midway - coordinate of point that is midway but higher
 			if radiusDirection == 'left':
-				node(x1 = cylinderPoints['left'][0] + scaledRadius*.5, y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
+				node(x1 = cylinderPoints['left'][0], y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
 			else:
-				node(x1 = cylinderPoints['right'][0] - scaledRadius*.5, y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
+				node(x1 = cylinderPoints['right'][0], y1 = 0, label = str(radiusValue), position = 'below', doc = doc)
 
 		#height labeled
 		if heightLabeledOnDiagram == True:
@@ -767,15 +703,15 @@ def rectangularPrism(options = 'rotate=0, scale=1', doc = None, wholeFigureRotat
 
 		if lengthLabeledOnDiagram == True: #X
 			# com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[4]), str(lengthValue), str(prismCoords[3])), doc = doc)
-			node(x1 = (prismCoords[4][0] + prismCoords[3][0])/2 , y1 = (prismCoords[4][1] + prismCoords[3][1])/2, position = "below", label = str(lengthValue), doc=doc)
+			node(x1 = (prismCoords[1][0] + prismCoords[2][0])/2 , y1 = (prismCoords[1][1] + prismCoords[2][1])/2, position = "below", label = str(lengthValue), doc=doc)
 			
 		if widthLabeledOnDiagram == True: #Z
 			# com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[3]), str(widthValue), str(prismCoords[2])), doc = doc)
-			node(x1 = (prismCoords[3][0] + prismCoords[2][0])/2 , y1 = (prismCoords[3][1] + prismCoords[2][1])/2, position = "right", label = str(lengthValue),doc=doc)
+			node(x1 = (prismCoords[1][0] + prismCoords[5][0])/2 , y1 = (prismCoords[1][1] + prismCoords[5][1])/2, position = "left", label = str(widthValue),doc=doc)
 		
 		if heightLabeledOnDiagram == True: #Y
 			# com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[2]), str(heightValue), str(prismCoords[6]) ), doc = doc)
-			node(x1 = (prismCoords[2][0] + prismCoords[6][0])/2 , y1 = (prismCoords[2][1] + prismCoords[6][1])/2, position = "below", label = str(lengthValue),doc=doc)
+			node(x1 = (prismCoords[2][0] + prismCoords[3][0])/2 , y1 = (prismCoords[2][1] + prismCoords[3][1])/2, position = "right", label = str(heightValue),doc=doc)
 		
 def cube(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, sideValue = 10, sideLabeledOnDiagram = True, baseRotation = 0):
 	'''
@@ -812,7 +748,7 @@ def cube(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, sid
 				com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[2]), str(sideValue), str(prismCoords[6]) ), doc = doc)
 		
 def regularPyramid(options = 'rotate=90, scale=1', doc = None, wholeFigureRotation = 0, heightValue = 30, heightLabeledOnDiagram = True, sideValue = 10, sideLabeledOnDiagram = True):
-	options = 'rotate=90'
+
 	with doc.create(TikZ(options=options)): # length, length makes the graph square
 		pyramidCoords = determinePyramidVertices(length = sideValue, width = sideValue, height = heightValue, typeOfPyramid = 'square')
 		
@@ -827,7 +763,7 @@ def regularPyramid(options = 'rotate=90, scale=1', doc = None, wholeFigureRotati
 		com('draw %s -- %s' % (str(pyramidCoords[3]), str(pyramidCoords[5])), doc = doc)
 		com('draw %s -- %s' % (str(pyramidCoords[4]), str(pyramidCoords[5])), doc = doc)
 
-		#draw height with right angle
+		#draw height with right angle - top of pyramid directly down
 		com('draw[dash pattern=on 3pt off 5pt] %s -- %s' % (str(pyramidCoords[5]), str(pyramidCoords[6])), doc = doc)
 
 		#right angle
@@ -835,18 +771,23 @@ def regularPyramid(options = 'rotate=90, scale=1', doc = None, wholeFigureRotati
 		com('coordinate (B) at %s {}' % (str(pyramidCoords[6])), doc = doc)
 		com('coordinate (C) at %s {}' % (str(pyramidCoords[7])), doc = doc)
 		com('tkzMarkRightAngle[draw=black, size = .1](A,B,C)', doc = doc)
+		com('draw[dash pattern=on 3pt off 5pt] %s -- %s' % (str(pyramidCoords[6]), str(pyramidCoords[7])), doc=doc)
 
 		if heightLabeledOnDiagram == True:
-			com('draw[dash pattern=on 3pt off 5pt] %s -- node[left]{%s}%s' % (str(pyramidCoords[5]), str(heightValue), str(pyramidCoords[6])), doc = doc)
+			com('draw[dash pattern=on 3pt off 5pt] %s -- %s' % (str(pyramidCoords[5]), str(pyramidCoords[6])), doc = doc)
+			node(x1 = (pyramidCoords[5][0] + pyramidCoords[6][0])/2, y1 = (pyramidCoords[5][1] + pyramidCoords[6][1])/2, label = str(heightValue), position = "right", doc=doc)
 
 		if sideLabeledOnDiagram == True:
 			sideToLabel = random.choice([1,2])
 
 			if sideToLabel == 1: #X
-				com('draw %s -- node[below,sloped]{%s}%s' % (str(pyramidCoords[2]), str(sideValue), str(pyramidCoords[3])), doc = doc)
+				# com('draw %s -- %s' % (str(pyramidCoords[1]), str(pyramidCoords[2])), doc = doc)
+				node(x1 = (pyramidCoords[1][0] + pyramidCoords[2][0])/2, y1 = (pyramidCoords[1][1] + pyramidCoords[2][1])/2, label = str(sideValue), position = "below", doc=doc)
+			
 			elif sideToLabel == 2: #Z
-				com('draw %s -- node[below,sloped]{%s}%s' % (str(pyramidCoords[3]), str(sideValue), str(pyramidCoords[4])), doc = doc)
-		
+				# com('draw %s -- %s' % (str(pyramidCoords[1]), str(pyramidCoords[2])), doc = doc)
+				node(x1 = (pyramidCoords[2][0] + pyramidCoords[3][0])/2, y1 = (pyramidCoords[2][1] + pyramidCoords[3][1])/2, label = str(sideValue), position = "right", doc=doc)
+			
 def rectangularPyramid(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, heightValue = 30, heightLabeledOnDiagram = True, lengthValue = 10, lengthLabeledOnDiagram = True, widthValue = 10, widthLabeledOnDiagram = True):
 	with doc.create(TikZ(options=options)): # length, length makes the graph square
 		pyramidCoords = determinePyramidVertices(length = lengthValue, width = widthValue, height = heightValue, typeOfPyramid = 'rectangle')
