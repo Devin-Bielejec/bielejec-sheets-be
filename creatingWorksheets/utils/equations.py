@@ -127,6 +127,7 @@ def formatMathString(givenString):
   givenString = format(givenString)
   newString = format(givenString)
 
+  #we only need to include $ if there are any 
   return f"${newString}$"    
 
 def randomBetweenNot(minNum, maxNum, notList=[]):

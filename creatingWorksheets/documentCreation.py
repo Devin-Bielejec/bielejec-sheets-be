@@ -1,6 +1,6 @@
 from pylatex.base_classes import Environment, CommandBase, Arguments
 from pylatex.package import Package
-from pylatex import Document, Section, UnsafeCommand, NewLine, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package, LargeText
+from pylatex import Document, Section, UnsafeCommand, NewLine, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package, LargeText, Alignat
 from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number, Subsection
 import math
 from pylatex.utils import NoEscape, escape_latex
@@ -72,7 +72,25 @@ def handleQuestionPart(doc, questionPart):
 	# {"multipleChoice": choices}
 
 	if "text" in questionPart:
-		doc.append(NoEscape(questionPart["text"]))
+		#Center environment
+		if "center" in questionPart["text"]:
+			with doc.create(Center()):
+				for part in questionPart["text"]["center"]:
+					doc.append(NoEscape(part))
+					doc.append(NewLine())
+		#for aligning equations that are centered
+		elif "center-aligned" in questionPart["text"]:
+			with doc.create(Center()):
+				with doc.create(Alignat(numbering=False,escape=False)) as agn:
+					for part in questionPart["text"]["center-aligned"]:
+						#add & before =
+						part = part.replace("=", "&=")
+						#aligned env dont' need $
+						part = part.replace("$","")
+						agn.append(part+r"\\")
+						
+		else:
+			doc.append(NoEscape(questionPart["text"]))
 	elif "multipleChoice" in questionPart:
 		correctAnswerNum = multipleChoice(choices = questionPart["multipleChoice"], doc = doc)
 	elif "picture" in questionPart:
@@ -151,7 +169,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 	answerKeyVersions = []
 
 	curDirections = None
-
+	print("versionQuestions", versionQuestions)
 	#Loop through each set of questions representing each version	
 	for i, version in enumerate(versionQuestions, start=0):
 		#Version is a list of questions
@@ -182,7 +200,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 				if type(question.question) == list:
 					for questionPart in question.question:
 						handleQuestionPart(doc, questionPart)
-						doc.append(NewLine())
+						# doc.append(NewLine())
 						
 					#Add answer to answerKey
 					answerKeyQuestions.append(question.answer)
@@ -211,6 +229,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 					doc.append(NewLine())
 
 			for j, question in enumerate(versionQuestions[i], start=0):
+				worksheet = question.directions != None
 				if not worksheet:
 					correctAnswerNum = answerKeyQuestions[j]
 				else:
@@ -238,16 +257,16 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 					doc.append(NewLine())
 
 			for j, question in enumerate(versionQuestions[i], start=0):
-				if answerKeyVersions == [[]]:
-					correctAnswerNum = None
-				else:
+				worksheet = question.directions != None
+				if not worksheet:
 					correctAnswerNum = answerKeyVersions[i][j]
+				else:
+					correctAnswerNum = None
+				
 				if correctAnswerNum is not None:
 					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {question.answer}"))
-				else:
-					answer = question.answer
-					
-					doc.append(NoEscape(f"({j+1}) {answer}"))
+				else:					
+					doc.append(NoEscape(f"({j+1}) {question.answer}"))
 				doc.append(NewLine())
 	
 			#Clear Page Before next Version Answer Key
@@ -266,6 +285,7 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 		versionQuestions = []
 		nameOfDoc = documentOptions["nameOfDoc"]
 
+		print(documentOptions["ids"])
 		for questionID, kwargs in zip(documentOptions["ids"], documentOptions["kwargs"]):
 			duplicate = True
 			loop = 0
@@ -284,9 +304,13 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 
 				#For duplicates and questions with multiple parts - only look at text parts
 				if type(instance.question) == list:
+					#Some questions with have question.duplicateCheck (center aligned etc nonsense) while others will just have text to compare for duplicates
 					for part in instance.question:
-						if "text" in part:
-							question += part["text"]
+						if not instance.duplicateCheck:
+							if "text" in part:
+								question += part["text"]
+						else:
+							question += instance.duplicateCheck
 				else:
 					question = instance.question
 				

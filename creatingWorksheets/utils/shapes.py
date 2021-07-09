@@ -757,9 +757,7 @@ def rectangularPrism(options = 'rotate=0, scale=1', doc = None, wholeFigureRotat
 	'''
 	with doc.create(TikZ(options=options)): # length, length makes the graph square
 		prismCoords = determinePrismVertices(length = lengthValue, width = widthValue, height = heightValue, typeOfPrism = 'rectangle')
-		print(prismCoords)
 		#Draw bottom shape, draw top shape, connect with 4 lines
-		print('here')
 		com('draw %s -- %s -- %s -- %s -- cycle' % (str(prismCoords[1]), str(prismCoords[2]), str(prismCoords[3]), str(prismCoords[4])), doc = doc)
 		com('draw %s -- %s -- %s -- %s -- cycle' % (str(prismCoords[5]), str(prismCoords[6]), str(prismCoords[7]), str(prismCoords[8])), doc = doc)
 		com('draw %s -- %s' % (str(prismCoords[1]), str(prismCoords[5])), doc = doc)
@@ -768,13 +766,16 @@ def rectangularPrism(options = 'rotate=0, scale=1', doc = None, wholeFigureRotat
 		com('draw %s -- %s' % (str(prismCoords[4]), str(prismCoords[8])), doc = doc)
 
 		if lengthLabeledOnDiagram == True: #X
-			com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[4]), str(lengthValue), str(prismCoords[3])), doc = doc)
+			# com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[4]), str(lengthValue), str(prismCoords[3])), doc = doc)
+			node(x1 = (prismCoords[4][0] + prismCoords[3][0])/2 , y1 = (prismCoords[4][1] + prismCoords[3][1])/2, position = "below", label = str(lengthValue), doc=doc)
 			
 		if widthLabeledOnDiagram == True: #Z
-			com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[3]), str(widthValue), str(prismCoords[2])), doc = doc)
+			# com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[3]), str(widthValue), str(prismCoords[2])), doc = doc)
+			node(x1 = (prismCoords[3][0] + prismCoords[2][0])/2 , y1 = (prismCoords[3][1] + prismCoords[2][1])/2, position = "right", label = str(lengthValue),doc=doc)
 		
 		if heightLabeledOnDiagram == True: #Y
-			com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[2]), str(heightValue), str(prismCoords[6]) ), doc = doc)
+			# com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[2]), str(heightValue), str(prismCoords[6]) ), doc = doc)
+			node(x1 = (prismCoords[2][0] + prismCoords[6][0])/2 , y1 = (prismCoords[2][1] + prismCoords[6][1])/2, position = "below", label = str(lengthValue),doc=doc)
 		
 def cube(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, sideValue = 10, sideLabeledOnDiagram = True, baseRotation = 0):
 	'''
