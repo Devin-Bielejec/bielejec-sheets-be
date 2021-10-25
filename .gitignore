@@ -57,6 +57,10 @@ typings/
 # dotenv environment variables file
 .env
 
+#images pdfs
+creatingWorksheets/pdfs
+creatingWorksheets/images
+
 # next.js build output
 .next
 questionImages/bielejec-sheets-672a8fa02606.json

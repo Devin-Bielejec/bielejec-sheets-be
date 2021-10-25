@@ -1,13 +1,20 @@
 from pylatex.base_classes import Environment, CommandBase, Arguments
 from pylatex.package import Package
-from pylatex import Document, Section, UnsafeCommand, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package
-from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number
+from pylatex import UnsafeCommand, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package, Alignat, TextBlock, Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number, Subsection
 import math
 from pylatex.utils import NoEscape, escape_latex
 import time
 import random
 import os
-    
+import sys
+from importlib import import_module
+import questions
+sys.path.append('./utils/')
+from utils.questionFormatting import multipleChoice
+from utils.shapes import *
+from utils.transformations import *
+from utils.pdfFunctions import *
+
 def createDocument(
 	path="/", 
 	nameOfDoc = 'default', 
@@ -24,19 +31,20 @@ def createDocument(
 		doc = Document(documentclass='article', document_options = 'twoside', geometry_options = geometry_options, indent=False, font_size=font, page_numbers=pageNumbers)
 
 
-	# float separation, does something important
-	doc.append(Command('setlength{\\floatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	doc.append(Command('setlength{\\intextsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	doc.append(Command('setlength{\\textfloatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	doc.append(Command('setcounter{topnumber}{10}'))
-	doc.append(Command('setcounter{bottomnumber}{10}'))
-	doc.append(Command('setcounter{totalnumber}{10}'))
+	# # float separation, does something important
+	# doc.append(Command('setlength{\\floatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
+	# doc.append(Command('setlength{\\intextsep}{1.0pt plus 5.0pt minus 2.0pt}'))
+	# doc.append(Command('setlength{\\textfloatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
+	# doc.append(Command('setcounter{topnumber}{10}'))
+	# doc.append(Command('setcounter{bottomnumber}{10}'))
+	# doc.append(Command('setcounter{totalnumber}{10}'))
 
-	# makes float appear at top of page at the last page
-	doc.append(Command('makeatletter'))
-	doc.append(Command('setlength{\\@fptop}{0pt}'))
-	doc.append(Command('setlength{\\@fpbot}{0pt plus 1fil}'))
-	doc.append(Command('makeatother'))
+	# # makes float appear at top of page at the last page
+	# doc.append(Command('makeatletter'))
+	# doc.append(Command('setlength{\\@fptop}{0pt}'))
+	# doc.append(Command('setlength{\\@fpbot}{0pt plus 1fil}'))
+	# doc.append(Command('makeatother'))
+	doc.append(Command('linespread{1.3}'))
 
 	doc.packages.append(Package('subfig'))
 	doc.append(Command('usetikzlibrary{calc}'))
@@ -60,17 +68,296 @@ def createDocument(
 	
 	return doc
 
-def createPDFdocument(path="/", nameOfDoc = "default", questions = [], font = "normalsize"):
+def handleQuestionPart(doc, questionPart):
+	# {"text": "followingText"
+	# {"multipleChoice": choices}
+
+	if "text" in questionPart:
+		#Center environment
+		if "center" in questionPart["text"]:
+			with doc.create(Center()):
+				for part in questionPart["text"]["center"]:
+					doc.append(NoEscape(part))
+					doc.append(NewLine())
+		#for aligning equations that are centered
+		elif "center-aligned" in questionPart["text"]:
+			with doc.create(Center()):
+				with doc.create(Alignat(numbering=False,escape=False)) as agn:
+					for part in questionPart["text"]["center-aligned"]:
+						#add & before =
+						part = part.replace("=", "&=")
+						#aligned env dont' need $
+						part = part.replace("$","")
+						agn.append(part+r"\\")						
+		else:
+			doc.append(NoEscape(questionPart["text"]))
+	elif "multipleChoice" in questionPart:
+		correctAnswerNum = multipleChoice(choices = questionPart["multipleChoice"], doc = doc)
+	elif "picture" in questionPart:
+		dicty = questionPart["picture"]
+		if "cube" in dicty:
+			kwargs = dicty["cube"]
+			with doc.create(Center()):
+				cube(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					sideLabeledOnDiagram = kwargs["sideLabeledOnDiagram"], 
+					sideValue = kwargs["sideValue"])
+		elif "rectangular prism" in dicty:
+			kwargs = dicty["rectangular prism"]
+			with doc.create(Center()):
+				rectangularPrism(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					heightLabeledOnDiagram = kwargs["diagramLabeled"], 
+					widthLabeledOnDiagram = kwargs["diagramLabeled"],
+					lengthLabeledOnDiagram = kwargs["diagramLabeled"], 
+					heightValue = kwargs["height"],
+					widthValue = kwargs["width"],
+					lengthValue = kwargs["length"],
+					baseRotation = kwargs["baseRotation"])
+		elif "regular square pyramid" in dicty:
+			kwargs = dicty["regular square pyramid"]
+			with doc.create(Center()):
+				regularPyramid(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					sideLabeledOnDiagram = kwargs["diagramLabeled"], 
+					sideValue = kwargs["sideValue"],
+					heightLabeledOnDiagram = kwargs["diagramLabeled"],
+					heightValue = kwargs["height"])
+		elif "cylinder" in dicty:
+			kwargs = dicty["cylinder"]
+			with doc.create(Center()):
+				cylinder(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					radiusDrawn = kwargs["radiusDrawn"], 
+					diameterDrawn = kwargs["diameterDrawn"], 
+					radiusLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["radiusDrawn"], 
+					heightLabeledOnDiagram = kwargs["diagramLabeled"], 
+					diameterLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["diameterDrawn"], 
+					radiusValue = kwargs["radius"], 
+					diameterValue = kwargs["diameter"], 
+					heightValue = kwargs["height"])
+		elif "cone" in dicty:
+			kwargs = dicty["cone"]
+			with doc.create(Center()):
+				cone(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					radiusDrawn = kwargs["radiusDrawn"], 
+					diameterDrawn = kwargs["diameterDrawn"], 
+					radiusLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["radiusDrawn"], 
+					heightLabeledOnDiagram = kwargs["diagramLabeled"], 
+					diameterLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["diameterDrawn"], 
+					radiusValue = kwargs["radius"], 
+					diameterValue = kwargs["diameter"], 
+					heightValue = kwargs["height"])
+		elif "sphere" in dicty:
+			kwargs = dicty["sphere"]
+			with doc.create(Center()):
+				sphere(options = 'rotate=%d, x=2.5cm, y=2.5cm' % (kwargs["wholeFigureRotation"]), 
+					doc = doc, 
+					radiusDrawn = kwargs["radiusDrawn"], 
+					diameterDrawn = kwargs["diameterDrawn"], 
+					radiusLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["radiusDrawn"], 
+					diameterLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["diameterDrawn"], 
+					radiusValue = kwargs["radius"], 
+					diameterValue = kwargs["diameter"])
+	elif "graph" in questionPart:
+		currentDict = questionPart["graph"]
+		picLength = sizingXY(minn = -10, maxx = 10, size = 'small')
+		with doc.create(Center()):
+			with doc.create(TikZ(options='x=%gcm, y=%gcm' % (picLength, picLength))):
+				grid(doc = doc)
+				graphPolygon(doc = doc, x = currentDict["x"], y = currentDict["y"], annotations = currentDict["annotations"], color = currentDict["color"])
+
+def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
-	for question in questions:
-		question.addQuestion(doc = doc)
-	print("path + name", path + nameOfDoc)
+	#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
+	answerKeyVersions = []
+
+	curDirections = None
+	print("versionQuestions", versionQuestions)
+	#Loop through each set of questions representing each version	
+	for i, version in enumerate(versionQuestions, start=0):
+		#Version is a list of questions
+		answerKeyQuestions = []
+		
+		#Remove version # from one versioned things
+		if len(versionQuestions) > 1:
+			with doc.create(Center()):
+				with doc.create(LargeText(f"Version {i+1}!")):
+					doc.append(NewLine())
+
+		#Question is the question from that specific version
+		for j, question in enumerate(versionQuestions[i], start=0):
+
+			#Force first line to not indent
+			if i == 0:
+				doc.append(Command("noindent"))
+			
+			correctAnswerNum = None
+
+			#If Directions, create new line, add directions
+			if hasattr(question, "directions") and question.directions != curDirections:
+				doc.append(NewLine())
+				doc.append(NoEscape(question.directions))
+				doc.append(NewLine())
+				 
+				curDirections = question.directions
+				
+			#.2 for gap between
+			with doc.create(MiniPage(width=fr"{1/(columns)}\textwidth")):
+				#Add Question Number
+				doc.append(NoEscape(f"({j+1}) "))
+				
+				#If question contains multiple parts
+				if type(question.question) == list:
+					for questionPart in question.question:
+						handleQuestionPart(doc, questionPart)
+						# doc.append(NewLine())
+						
+					#Add answer to answerKey
+					answerKeyQuestions.append(question.answer)
+				else:
+					#question is a single string
+					doc.append(NoEscape(question.question))
+					
+			if (j+1) % columns == 0:
+				#Example: 3 columns, we only have to add vertical space when we're on the 3rd question (i+1) for Q Number
+				#would add vertical space here
+				doc.append(VerticalSpace(spacingBetween, star=False))
+				doc.append(NewLine())
+
+	
+		answerKeyVersions.append(answerKeyQuestions)
+
+		#After version is printed to PDF, clear page
+		doc.append(Command("clearpage"))
+
+
+		if collatedAnswerKey:
+			#Add corresponding answer key if
+			#Add title!!!
+			
+			#Remove version # from one versioned things
+			if len(versionQuestions) > 1:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Answer Key!")):
+						doc.append(NewLine())
+			else:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Version {i+1} Answer Key!")):
+						doc.append(NewLine())
+
+			for j, question in enumerate(versionQuestions[i], start=0):
+				worksheet = question.directions != None
+				if not worksheet:
+					correctAnswerNum = answerKeyQuestions[j]
+				else:
+					correctAnswerNum = None
+
+				if correctAnswerNum is not None:
+					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {question.answer}"))
+				else:
+					doc.append(NoEscape(f"({j+1}) {question.answer}"))
+				doc.append(NewLine())
+				doc.append(NewLine())
+
+		if i < len(versionQuestions):
+			#Clear Page - Before Next Version
+			doc.append(Command("clearpage"))
+
+	#If collatedAnswerKey is False, then loop and add answer key pages
+	if not collatedAnswerKey:
+		print(answerKeyVersions)
+		for i, version in enumerate(versionQuestions, start=0):
+			
+			#Answer Key based on length of versions
+			if len(versionQuestions) > 1:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Version {i+1} Answer Key!")):
+						doc.append(NewLine())
+			else:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Answer Key!")):
+						doc.append(NewLine())
+
+			for j, question in enumerate(versionQuestions[i], start=0):
+				worksheet = question.directions != None
+				if not worksheet:
+					correctAnswerNum = answerKeyVersions[i][j]
+				else:
+					correctAnswerNum = None
+				
+				if correctAnswerNum is not None:
+					doc.append(NoEscape(f"({j+1}) Choice {correctAnswerNum}: {question.answer}"))
+				else:					
+					doc.append(NoEscape(f"({j+1}) {question.answer}"))
+				doc.append(NewLine())
+	
+			#Clear Page Before next Version Answer Key
+			doc.append(Command("clearpage"))
+
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 
-def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'normalsize'):
-	print(path, nameOfDoc, questions)
+def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False):
+	#Attempt for no duplicates
+	hash = {}
+	defaultDocName = documentOptions["nameOfDoc"]
+
+	#Questions - list of lists for each version of the PDF
+	questions = []
+	for v in range(numberOfVersions):
+		versionQuestions = []
+		nameOfDoc = documentOptions["nameOfDoc"]
+
+		print(documentOptions["ids"])
+		for questionID, kwargs in zip(documentOptions["ids"], documentOptions["kwargs"]):
+			duplicate = True
+			loop = 0
+			while duplicate:
+				loop += 1
+				#If finite number of versions, this will prevent infinite loop
+				if loop == 100:
+					break
+
+				#Get class from file based on integer id
+				mod = import_module(f"questions.{questionID}")
+				class_ = getattr(mod, f"_{questionID}")
+				instance = class_(**kwargs)
+
+				question = ""
+
+				#For duplicates and questions with multiple parts - only look at text parts
+				if type(instance.question) == list:
+					#Some questions with have question.duplicateCheck (center aligned etc nonsense) while others will just have text to compare for duplicates
+					for part in instance.question:
+						if not hasattr(instance, "duplicateCheck"):
+							if "text" in part:
+								question += part["text"]
+						else:
+							question += instance.duplicateCheck
+				else:
+					question = instance.question
+				
+				print(question)
+				
+				if question+questionID not in hash:
+					print("not in hash", question)
+					hash[question+questionID] = True
+					versionQuestions.append(instance)
+
+					#Stopping the loop for creating a new instance
+					duplicate = False
+		
+		questions.append(versionQuestions)
+
+	#Now have createWorksheet or Assessment take a list of lists
+	createPDF(worksheet=worksheet, path="creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns)
+	
+
+def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', questionClass = "", questionKwargs = {}):
 	#This is for displaying a single question, so it can them be converted to an image.
+	#Documentclass standlone and removed options for preview == smaller
 	doc = Document(documentclass='standalone', indent=False, font_size=font)
 
 	doc.packages.append(Package('tikz'))
@@ -78,43 +365,31 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', questions = [], font = 'no
 	doc.packages.append(Command('usepackage{tkz-euclide}'))
 	doc.packages.append(Package('subfig'))
 	
-	# header = PageStyle('header')
-
-	# # float separation, does something important
-	# doc.append(Command('setlength{\\floatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	# doc.append(Command('setlength{\\intextsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	# doc.append(Command('setlength{\\textfloatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	# doc.append(Command('setcounter{topnumber}{10}'))
-	# doc.append(Command('setcounter{bottomnumber}{10}'))
-	# doc.append(Command('setcounter{totalnumber}{10}'))
-
-	# # makes float appear at top of page at the last page
-	# doc.append(Command('makeatletter'))
-	# doc.append(Command('setlength{\\@fptop}{0pt}'))
-	# doc.append(Command('setlength{\\@fpbot}{0pt plus 1fil}'))
-	# doc.append(Command('makeatother'))
-
-	# #LEFT HEADER
-	# with header.create(Head('L')):
-	# 	header.append("Name:")
-	# 	header.append(LineBreak())
-	# 	header.append('%s' % nameOfDoc)
-
-	# #RIGHT HEADER
-	# with header.create(Head('R')):
-	# 	header.append('Date: ')
-
-	# if spaceBetween == 'normal':
-	# 	space = '1in'
-
-	# doc.preamble.append(header)
-	# doc.change_document_style("header")    
-
 	#Add instance of question from questions list
-	question = questions[0]
-	question.addQuestion(doc = doc)
+		#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
+	if questionKwargs:
+		question = questionClass(**questionKwargs)
+	else:
+		question = questionClass()
+	
 
-	print(nameOfDoc)
+		
+	if type(question.question) == list:		
+		with doc.create(MiniPage(width=fr"{1/2}\textwidth")):
+			doc.append(NoEscape(question.directions))
+			doc.append(NewLine())
+	
+			for questionPart in question.question:
+				handleQuestionPart(doc, questionPart)
+	else:
+		doc.append(NoEscape(question.directions))
+		doc.append(NewLine())
+
+		#question is a single string
+		doc.append(NoEscape(question.question))
+
+
+			
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 	
 def addHeader(doc = None, nameOfDoc = "Default"):
@@ -152,365 +427,3 @@ def addHeader(doc = None, nameOfDoc = "Default"):
 	doc.change_page_style(pageStyleName)
 
 
-def clearPage(doubleSidedPrinting = True, doc = None):
-	if doubleSidedPrinting == True:
-		doc.append(Command('cleardoublepage'))
-	else:
-		doc.append(Command('clearpage'))
-
-# def createWorksheet(path = '/', questions = [], nameOfDoc = 'default', nameOfDocAnswers = 'default', spaceBetween = r'.25in', spaceBetweenMC = 'blah', spaceBetweenSA = 'blah', questionOrder = None, columns = 2, docCreate = None, docAnswerCreate = None, standalone = False, font = 'normalsize', pageNumbers = True, answersAttached = True, numberOfVersions = 1, versionsCombined = True, collatedVersionsWithAnswers = True, doubleSidedPrinting = True, referenceSheet = None):
-# 	print('spaceBetweenMC', spaceBetweenMC)
-# 	nameOfDocAnswers = nameOfDoc + "Answers"
-# 	startTime = time.time()
-# 	#answersAttached (doc = docAnswer or NOT)
-# 	# - cleardoublepage after doc if doubleSidedPrinting = True
-# 	# - clearpage if doubleSidedPrinting = False
-# 	# - add answerkey to doc, NOT DOCANSWER
-# 	# docAnswer = doc
-
-# 	#versionsCombined (1 doc, 1 docAnswer ELSE 1 doc_AnswersAttached OR X doc etc)
-# 	# - if true: all questions for all versions are on same doc, so use cleardoublepage
-
-# 	#collatedVersions with Answers (if vc = True, 1 doc 1 docAnswer)
-# 	# - only applicable if versionsCombined - - add question then docAnswer to doc
-
-# 	if versionsCombined == True or numberOfVersions == 1: #1 or 2 files
-# 		if docCreate == True:
-# 			doc = createDocument(nameOfDoc = nameOfDoc, font = font, pageNumbers = pageNumbers, spaceBetween = spaceBetween)
-# 		if docAnswerCreate == True:
-# 			docAnswer = createDocument(nameOfDoc = nameOfDocAnswers, font = font, pageNumbers = pageNumbers, spaceBetween = spaceBetween)
-# 		if answersAttached == True : #only 1 file now
-# 			docAnswer = doc
-
-# 	originalNameOfDoc = nameOfDoc
-# 	originalNameOfDocAnswers = nameOfDocAnswers
-
-# 	for version in range(1, numberOfVersions+1):
-# 		#declare the names pertaining to the original ones, so versions don't combine
-# 		nameOfDocAnswers = originalNameOfDoc + "Answers"
-# 		nameOfDoc = originalNameOfDoc
-
-# 		if numberOfVersions > 1:
-# 			nameOfDoc += "_Version#%d" % version
-# 			nameOfDocAnswers += "_Version#%d" % version
-
-# 			if versionsCombined == False:
-# 				if docCreate == True:
-# 					doc = createDocument(nameOfDoc = nameOfDoc, font = font, pageNumbers = pageNumbers, spaceBetween = spaceBetween)
-			
-# 				if docAnswerCreate == True:
-# 					docAnswer = createDocument(nameOfDoc = nameOfDocAnswers, font = font, pageNumbers = pageNumbers, spaceBetween = spaceBetween)
-# 				if answersAttached == True:
-# 					docAnswer = doc
-
-				
-# 				#Now I would create the doc and docAnswers and generate the files - it will take just as long etc
-# 				for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 					test = item
-# 					#We are going to add spaces before the item, unless it the first item
-# 					#if test item about to add is a short answer and spaceBetweenSA == wholepage, then we need to clear the page.
-# 					if columns == 1:
-# 						if questionNumber != 1:
-# 							if 'SA' in test.typeOfQuestionChosen:
-# 								if spaceBetweenSA == 'wholepage':
-# 									doc.append(Command('newpage'))
-# 								else:
-# 									doc.append(VerticalSpace(spaceBetweenSA))
-# 									doc.append(NewLine())
-
-# 							elif 'MC' in test.typeOfQuestionChosen:
-# 								if spaceBetweenMC != 'blah':
-# 									doc.append(VerticalSpace(spaceBetweenMC))
-# 									doc.append(NewLine())
-									
-# 									chicken = 2
-						
-# 					addHeader(doc = doc, nameOfDoc = nameOfDoc)
-# 					if doc:
-# 						#with doc.create(Figure(position='p')):
-# 						with doc.create(MiniPage(width=r'%g\textwidth' % (1/(columns+.2)))):
-# 							doc.append(NoEscape('%d. ' % (questionNumber)))
-						
-# 							test.addQuestion(doc = doc)      
-# 							#check if question is MC or not,
-# 							if columns > 1:
-# 								doc.append(VerticalSpace(spaceBetween))
-# 								#doc.append(NewLine())
-
-
-# 						if columns > 1:
-# 							if questionNumber % columns != 0:
-# 								#every question besides lasts adds a space between the columns
-# 								doc.append(HorizontalSpace('.2in'))
-# 							elif questionNumber % columns == 0:
-# 								#if last question, add vertical space and new line, so it goes to next row.
-# 								doc.append(NewLine())
-# 						else:
-# 							doc.append(NewLine())
-
-# 				if referenceSheet != None:
-# 					clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-# 					with doc.create(Figure(position="h!")) as referenceSheet:
-# 						referenceSheet.add_image('/home/devin/webapp/devins_project/ReferenceSheet.PNG')
-				
-# 				if doubleSidedPrinting == True:
-# 					doc.append(Command('cleardoublepage'))
-# 				else:
-# 					doc.append(Command('clearpage'))
-				
-# 				addHeader(doc = docAnswer, nameOfDoc = nameOfDocAnswer)    
-# 				for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 					test = item    
-# 					if docAnswer:
-# 						#ANSWER KEY
-# 						#with docAnswer.create(Figure(position='p')):
-# 						#with docAnswer.create(MiniPage(width=r'%g\textwidth' % (1/(columns+.2)))):
-# 						docAnswer.append(NoEscape('%d.  ' % (questionNumber)))
-# 						test.addAnswer(docAnswer = docAnswer)    
-# 						docAnswer.append(NewLine())
-
-# 				if doubleSidedPrinting == True:
-# 					docAnswer.append(Command('cleardoublepage'))
-# 				else:
-# 					docAnswer.append(Command('clearpage'))
-
-# 				if answersAttached == True:
-# 					#generates the pdf in the same directory as the file.
-# 					doc.generate_pdf(path + nameOfDoc + '_AnswersAttached', clean = True)
-# 				else:
-# 					#generates answerkey doc
-# 					doc.generate_pdf(path + nameOfDoc, clean = True)
-# 					docAnswer.generate_pdf(path + nameOfDocAnswers, clean = True)
-   
-# 			#else when they are combined, we'll make 1 doc, 1 docAnswer outside before loop, so here can add shit to it
-# 			else:
-# 				if collatedVersionsWithAnswers == True and answersAttached == True:
-# 					#we'll add the docQuestion then docAnswer in order, clearing doublepage if true etc
-# 					#Now I would create the doc and docAnswers and generate the files - it will take just as long etc
-# 					clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-# 					for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 						test = item
-# 						#We are going to add spaces before the item, unless it the first item
-# 						#if test item about to add is a short answer and spaceBetweenSA == wholepage, then we need to clear the page.
-# 						if columns == 1:
-# 							if questionNumber != 1:
-# 								if 'SA' in test.typeOfQuestionChosen:
-# 									if spaceBetweenSA == 'wholepage':
-# 										doc.append(Command('newpage'))
-# 									else:
-# 										doc.append(VerticalSpace(spaceBetweenSA))
-# 										doc.append(NewLine())
-# 								elif 'MC' in test.typeOfQuestionChosen:
-# 									if spaceBetweenMC != 'blah':
-# 										doc.append(VerticalSpace(spaceBetweenMC))
-# 										doc.append(NewLine())
-										
-# 										chicken = 2
-
-# 						addHeader(doc = doc, nameOfDoc = nameOfDoc)
-# 						if doc:
-# 							#with doc.create(Figure(position='p')):
-# 							with doc.create(MiniPage(width=r'%g\textwidth' % (1/(columns+.2)))):
-# 								doc.append(NoEscape('%d. ' % (questionNumber)))
-
-# 								test.addQuestion(doc = doc)
-# 								if columns > 1:
-# 									doc.append(VerticalSpace(spaceBetween)) 
-# 									#doc.append(NewLine())
-# 							if columns > 1:
-# 								if questionNumber % columns != 0:
-# 									#every question besides lasts adds a space between the columns
-# 									doc.append(HorizontalSpace('.2in'))
-# 								elif questionNumber % columns == 0:
-# 									#if last question, add vertical space and new line, so it goes to next row.
-# 									doc.append(NewLine())
-# 							else:
-# 								doc.append(NewLine())
-					
-# 					if referenceSheet != None:
-# 						clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-# 						with doc.create(Figure(position="h!")) as referenceSheet:
-# 							referenceSheet.add_image('/home/devin/webapp/devins_project/ReferenceSheet.PNG')
-
-# 					clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = docAnswer)
-# 					for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 						test = item  
-# 						addHeader(doc = docAnswer, nameOfDoc = nameOfDocAnswers)  
-# 						if docAnswer:
-# 							#ANSWER KEY
-# 							#with docAnswer.create(Figure(position='p')):
-# 							docAnswer.append(NoEscape('%d.  ' % (questionNumber)))
-# 							test.addAnswer(docAnswer = docAnswer)    
-# 							docAnswer.append(NewLine())
-
-# 				else: #verions combined but answers not attached, so 2 files
-# 					#Going to add questions to the doc, add questions to a dict of sets of questions, so that I can iterate through another loop to add the answers after the first loop is complete. 
-# 					clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-					
-# 					for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 						test = item
-
-# 						#We are going to add spaces before the item, unless it the first item
-# 						#if test item about to add is a short answer and spaceBetweenSA == wholepage, then we need to clear the page.
-						
-# 						if columns == 1:
-# 							if questionNumber != 1:
-# 								if 'SA' in test.typeOfQuestionChosen:
-# 									if spaceBetweenSA == 'wholepage':
-# 										doc.append(Command('newpage'))
-# 									else:
-# 										doc.append(VerticalSpace(spaceBetweenSA))
-# 										doc.append(NewLine())
-# 								elif 'MC' in test.typeOfQuestionChosen:
-# 									if spaceBetweenMC != 'blah':
-# 										doc.append(VerticalSpace(spaceBetweenMC))
-# 										doc.append(NewLine())
-						
-# 						addHeader(doc = doc, nameOfDoc = nameOfDoc)
-# 						if doc:
-# 							#with doc.create(Figure(position='p')):
-# 							with doc.create(MiniPage(width=r'%g\textwidth' % (1/(columns+.2)))):
-
-# 								doc.append(NoEscape('%d. ' % (questionNumber)))
-# 								test.addQuestion(doc = doc)
-# 								if columns > 1:
-# 									doc.append(VerticalSpace(spaceBetween))
-# 									#doc.append(NewLine())
-
-							
-# 							if columns > 1:
-# 								if questionNumber % columns != 0:
-# 									#every question besides lasts adds a space between the columns
-# 									doc.append(HorizontalSpace('.2in'))
-# 								elif questionNumber % columns == 0:
-# 									#if last question, add vertical space and new line, so it goes to next row.
-# 									doc.append(NewLine())
-# 							else:
-# 								doc.append(NewLine())
-
-# 						with open(path + 'version%dquestion%d.pkl' % (version, questionNumber), 'wb') as output:
-# 							pickle.dump(test, output, pickle.HIGHEST_PROTOCOL)
-# 						del test
-
-# 					if referenceSheet != None:
-# 						clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-# 						with doc.create(Figure(position="h!")) as referenceSheet:
-# 							referenceSheet.add_image('/home/devin/webapp/devins_project/ReferenceSheet.PNG')
-						
-# 		else: #1 VERSION
-# 			clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-# 			#Now I would create the doc and docAnswers and generate the files - it will take just as long etc
-			
-# 			for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 				test = item
-			   
-# 				#We are going to add spaces before the item, unless it the first item
-# 				#if test item about to add is a short answer and spaceBetweenSA == wholepage, then we need to clear the page.
-# 				if columns == 1:
-# 					if questionNumber != 1:
-# 						if 'SA' in test.typeOfQuestionChosen:
-# 							if spaceBetweenSA == 'wholepage':
-# 								doc.append(Command('newpage'))
-# 							else:
-# 								doc.append(VerticalSpace(spaceBetweenSA))
-# 								doc.append(NewLine())
-# 						elif 'MC' in test.typeOfQuestionChosen:
-# 							if spaceBetweenMC != 'blah':
-# 								doc.append(VerticalSpace(spaceBetweenMC))
-# 								doc.append(NewLine())
-
-# 				addHeader(doc = doc, nameOfDoc = nameOfDoc)
-# 				if doc:
-# 					#with doc.create(Figure(position='p')):
-# 					with doc.create(MiniPage(width=r'%g\textwidth' % (1/(columns+.2)))):
-
-# 						doc.append(NoEscape('%d. ' % (questionNumber)))
-# 						#check if question is MC or not, 
-# 						#for testing for answer
-# 						test.addQuestion(doc = doc)
-# 						if columns > 1:
-# 							doc.append(VerticalSpace(spaceBetween))
-# 							#doc.append(NewLine())
-# 						else:
-# 							dick = 1
-# 							#doc.append(NewLine())
-
-# 					if columns > 1:
-# 						if questionNumber % columns != 0:
-# 							#every question besides lasts adds a space between the columns
-# 							doc.append(HorizontalSpace('.2in'))
-# 						elif questionNumber % columns == 0:
-# 							#if last question, add vertical space and new line, so it goes to next row.
-# 							doc.append(NewLine())
-# 					else:
-# 						doc.append(NewLine())
-			
-# 			clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = docAnswer)
-			
-# 			if referenceSheet != None:
-# 				clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = doc)
-# 				with doc.create(Figure(position="h!")) as referenceSheet:
-# 					referenceSheet.add_image('/home/devin/webapp/devins_project/ReferenceSheet.PNG')
-			
-# 			for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 				test = item 
-# 				addHeader(doc = docAnswer, nameOfDoc = nameOfDocAnswers) 
-# 				if docAnswer:
-# 					#ANSWER KEY
-# 					#with docAnswer.create(Figure(position='p')):
-# 					docAnswer.append(NoEscape('%d.  ' % (questionNumber)))
-# 					test.addAnswer(docAnswer = docAnswer)
-# 					docAnswer.append(NewLine())    
-					
-	
-# 	if ((versionsCombined == True and collatedVersionsWithAnswers == False) or (versionsCombined == True and answersAttached == False)) and numberOfVersions > 1: #2 files and order fucking matters
-# 		for version in range(1, numberOfVersions+1):
-# 			nameOfDocAnswers = originalNameOfDoc + "Answers"
-# 			nameOfDoc = originalNameOfDoc
-			
-# 			nameOfDoc += "_Version#%d" % version
-# 			nameOfDocAnswers += "_Version#%d" % version
-# 			clearPage(doubleSidedPrinting = doubleSidedPrinting, doc = docAnswer)
-			
-# 			for item, questionNumber in zip(questions, range(1, len(questions)+1)):
-# 				addHeader(doc = docAnswer, nameOfDoc = nameOfDocAnswers)
-# 				with open(path + 'version%dquestion%d.pkl' % (version, questionNumber), 'rb') as input:
-# 					whatever = pickle.load(input)
-# 				#os.remove(path + 'version%dquestion%d.pk1' % (version, questionNumber))    
-	
-# 				if docAnswer:
-# 					#ANSWER KEY
-# 					#with docAnswer.create(Figure(position='p')):
-# 					docAnswer.append(NoEscape('%d.  ' % (questionNumber)))
-# 					whatever.addAnswer(docAnswer = docAnswer)    
-# 					docAnswer.append(NewLine())
-				
-# 	if versionsCombined == True and numberOfVersions > 1: #1 or 2 files
-# 		nameOfDoc = originalNameOfDoc + '_versionsCombined'
-# 		nameOfDocAnswers = originalNameOfDocAnswers + "_versionsCombined"
-
-# 		if answersAttached == True : #only 1 file now
-# 			nameOfDoc += '_answersAttached'
-# 			if collatedVersionsWithAnswers == True:
-# 				nameOfDoc += '_collatedVersionsWithAnswers'
-# 			else:
-# 				nameOfDoc += '_nonCollatedVersionsWithAnswers'
-
-# 			doc.generate_pdf(path + nameOfDoc, clean = True)
-		
-# 		else: #doc and docAnswer
-# 			doc.generate_pdf(path + nameOfDoc, clean = True)
-# 			docAnswer.generate_pdf(path + nameOfDocAnswers, clean = True)
-
-# 	if numberOfVersions == 1:
-# 		if answersAttached == True: #one doc
-# 			nameOfDoc += '_answersAttached'
-			
-# 			doc.generate_pdf(path + nameOfDoc, clean = True)
-# 		else: #two docs
-# 			#generates the pdf in the same directory as the file.
-			
-# 			doc.generate_pdf(path + nameOfDoc, clean = True)
-# 			#generates answerkey doc
-# 			docAnswer.generate_pdf(path + nameOfDocAnswers, clean = True)
-# 	print('createdWorksheet took ', time.time() - startTime, "to run")
