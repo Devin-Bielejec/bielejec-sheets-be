@@ -22,10 +22,11 @@ class _5():
 		if not pictureDrawn:
 			self.question += rf'find the volume rounded to the nearest \textit{{{roundingChosen}}}.'
 		else:
-			self.question += rf'round to the nearest \textit{{{roundingChosen}}}'
+			self.question += rf'round the cube to the nearest \textit{{{roundingChosen}}}'
 		
 		self.answer = round(volume, roundingStrings.index(roundingChosen))
 
+		self.duplicateCheck = f"side{side}side{side}side{side}"
 		if pictureDrawn:
 			self.question = [
 			{"text": self.question},

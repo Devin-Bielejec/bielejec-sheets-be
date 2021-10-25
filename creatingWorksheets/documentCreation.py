@@ -1,7 +1,6 @@
 from pylatex.base_classes import Environment, CommandBase, Arguments
 from pylatex.package import Package
-from pylatex import Document, Section, UnsafeCommand, NewLine, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package, LargeText, Alignat
-from pylatex import Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number, Subsection
+from pylatex import UnsafeCommand, TikZ, Command, Figure, VerticalSpace, NewPage, NewLine, SubFigure, HorizontalSpace, Center, Package, Alignat, TextBlock, Document, PageStyle, Head, MiniPage, Foot, LargeText, MediumText, LineBreak, simple_page_number, Subsection
 import math
 from pylatex.utils import NoEscape, escape_latex
 import time
@@ -13,7 +12,9 @@ import questions
 sys.path.append('./utils/')
 from utils.questionFormatting import multipleChoice
 from utils.shapes import *
-    
+from utils.transformations import *
+from utils.pdfFunctions import *
+
 def createDocument(
 	path="/", 
 	nameOfDoc = 'default', 
@@ -87,8 +88,7 @@ def handleQuestionPart(doc, questionPart):
 						part = part.replace("=", "&=")
 						#aligned env dont' need $
 						part = part.replace("$","")
-						agn.append(part+r"\\")
-						
+						agn.append(part+r"\\")						
 		else:
 			doc.append(NoEscape(questionPart["text"]))
 	elif "multipleChoice" in questionPart:
@@ -160,7 +160,13 @@ def handleQuestionPart(doc, questionPart):
 					diameterLabeledOnDiagram = kwargs["diagramLabeled"] and kwargs["diameterDrawn"], 
 					radiusValue = kwargs["radius"], 
 					diameterValue = kwargs["diameter"])
-
+	elif "graph" in questionPart:
+		currentDict = questionPart["graph"]
+		picLength = sizingXY(minn = -10, maxx = 10, size = 'small')
+		with doc.create(Center()):
+			with doc.create(TikZ(options='x=%gcm, y=%gcm' % (picLength, picLength))):
+				grid(doc = doc)
+				graphPolygon(doc = doc, x = currentDict["x"], y = currentDict["y"], annotations = currentDict["annotations"], color = currentDict["color"])
 
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
@@ -175,6 +181,12 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 		#Version is a list of questions
 		answerKeyQuestions = []
 		
+		#Remove version # from one versioned things
+		if len(versionQuestions) > 1:
+			with doc.create(Center()):
+				with doc.create(LargeText(f"Version {i+1}!")):
+					doc.append(NewLine())
+
 		#Question is the question from that specific version
 		for j, question in enumerate(versionQuestions[i], start=0):
 
@@ -192,7 +204,8 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 				 
 				curDirections = question.directions
 				
-			with doc.create(MiniPage(width=fr"{1/columns}\textwidth")):
+			#.2 for gap between
+			with doc.create(MiniPage(width=fr"{1/(columns)}\textwidth")):
 				#Add Question Number
 				doc.append(NoEscape(f"({j+1}) "))
 				
@@ -224,9 +237,16 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 		if collatedAnswerKey:
 			#Add corresponding answer key if
 			#Add title!!!
-			with doc.create(Center()):
-				with doc.create(LargeText(f"Version {i+1} Answer Key!")):
-					doc.append(NewLine())
+			
+			#Remove version # from one versioned things
+			if len(versionQuestions) > 1:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Answer Key!")):
+						doc.append(NewLine())
+			else:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Version {i+1} Answer Key!")):
+						doc.append(NewLine())
 
 			for j, question in enumerate(versionQuestions[i], start=0):
 				worksheet = question.directions != None
@@ -251,10 +271,15 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 		print(answerKeyVersions)
 		for i, version in enumerate(versionQuestions, start=0):
 			
-			#Title for answer key
-			with doc.create(Center()):
-				with doc.create(LargeText(f"Version {i+1} Answer Key!")):
-					doc.append(NewLine())
+			#Answer Key based on length of versions
+			if len(versionQuestions) > 1:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Version {i+1} Answer Key!")):
+						doc.append(NewLine())
+			else:
+				with doc.create(Center()):
+					with doc.create(LargeText(f"Answer Key!")):
+						doc.append(NewLine())
 
 			for j, question in enumerate(versionQuestions[i], start=0):
 				worksheet = question.directions != None
@@ -306,7 +331,7 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 				if type(instance.question) == list:
 					#Some questions with have question.duplicateCheck (center aligned etc nonsense) while others will just have text to compare for duplicates
 					for part in instance.question:
-						if not instance.duplicateCheck:
+						if not hasattr(instance, "duplicateCheck"):
 							if "text" in part:
 								question += part["text"]
 						else:
@@ -332,45 +357,14 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', questionClass = "", questionKwargs = {}):
 	#This is for displaying a single question, so it can them be converted to an image.
-	doc = Document(documentclass='standalone', document_options="preview", indent=False, font_size=font)
+	#Documentclass standlone and removed options for preview == smaller
+	doc = Document(documentclass='standalone', indent=False, font_size=font)
 
 	doc.packages.append(Package('tikz'))
 	doc.packages.append(Command('usetikzlibrary{calc}'))
 	doc.packages.append(Command('usepackage{tkz-euclide}'))
 	doc.packages.append(Package('subfig'))
 	
-	# header = PageStyle('header')
-
-	# # float separation, does something important
-	# doc.append(Command('setlength{\\floatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	# doc.append(Command('setlength{\\intextsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	# doc.append(Command('setlength{\\textfloatsep}{1.0pt plus 5.0pt minus 2.0pt}'))
-	# doc.append(Command('setcounter{topnumber}{10}'))
-	# doc.append(Command('setcounter{bottomnumber}{10}'))
-	# doc.append(Command('setcounter{totalnumber}{10}'))
-
-	# # makes float appear at top of page at the last page
-	# doc.append(Command('makeatletter'))
-	# doc.append(Command('setlength{\\@fptop}{0pt}'))
-	# doc.append(Command('setlength{\\@fpbot}{0pt plus 1fil}'))
-	# doc.append(Command('makeatother'))
-
-	# #LEFT HEADER
-	# with header.create(Head('L')):
-	# 	header.append("Name:")
-	# 	header.append(LineBreak())
-	# 	header.append('%s' % nameOfDoc)
-
-	# #RIGHT HEADER
-	# with header.create(Head('R')):
-	# 	header.append('Date: ')
-
-	# if spaceBetween == 'normal':
-	# 	space = '1in'
-
-	# doc.preamble.append(header)
-	# doc.change_document_style("header")    
-
 	#Add instance of question from questions list
 		#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
 	if questionKwargs:
@@ -378,15 +372,22 @@ def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', quest
 	else:
 		question = questionClass()
 	
-	doc.append(NoEscape(question.directions))
-	doc.append(NewLine())
-	with doc.create(MiniPage(width=fr"{1/2}\textwidth")):
-		if type(question.question) == list:		
+
+		
+	if type(question.question) == list:		
+		with doc.create(MiniPage(width=fr"{1/2}\textwidth")):
+			doc.append(NoEscape(question.directions))
+			doc.append(NewLine())
+	
 			for questionPart in question.question:
 				handleQuestionPart(doc, questionPart)
-		else:
-			#question is a single string
-			doc.append(NoEscape(question.question))
+	else:
+		doc.append(NoEscape(question.directions))
+		doc.append(NewLine())
+
+		#question is a single string
+		doc.append(NoEscape(question.question))
+
 
 			
 	doc.generate_pdf(path + nameOfDoc, clean=True)

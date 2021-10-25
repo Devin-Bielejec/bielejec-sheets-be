@@ -16,25 +16,12 @@ if xLength is 5, if there is (5,6,7,8) between the first and second, then there 
 
 '''
 
-def translation(xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, xChangeAmount = ['+','-','0'], yChangeAmount = ['+','-','0'], overlap = False, x = [], y = []):
-	
+def translation(xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, xChangeAmount = '+', yChangeAmount = '+', overlap = False, x = [], y = []):
+	print("trans first line",xChangeAmount, yChangeAmount)
+
 	xLength = max(x) - min(x)
 	yLength = max(y) - min(y)
 
-	#####add something in incase the size of the shape is tooo small // / / / ask bryan
-
-	#User will select which checkboxes and will randomize which ones selected
-	#If random for both, we don't want 0,0 because that would be pointless, only do it if the user picks it
-	if xChangeAmount == ['+', '-', '0'] and yChangeAmount == ['+', '-', '0']:
-		chosen = random.randint(1,2)
-		if chosen == 1:
-			xChangeAmount.remove('0')
-		else:
-			yChangeAmount.remove('0')
-	
-	xChangeAmount = random.choice(xChangeAmount)
-	yChangeAmount = random.choice(yChangeAmount)
-	print('made it here')
 	if xChangeAmount == '+':  # going to move triangle somewhere on grid so that it can afterwards go some amount to the right
 		xChange = random.randint(xMinGraph - min(x), (xMaxGraph - (xLength + 1)) - max(
 			x))  # can add 0 up til maxx - xLength then - 1 so that future translation doesn't overlap
@@ -179,19 +166,10 @@ def translation(xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10
 	for itemY in y:
 		transYs.append(itemY + yTransVal)
 	return x, y, transXs, transYs, xTransVal, yTransVal
-def reflection(x = [], y = [], xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, nameOfReflectionList = ['x=not0','y=not0','yaxis','xaxis','x=','y=','x=0','y=0'], overlap = False):  # assuming triangle to start
+
+def reflection(x = [], y = [], xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, nameOfReflection = 'x=not0', overlap = False):  # assuming triangle to start
 	import random
-	# nameOfReflection: x=, y=, x= not 0, y= not 0, x=0, y=0, xaxis, yaxis
-	# overlap = 'no' or 'yes'
 
-	if nameOfReflectionList == 'random':
-		nameOfReflection = random.choice(['xaxis','yaxis','x=', 'y=', 'x=not0', 'y=not0', 'x=0', 'y=0'])
-	else:
-		nameOfReflection = random.choice(nameOfReflectionList)
-
-	if overlap == 'random':
-		overlap = random.choice([True,False])
-	
 	# just like translation, need to move current triangle to somewhere so it can do then be reflected
 	xLength = max(x) - min(x)
 	yLength = max(y) - min(y)
@@ -363,13 +341,7 @@ def reflection(x = [], y = [], xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10,
 
 	print('refX is',refX)
 	return x, y, refX, refY, refVal, refValString  # need to add part for x= or y= or whatever
-def rotation(x = [], y = [], xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, center = ['origin'] , degrees = [90, 180, 270], direction = ['counterclockwise','clockwise'], overlap = False):
-	# change for random center, random degrees, random direction, etc
-	print(degrees, direction, center)
-	degrees = random.choice(degrees)
-	direction = random.choice(direction)
-	center = random.choice(center)
-
+def rotation(x = [], y = [], xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, center = 'origin' , degrees = 90, direction = 'counterclockwise', overlap = False):
 	'''
 	imagine a square with min(x) and min(y) being at (0,0)
 	center of rotation (if no overlap) can only be 
@@ -416,6 +388,8 @@ def rotation(x = [], y = [], xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, y
 		angleRot = math.radians(degrees)
 	if direction == 'clockwise':
 		angleRot = math.radians(360 - degrees)
+	else:
+		angleRot = math.radians(degrees)
 
 	# this angle is always counterclockwise
 	tX = [itemX - centerX for itemX in x]  # translate to origin

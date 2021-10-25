@@ -19,7 +19,7 @@ def addQuestionKwargsToDB():
     
     print(idsFromKwargs)
     idsToAdd = [x for x in ids if x not in idsFromKwargs]
-    print(ids)
+    print("ids to add",ids)
 
     #instantiate class instances to get kwargs and toolTips
     for _id in idsToAdd:

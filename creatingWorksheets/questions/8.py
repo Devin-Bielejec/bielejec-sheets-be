@@ -49,9 +49,14 @@ class _8():
                 self.question += "find the volume in terms of "
                 self.question += formatMathString("\pi.")
         else:
-            self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
-        self.directions = "Find the volume:"
+            if not roundingInTermsOfPi:
+                self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
+            else:
+                self.question += "round in terms of "
+                self.question += formatMathString("\pi.")
         
+        self.directions = "Find the volume:"
+        self.duplicateCheck = f"cylinderradius{radius}height{height}"
         if wholeFigureRotation is not None:
             self.question = [{"text": self.question}, {"picture": {"cylinder": {"wholeFigureRotation": wholeFigureRotation, "diagramLabeled": True, "height": height, "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]
        

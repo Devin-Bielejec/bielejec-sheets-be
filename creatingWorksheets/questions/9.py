@@ -11,13 +11,10 @@ class _9():
         "pictureDrawn": "Picture is drawn", "wholeFigureRotation": "Degrees Rotated" ,
         "option": "Given Information","roundingInTermsOfPi": "Round final answer in terms of pi"}
 
-        height = random.choice([6,9,12,15,18])
-        diameter = random.randint(height-4, height+2) #keeps cone right size
+        height = random.choice([6,9,12,15,18,21,24,27,30])
+        diameter = random.choice([x for x in range(height-4, height+2) if x % 2 == 0])
         radius = diameter/2 #radius shoudl be smaller than height??
-        #keep int etc
-        if diameter % radius == 0:
-            radius = int(radius)
-        
+
         volume = math.pi * radius ** 2 * height * 1/3
         shape = 'cone'
 
@@ -47,10 +44,14 @@ class _9():
                 self.question += "find the volume in terms of "
                 self.question += formatMathString("\pi.")
         else:
-            self.question = fr"round to the nearest \textit{{{roundingChosen}}}"
+            if not roundingInTermsOfPi:
+                self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
+            else:
+                self.question += "round in terms of "
+                self.question += formatMathString("\pi.")
 
         self.directions = "Find the volume:"
-        
+        self.duplicateCheck = f"coneheight{height}radius{radius}"
         if wholeFigureRotation is not None:
             self.question = [{"text": self.question}, {"picture": {"cone": {"wholeFigureRotation": wholeFigureRotation, "diagramLabeled": True, "height": height, "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]
        

@@ -77,42 +77,30 @@ def arc(doc = None, dashed = False, startDegrees = 0, endDegrees = 0, xRadius = 
 		dashedString = ''
 	com('draw ' + dashedString + startPoint + 'arc (%d:%d:%g and %g)' % (startDegrees, endDegrees, xRadius, yRadius), doc = doc)
 
-def triangleCoordinates(typeOfTriangle = ['right triangle'], polygonSize = ['small','medium','large'], xMaxGraph = 10, yMaxGraph = 10, xMinGraph = -10, yMinGraph = -10):
-	polygonSizeChosen = random.choice(polygonSize)
-	typeOfTriangleChosen = random.choice(typeOfTriangle)
-	if polygonSizeChosen == 'small':
-		sizeFactor = 1/3
-	elif polygonSizeChosen == 'medium':
-		sizeFactor = 1/2
-	elif polygonSizeChosen == 'large':
-		sizeFactor = 1/1.5
-	if typeOfTriangleChosen == 'right triangle':
-		#grid is 10 x 10, so 20 in either direction or xMaxGraph - xMinGraph, always assuming square
-		#biggest triangle could be with no overlap is (xMaxGraph-xMinGraph)/2-1, so that it could still move etc
-		#smallest we can do is 1
-		print((xMaxGraph-xMinGraph)*sizeFactor/2-1)
-		changeChoices = [x for x in range(1, int((xMaxGraph-xMinGraph)*sizeFactor/2-1))] 
-		print('changeChoices',changeChoices)
-		firstXChange = random.choice(changeChoices)
-		firstYChange = random.choice([x for x in changeChoices if x not in [firstXChange, -1*firstXChange]]) #makes it not isosceles and prevents both being 0
-		secondXChange = firstYChange
-		secondYChange = -firstXChange
-		x1 = 0
-		y1 = 0
-		x2 = x1 + firstXChange
-		y2 = x1 + firstYChange
-		x3 = x2 + secondXChange
-		y3 = y2 + secondYChange
-		xs = [x1, x2, x3]
-		ys = [y1, y2, y3]
-		print(xs,ys)
-		newX = []
-		newY = []
-		xChange = random.randint(xMinGraph-min(xs),xMaxGraph-max(xs))
-		yChange = random.randint(yMinGraph-min(ys),yMaxGraph-max(ys))
-		for itemX, itemY in zip(xs,ys):
-			newX.append(itemX+xChange)
-			newY.append(itemY+yChange)
+def triangleCoordinates():
+	xMaxGraph = 10
+	xMinGraph = -10
+	yMaxGraph = 10
+	yMinGraph = -10
+
+	changeChoices = [x for x in range(1, int((xMaxGraph-xMinGraph)/4-1))] 
+	
+	firstXChange = random.choice(changeChoices)
+	firstYChange = random.choice([x for x in changeChoices if x not in [firstXChange, -1*firstXChange]]) #makes it not isosceles and prevents both being 0
+	
+	secondXChange = firstYChange
+	secondYChange = -firstXChange
+	
+	xs = x1, x2, x3 = [0, 0 + firstXChange, firstXChange + secondXChange]
+	ys = y1, y2, y3 = [0, 0 + firstYChange, firstYChange + secondYChange] 
+	print(xs,ys)
+	newX = []
+	newY = []
+	xChange = random.randint(xMinGraph-min(xs),xMaxGraph-max(xs))
+	yChange = random.randint(yMinGraph-min(ys),yMaxGraph-max(ys))
+	for itemX, itemY in zip(xs,ys):
+		newX.append(itemX+xChange)
+		newY.append(itemY+yChange)
 
 	return newX, newY
 
@@ -280,7 +268,9 @@ def determinePrismVertices(length = 5, width = 10, height = 15, typeOfPrism = 'r
   elif size == "medium":
     scaleFactor = 2
 
-  #originalLength * x = scaleFactor, so 
+  #original length = scale factor, so 
+  #Original length * anotherFactor = scale Factor
+  #scaleFactor/orignal length is what we multiply everything else by 
   scaledLength = scaleFactor
   scaledWidth = scaleFactor / length * width
   scaledHeight = scaleFactor / length * height
@@ -296,15 +286,17 @@ def determinePrismVertices(length = 5, width = 10, height = 15, typeOfPrism = 'r
   coordinates['scaledWidth'] = scaledWidth
   coordinates['scaledHeight'] = scaledHeight
 
+  #Make rectangle on paper length and height
   coordinates[1] = (0,0)
   coordinates[2] = (scaledLength, 0) #X is length
   coordinates[3] = (scaledLength, scaledHeight) #Z is width
   coordinates[4] = (0, scaledHeight)
 
+  #xPush and yPush are "essentially" the width
   #same as 1,2,3,4 but pushed farther back but with an angle of 45 degrees
   #cos(45) and sin(45) = sqrt(2)/2
-  xPush = (2**(1/2)/2)*scaledHeight
-  yPush = (2**(1/2)/2)*scaledHeight
+  xPush = (2**(1/2)/2)*scaledWidth
+  yPush = (2**(1/2)/2)*scaledWidth
 
   #back and up
   coordinates[5] = (-1*xPush, yPush) #this is the tip
@@ -312,7 +304,6 @@ def determinePrismVertices(length = 5, width = 10, height = 15, typeOfPrism = 'r
   coordinates[7] = (scaledLength-xPush, scaledHeight+yPush)
   coordinates[8] = (-1*xPush, scaledHeight+yPush)
 
-  print(coordinates)
   return coordinates
 
 def determinePyramidVertices(typeOfPyramid = 'rectangle', length = 10, width = 10, height = 10, size = 'small'):
@@ -411,7 +402,7 @@ def midpoint(x1, y1, x2, y2):
 	return midX, midY
 
 def point(x1, y1, doc = None):
-	com('draw[black,fill=black] (%g,%g) circle (.5ex)' % (x1, y1), doc = doc)
+	com('draw[black,fill=black] (%g,%g) circle (.1ex)' % (x1, y1), doc = doc)
 
 def labelWholeSide(x1, y1, x2, y2, nodePosition, nodeLabel, doc = None):
 	#braces are drawn always up starting at first point, so will face upleft if (0,0) -- (4,4)
@@ -724,8 +715,6 @@ def cube(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, sid
 		#Draw bottom shape, draw top shape, connect with 4 lines
 
 		com('draw %s -- %s -- %s -- %s -- cycle' % (str(prismCoords[1]), str(prismCoords[2]), str(prismCoords[3]), str(prismCoords[4])), doc = doc)
-
-
 		com('draw %s -- %s -- %s -- %s -- cycle' % (str(prismCoords[5]), str(prismCoords[6]), str(prismCoords[7]), str(prismCoords[8])), doc = doc)
 
 		com('draw %s -- %s' % (str(prismCoords[1]), str(prismCoords[5])), doc = doc)
@@ -741,11 +730,11 @@ def cube(options = 'rotate=0, scale=1', doc = None, wholeFigureRotation = 0, sid
 			sideToLabel = random.choice([1,2,3])
 
 			if sideToLabel == 1: #X
-				com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[4]), str(sideValue), str(prismCoords[3])), doc = doc)
+				node(x1 = (prismCoords[1][0]+prismCoords[2][0])/2, y1 = (prismCoords[1][1]+prismCoords[2][1])/2, label = f"{sideValue}", position="below", doc=doc)
 			elif sideToLabel == 2: #Z
-				com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[3]), str(sideValue), str(prismCoords[2])), doc = doc)
+				node(x1 = (prismCoords[2][0]+prismCoords[3][0])/2, y1 = (prismCoords[2][1]+prismCoords[3][1])/2, label = f"{sideValue}", position="right", doc=doc)
 			elif sideToLabel == 3: #Y
-				com('draw %s -- node[below,sloped]{%s}%s' % (str(prismCoords[2]), str(sideValue), str(prismCoords[6]) ), doc = doc)
+				node(x1 = (prismCoords[1][0]+prismCoords[5][0])/2, y1 = (prismCoords[1][1]+prismCoords[5][1])/2, label = f"{sideValue}", position="left", doc=doc)
 		
 def regularPyramid(options = 'rotate=90, scale=1', doc = None, wholeFigureRotation = 0, heightValue = 30, heightLabeledOnDiagram = True, sideValue = 10, sideLabeledOnDiagram = True):
 

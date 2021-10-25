@@ -16,6 +16,7 @@ class _10():
         diameter = radius * 2
 
         volume = math.pi * 4/3 * radius ** 3
+        volumeNoPi = 4/3 * radius ** 3
         shape = 'sphere'
 
         roundingStrings = ['whole number', 'tenth', 'hundredth', 'thousandth']
@@ -23,7 +24,7 @@ class _10():
         if not roundingInTermsOfPi:
             self.answer = round(volume, roundingStrings.index(roundingChosen))   
         else:
-            self.answer = formatMathString(f"{volume}\pi")
+            self.answer = formatMathString(f"{volumeNoPi}\pi")
 
         self.question = ""
 
@@ -45,8 +46,12 @@ class _10():
                 self.question += "find the volume in terms of "
                 self.question += formatMathString("\pi.")
         else:
-            self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
-        
+            if not roundingInTermsOfPi:
+                self.question = rf"round to the nearest \textit{{{roundingChosen}}}"
+            else:
+                self.question += "round in terms of "
+                self.question += formatMathString("\pi.")
+        self.duplicateCheck = f"sphereradius{radius}"
         self.directions = "Find the volume:"
         if pictureDrawn == True:
             self.question = [{"text": self.question}, {"picture": {"sphere": {"wholeFigureRotation": 0, "diagramLabeled": True,  "radius": radius, "diameter": diameter, "baseRotation": 0, "radiusDrawn": option == "Given radius", "diameterDrawn": option != "Given radius"}}}]

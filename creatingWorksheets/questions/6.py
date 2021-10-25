@@ -27,7 +27,7 @@ class _6():
             self.question += rf'find the volume rounded to the nearest \textit{{{roundingChosen}}}.'
         else:
             self.question = fr"round to the nearest \textit{{{roundingChosen}}}"
-        
+        self.duplicateCheck = f"length{length}width{width}height{height}"
         if pictureDrawn == True:
             self.question = [{"text": self.question}, {"picture": {"rectangular prism": {"wholeFigureRotation": 0, "diagramLabeled": True, "height": height, "length": length, "width": width, "baseRotation": 0}}}]
         self.directions = "Find the volume:"
