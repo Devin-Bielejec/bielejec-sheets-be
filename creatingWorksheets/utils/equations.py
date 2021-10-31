@@ -36,6 +36,9 @@ def RepresentsInt(s):
   except ValueError:
     return False
 
+def getFactorPairs(val):
+  return [(i, int(val / i)) for i in range(1, int(val**0.5)+1) if val % i == 0]
+  
 #Runs loop twice to account for --1x situations which resolve to +1x which resolve to x
 def formatMathString(givenString):
   """
