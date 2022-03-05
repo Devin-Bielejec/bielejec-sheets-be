@@ -33,10 +33,10 @@ class _17():
 
         #range between -12 and 12
         fNeg1 = randomBetweenNot(-12,-1,[0])
-        fNeg2 = randomBetweenNot(-12,-1,[0])
+        fNeg2 = randomBetweenNot(-12,-1,[0,-fNeg1])
 
         fPos1 = randomBetweenNot(1,12,[0])
-        fPos2 = randomBetweenNot(1,12,[0])
+        fPos2 = randomBetweenNot(1,12,[0,-fPos1])
 
         if option == "++":
             f1 = fPos1
@@ -47,11 +47,11 @@ class _17():
         #Pos factor is bigger
         elif option == "+-":
             f2 = randomBetweenNot(-11,-1,[0])
-            f1 = randomBetweenNot(abs(f2),12,[0])
+            f1 = randomBetweenNot(abs(f2),12,[0,-f2])
         #Neg factor is bigger
         elif option == "--":
             f2 = randomBetweenNot(1,11,[0])
-            f1 = randomBetweenNot(-12,-1*abs(f2),[0])
+            f1 = randomBetweenNot(-12,-1*abs(f2),[0,-f2])
  
 
         questionString = formatMathString(f"x^2+{f1+f2}x+{f1*f2}")
@@ -61,7 +61,7 @@ class _17():
         self.duplicateCheck = f"{f1}-{f2}"
 
         answerString = formatMathString(f"(x+{f1})(x+{f2})")
-        self.answer = [{"text": answerString}]
+        self.answer = answerString
 		
         
 

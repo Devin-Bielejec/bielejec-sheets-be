@@ -38,7 +38,7 @@ def RepresentsInt(s):
 
 def getFactorPairs(val):
   return [(i, int(val / i)) for i in range(1, int(val**0.5)+1) if val % i == 0]
-  
+
 #Runs loop twice to account for --1x situations which resolve to +1x which resolve to x
 def formatMathString(givenString):
   """
@@ -113,17 +113,18 @@ def formatMathString(givenString):
       else:
         newString += char
         i += 1 
+    print(newString)
+    for letter in [x for x in string.ascii_letters]:
+      newString = re.sub(rf"$1{letter}",letter, newString)
+      
+      newString = re.sub(rf"\(1{letter}",f"({letter}", newString)
+      
+      newString = re.sub(rf"=1{letter}",f"={letter}", newString)
 
+      newString = re.sub(r"{1%s" % letter, f"{letter}", newString)
 
-    newString = re.sub(r"$1x","x", newString)
-    
-    newString = re.sub(r"\(1x","(x", newString)
-    
-    newString = re.sub(r"=1x","=x", newString)
-
-    newString = re.sub(r"{1x", "{x", newString)
-
-    newString = re.sub(r"x\^1", "x", newString)
+      newString = re.sub(rf"{letter}\^1", f"{letter}", newString)
+      newString = newString.replace("%s^{1}" % letter, "%s" % letter )
 
     return newString
 
@@ -135,3 +136,13 @@ def formatMathString(givenString):
 
 def randomBetweenNot(minNum, maxNum, notList=[]):
   return random.choice([num for num in range(minNum,maxNum+1) if num not in notList])
+
+def getPrimes(max = 10):
+	n = max
+	numbers = set(range(n, 1, -1))
+	primes = []
+	while numbers:
+		p = numbers.pop()
+		primes.append(p)
+		numbers.difference_update(set(range(p*2, n+1, p)))
+	return primes
