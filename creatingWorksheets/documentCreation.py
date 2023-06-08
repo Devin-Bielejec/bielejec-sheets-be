@@ -178,25 +178,6 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 	print("versionQuestions", versionQuestions)
 	#Loop through each set of questions representing each version	
 	for i, version in enumerate(versionQuestions, start=0):
-		#Testing to see if we can change header per version
-		header = PageStyle('header')
-
-		#LEFT HEADER
-		with header.create(Head('L')):
-			header.append("Name:")
-			header.append(LineBreak())
-			header.append('%s' % nameOfDoc + f"Version {i}")
-
-		#RIGHT HEADER
-		with header.create(Head('R')):
-			header.append('Date: ')
-
-		doc.preamble.append(header)
-		doc.change_document_style("header")
-
-
-
-		
 		#Version is a list of questions
 		answerKeyQuestions = []
 		

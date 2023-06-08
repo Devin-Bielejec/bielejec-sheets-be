@@ -15,8 +15,12 @@ def formatEquation(data):
 def randomBetweenNot(minNum, maxNum, notList=[]):
   return random.choice([x for x in range(minNum, maxNum+1) if x not in notList])
   
-def toLatexFraction(numerator, denominator, simplified = True):
-    if simplified:
+def toLatexFraction(numerator, denominator = None, simplified = True):
+    if denominator is None:
+      newFraction = Fraction(numerator).limit_denominator()
+      numerator = newFraction.numerator
+      denominator = newFraction.denominator
+    if simplified and denominator is not None:
       newFraction = Fraction(numerator, denominator)
       numerator = newFraction.numerator
       denominator = newFraction.denominator

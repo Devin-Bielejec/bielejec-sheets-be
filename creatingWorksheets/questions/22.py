@@ -31,7 +31,7 @@ class _22():
         var2Exp = 1
       else:
         #Exponents are between 1 and 5
-        var1Exp = random.randint(1,5)
+        var1Exp = random.randint(2,5)
         var2Exp = random.randint(1,5)
       num1 = random.randint(1,12)
       #num2 cubed needs to be coprime of num1 cubed
