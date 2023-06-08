@@ -181,11 +181,14 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 		#Version is a list of questions
 		answerKeyQuestions = []
 		
-		#Remove version # from one versioned things
-		if len(versionQuestions) > 1:
-			with doc.create(Center()):
-				with doc.create(LargeText(f"Version {i+1}!")):
-					doc.append(NewLine())
+		#Currenlty adding version number messes up spacing
+
+		# Remove version # from one versioned things
+		# if len(versionQuestions) > 1:
+		# 	# # with doc.create(Center()):
+		# 	# with doc.create(LargeText(f"Version {i+1}!")):
+		# 	# 	doc.append(NewLine())
+		# 	doc.append(NoEscape(f"Version {i+1}!"))
 
 		#Question is the question from that specific version
 		for j, question in enumerate(versionQuestions[i], start=0):

@@ -117,10 +117,9 @@ Behind the Scenes
 
 -node BE for authentication login etc
 
-###Creating Quesitons###
+###HOW TO CREATE QUESTIONS###
 
-We're going to split questions up by type instead of include them together because most people will be only looking for worksheet questions or test questions
-
-1. Create within subfolder, file etc
-2. Use function to add to database
-3. Add id to dictionary with className
+1. Add information about question manually to database using sqlite and opening eagerSheets.db
+2. Use corressponding id to create a file name .py under the questions folder
+3. Look at past questions for formatting etc
+4. Run "python addQuestionKwargsToDatabase" which will add the information to that table in the database while also making a snippet of the question.

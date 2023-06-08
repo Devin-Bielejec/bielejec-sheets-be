@@ -563,7 +563,6 @@ def translateCoordinates(x, y, changeX, changeY):
 	return newx, newy
 
 def sequence(xMinGraph = -10, xMaxGraph = 10, yMinGraph = -10, yMaxGraph = 10, transformation1 = ['translation','reflection','rotation','dilation'], transformation2 = ['translation','reflection','rotation','dilation'], x = [], y = [], secondShape = False):
-	dick = 3
 	#let's try doing translation reflection first
 	trans1 = random.choice(transformation1)
 	trans2 = random.choice(transformation2)

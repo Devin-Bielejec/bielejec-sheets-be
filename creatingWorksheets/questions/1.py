@@ -71,7 +71,7 @@ class _1():
         elif difficulty == 2:
             a = -1*random.randint(2,15)
             b = random.randint(1,15)
-            self.answer = formatMathString(fr"{var}={b*-a}")
+            self.answer = formatMathString(fr"{var}={b*a}")
         #x/-a = -b
         elif difficulty == 3:
             a = -1*random.randint(2,15)

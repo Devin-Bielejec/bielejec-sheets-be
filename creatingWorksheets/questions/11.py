@@ -6,76 +6,111 @@ import math
 import string
 import random
 
+def zeroesCheck(matrix, indices):
+  product = 1
+  for (r,row) in enumerate(matrix):
+    if r in indices:
+      for col in row:
+        product *= col
+  
+  return product == 0
+
+def createMatrix(variables=2,typeOfSolution="unique"):
+  #Type Of typeOfSolution - unique, infinite, infinite same equations, none
+  matrix = []
+
+  if variables == 2 and typeOfSolution == "infinite":
+    typeOfSolution = "infinite same equations"
+  for ri in range(variables):
+    col = [0 for item in range(variables+1)]
+    col[ri] = 1
+    #last value
+    col[variables] = random.randint(-10,10)
+    if typeOfSolution == "none" or typeOfSolution == "infinite":
+      #Make all values besides last value 0 and make last value not 0
+      if ri == variables-1:
+        col[ri] = 0
+        if typeOfSolution == "none":
+          col[variables] = random.choice([x for x in range(-10,11) if x != 0])
+        else:
+          col[variables] = 0
+      elif ri == variables - 2:
+        col[ri] = 1
+        col[ri+1] = 1
+    elif typeOfSolution == "infinite same equations":
+      if ri == 0:
+        #Make all the equations the same thus first row all 1's
+        col = [random.choice([-1,1])*random.randint(1,5) for item in range(variables+1)]
+        col[variables] = random.randint(-10,10)
+      else:
+        col = [0 for item in range(variables+1)]
+    
+    matrix.append(col)
+
+  answers = [x[variables] for x in matrix]
+
+  while zeroesCheck(matrix,[x for x in range(len(matrix[0]))]):
+    #Loop through each row
+    for (originalIndex, row) in enumerate(matrix):
+      #Loop through each row again
+      for (newIndex, row2) in enumerate(matrix):
+          scalar = random.choice([-1,1])*random.randint(2,3)
+          #mult by int and add to every other row
+          #When we're not on duplicate rows and zeroes still present
+          if originalIndex is not newIndex and zeroesCheck(matrix,[newIndex]) is True:
+            for scalar in [-3,-2,-1,1,2,3]:
+              #Find max value
+              maxVal = -2000
+              for (colIndex, col) in enumerate(row):
+                testVal = col * scalar + row2[colIndex]
+                if testVal > maxVal:
+                  maxVal = testVal
+              if maxVal < 10 and maxVal > -2000:
+                for (colIndex, col) in enumerate(row):
+                  row2[colIndex] = col * scalar + row2[colIndex]
+                break
+
+       
+      
+  return matrix, answers
 
 #System of 2x2 equations with finite solutions
 class _11():
-  def __init__(self, difficulty=1):
-    self.kwargs = {"difficulty":[1,2,3]}
-    self.toolTips = {"difficulty": {1:"add equations", 2:"multiply one equation", 3:"multiply both equations"}}
-    #2x2
-    """
-    diff1 add equations
-    diff2 multiply one equation
-    diff3 multiply both equations
-    """
+  def __init__(self, variables=2, typeOfSolution="unique"):
+    self.kwargs = {"variables":[2,3,4,5,6,7,8,9,10], "typeOfSolution": ["unique", "infinite", "infinite same equations", "none"]}
+    self.toolTips = {"variables": "Number of Variables", "typeOfSolution": "Type of Solution"}
+    
     v1 = "x"
     v2 = "y"
-    if difficulty == 1:
-        #ax+by=c
-        #-ax+dy=e
-        a = randomBetweenNot(-10,10,[0])
-        b = randomBetweenNot(-10,10,[0])
-        x = randomBetweenNot(-10,10)
-        y = randomBetweenNot(-10,10)
-
-        c = a*x+b*y
-
-        d = randomBetweenNot(-10,10,[0,-b])
-
-        e = -1*a*x+d*y
-
-        self.question = f"{a}{v1}+{b}{v2}={c}\n{-a}{v1}+{d}{v2}={e}"
-        self.answer = formatMathString(f"{v1}={x}, {v2}={y}")
-    elif difficulty == 2:
-        #ax+by=c
-        #multax+dy=e
-        a = randomBetweenNot(-10,10,[0])
-        b = randomBetweenNot(-10,10,[0])
-        x = randomBetweenNot(-10,10)
-        y = randomBetweenNot(-10,10)
-
-        c = a*x+b*y
-
-        #not technically multiple, more factor
-        multiple = random.choice([x for x in range(-10,11) if x not in [-1,0,1]])
-        aM = multiple*a
-
-        #d cannot be the same multiple as a or else we have infinite solutions
-        d = random.choice([num for num in range(-10,10) if num not in [0, multiple*b, -1*multiple*b]])
-        
-        e = aM*x+d*y
+    v3 = "z"
+    v4 = "a"
+    v5 = "b"
+    variableLetters = ["x", "y", "z", "a", "b", "c", "d", "e", "f","g"]
     
-        self.question = f"{a}{v1}+{b}{v2}={c}\n{aM}{v1}+{d}{v2}={e}"
-        self.answer = formatMathString(f"{v1}={x}, {v2}={y}")        
-    else:
-        #ax+by=c
-        #dx+ey=f
-        #gcd(a,d) == 1 but neither 1 or -1
-        a = randomBetweenNot(-10,10,[0,1,-1])
-        b = randomBetweenNot(-10,10,[0])
-        x = randomBetweenNot(-10,10)
-        y = randomBetweenNot(-10,10)
+    matrix, answers = createMatrix(variables=variables, typeOfSolution=typeOfSolution)
 
-        c = a*x+b*y
+    self.question = ""
+    #Loop through each row
+    for (ri,row) in enumerate(matrix):
+        #Loop through each column
+        for (ci, col) in enumerate(row):
+            #Add each value of equation before the =
+            if ci != len(row) - 1:
+              if ci != 0:
+                  self.question += f"+{col}{variableLetters[ci]}"
+              else:
+                  self.question += f"{col}{variableLetters[ci]}"
+            else:
+              self.question += f"=${col}"
+              self.question += "\n"
+    self.answer = ""
+    for (ai,ans) in enumerate(answers):
+        if ai == len(answers)-1:
+            self.answer += f"{variableLetters[ai]}={answers[ai]}"
+        else:
+            self.answer += f"{variableLetters[ai]}={answers[ai]}, "
+    self.answer = formatMathString(self.answer)
 
-        d = random.choice([d for d in range(-10,11) if (gcd(d,a) == 1 or gcd(d,a) == -1) and d not in [1,-1,0]])
-        #Ensures we don't have infinite solutions
-        e = randomBetweenNot(-10,10,[0, int(d/a*b), -1*int(d/a*b)])
-        f = d*x + e*y
-        self.question = f"{a}{v1}+{b}{v2}={c}\n{d}{v1}+{e}{v2}={f}"
-        self.answer = f"{v1}={x}, {v2}={y}"    
-
-    
     self.directions = "Solve the system for each variable: "
 
     #Take the worksheetQuestions and put them into a list form

@@ -1,7 +1,7 @@
 import sys
 from fractions import gcd, Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
-from utils.equations import formatMathString, toLatexFraction, randomBetweenNot
+from utils.equations import formatMathString, toLatexFraction, randomBetweenNot, getFactorPairs
 from utils.shapes import triangleCoordinates
 from utils.pdfFunctions import annotatePolygon
 from utils.transformations import rotation
@@ -9,125 +9,59 @@ import math
 import string
 import random
 
-#multiplying terms
-class _18():
-    def __init__(self, simplifyFraction=False,coefficients=True, multiVariables=True,someExponentIsOne=True):
+#factoring a trinomial a = 1
+"""
+middle term sign
+last number sign
+"""
+class _17():
+    def __init__(self, option="++"):
         """
-        coeffecients-bool
-        multivariables-bool
-        someExponentIsOne-bool
+        ++
+        -+
+        +-
+        --
         """
         self.kwargs = {
-            "coefficients": True,
-            "multiVariables": True,
-            "someExponentIsOne": True,
-            "simplifyFraction": False
+            "option": ["++","-+","+-","--"],
+            
         }
 
         self.toolTips = {
-            "coefficients": "There will be coeffecients in front of the terms",
-            "multiVariables": "Some terms will have multiple variables",
-            "someExponentIsOne": "There will be an exponent of 1",
-            "simplifyFraction": "Numerator coefficient will not divide nicely with denominator"
+            "option": {"++": "all positive coefficients", "--": "all negative coefficients", "-+": "- b coefficent + c coefficient", "+-": "+ b coefficient - c coefficient"}
         }
 
-        #coA var1A var2A var3A and each var1AExp etc
-        #coB var1B var2B var3B
-        if not simplifyFraction:
-            coB = randomBetweenNot(-3,3, [0])
-            coA = coB * randomBetweenNot(-5,5,[0])
-        else:
-            factor = random.randint(2,5)
-            coA = randomBetweenNot(-12,12,[-1,0,1]) * factor
-            coB = randomBetweenNot(-12,12, [x for x in range(-12,13) if gcd(coA,x) == 1 or gcd(coA,x) == -1])
-            
-        #Create variables and shuffle
-        variables = list(string.ascii_lowercase)
-        random.shuffle(variables)
+        #range between -12 and 12
+        fNeg1 = randomBetweenNot(-12,-1,[0])
+        fNeg2 = randomBetweenNot(-12,-1,[0,-fNeg1])
 
-        #Create exponents randomly
-        variablesExponents = [random.randint(1,10) for x in range(9)]
-        if someExponentIsOne:
-            variablesExponents[0] = 1
-        else:
-            for (index,item) in enumerate(variablesExponents):
-                if item == 1:
-                    variablesExponents[index] = item + 1
-        
-        var1A, var2A, var3A = variables[0:3]
-        var1B, var2B, var3B = variables[0:3]
+        fPos1 = randomBetweenNot(1,12,[0])
+        fPos2 = randomBetweenNot(1,12,[0,-fPos1])
 
-        var1AExp, var2AExp, var3AExp, var1BExp, var2BExp, var3BExp = variablesExponents[0:6]
+        if option == "++":
+            f1 = fPos1
+            f2 = fPos2
+        elif option == "-+":
+            f1 = fNeg1
+            f2 = fNeg2
+        #Pos factor is bigger
+        elif option == "+-":
+            f2 = randomBetweenNot(-11,-1,[0])
+            f1 = randomBetweenNot(abs(f2),12,[0,-f2])
+        #Neg factor is bigger
+        elif option == "--":
+            f2 = randomBetweenNot(1,11,[0])
+            f1 = randomBetweenNot(-12,-1*abs(f2),[0,-f2])
+ 
 
-        questionStringA = ""
-        questionStringB = ""
-        if coefficients:
-            questionStringA += f"{coA}"
-            questionStringB += f"{coB}"
-            answerCo = coA * coB
-        else:
-            answerCo = 1
-        
-        if multiVariables:
-            numVarsA = random.randint(1,3)
-            numVarsB = random.randint(2,3)
-        else:
-            numVarsA = 1
-            numVarsB = 1
-        forStringA = [[var1A, var1AExp], [var2A, var2AExp], [var3A, var3AExp]]
-        forStringB = [[var1B, var1BExp], [var2B, var2BExp], [var3B, var3BExp]]
-
-        answer = []
-        for index in range(numVarsA):
-            curVar = forStringA[index][0]
-            curVarExp = forStringA[index][1]
-            if curVarExp != 1:
-                questionStringA += f"{curVar}^{{{curVarExp}}}"
-            else:
-                questionStringA += f"{curVar}"
-
-            answer.append([curVar, curVarExp])
-        for index in range(numVarsB):
-            curVar = forStringB[index][0]
-            curVarExp = forStringB[index][1]
-            if curVarExp != 1:
-                questionStringB += f"{curVar}^{{{curVarExp}}}"
-            else:
-                questionStringB += f"{curVar}"
-
-            #check if answer has same variable
-            foundVar = False
-            for (indexAnswer,item) in enumerate(answer):
-                curAnswerVar = item[0]
-                curAnswerVarExp = item[1]
-                if curAnswerVar == curVar:
-                    answer[indexAnswer][1] = curAnswerVarExp + curVarExp
-                    foundVar = True
-            if not foundVar:
-                #add var to answer
-                answer.append([forStringB[index][0], forStringB[index][1]])
-
-        questionString = questionStringA + " \cdot " + questionStringB
-        questionString = formatMathString(questionString)
-        self.directions = "Multiply the terms:"
-
+        questionString = formatMathString(f"x^2+{f1+f2}x+{f1*f2}")
+        self.directions = "Factor:"
         self.question = [{"text": questionString}]
 
-        self.duplicateCheck = f"{var1A}{var1AExp}{var2A}{var2AExp}{var3A}{var3AExp}{var1B}{var1BExp}{var2B}{var2BExp}{var3B}{var3BExp}"
+        self.duplicateCheck = f"{f1}-{f2}"
 
-        #sort variables
-        sortedAnswerVars = sorted(answer, key=lambda tup: tup[0])
-
-        answerString = f"{answerCo}"
-        for item in sortedAnswerVars:
-            curVar = item[0]
-            curVarExp = item[1]
-            if curVarExp != 1:
-                answerString += f"{curVar}^{{{curVarExp}}}"
-            else:
-                answerString += f"{curVar}"
-        answerString = formatMathString(answerString)
-        self.answer = [{"text": answerString}]
+        answerString = formatMathString(f"(x+{f1})(x+{f2})")
+        self.answer = answerString
 		
         
 
