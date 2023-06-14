@@ -1,4 +1,4 @@
-from flask import Flask, g, request, send_file
+from flask import Flask, g, request, send_file, send_from_directory
 from flask_restful import Resource, Api, reqparse
 from requests import put, get
 import sqlite3
@@ -154,10 +154,18 @@ class GetFile(Resource):
 
         return file
 
+class GetImage(Resource):
+    def get(self, path):
+        print(path)
+        path = "".join([c for c in path if c.isalpha() or c.isdigit() or c==' ' or c == "=" or c == "," or c=="."]).rstrip()
+        print(path)
+        return send_from_directory('creatingWorksheets/images', path)
+
 #Get Questions from Eager Sheet DB
 api.add_resource(Questions, "/questions")
 api.add_resource(CreateDocument, "/createDocument")
 api.add_resource(GetFile, "/getFile/<userID>/<nameOfDoc>")
+api.add_resource(GetImage, "/<path>")
 
 """
 getQuestions
