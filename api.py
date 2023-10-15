@@ -1,4 +1,4 @@
-from flask import Flask, g, request, send_file, send_from_directory
+from flask import Flask, g, request, send_file, send_from_directory, Response, jsonify
 from flask_restful import Resource, Api, reqparse
 from requests import put, get
 import sqlite3
@@ -7,7 +7,10 @@ import sys
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets")
 from documentCreation import createVersions
 import os
-from flask_login import LoginManager, login_required, login_user, logout_user, current_user, UserMixin
+import json
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import create_access_token
+
 
 DATABASE = 'eagerSheets.db'
 parser = reqparse.RequestParser()
@@ -30,67 +33,31 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 app = Flask(__name__)
-login_manager = LoginManager(app)
 
-#Configure Flask-Login
-login_manager.login_view = "login"
-login_manager.refresh_token = True
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super secret"
+app.config["JWT_ALGORITHM"] = "HS256" 
+jwt = JWTManager(app)
 
 #Configure Flask-CORS
 CORS(app)
 
-class User(UserMixin):
-    def __init__(self, id, email, password):
-         self.id = unicode(id)
-         self.email = email
-         self.password = password
-         self.authenticated = False
-    def is_active(self):
-         return self.is_active()
-    def is_anonymous(self):
-         return False
-    def is_authenticated(self):
-         return self.authenticated
-    def is_active(self):
-         return True
-    def get_id(self):
-         return self.id
-
-@login_manager.user_loader
-def load_user(user_id):
-   conn = sqlite3.connect('eagerSheets.db')
-   curs = conn.cursor()
-   curs.execute("SELECT * from login where id = (?)",[user_id])
-   lu = curs.fetchone()
-   if lu is None:
-      return None
-   else:
-      return User(int(lu[0]), lu[1], lu[2])
-
-@app.route("/auth/login", methods=['GET','POST'])
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route("/login", methods=["POST"])
 def login():
-    print(request.data)
-    username = request.data["username"]
-    password = request.data["password"]
-    if current_user.is_authenticated:
-        return redirect(url_for('profile'))
-    conn = sqlite3.connect('eagerSheets.db')
-    curs = conn.cursor()
-    curs.execute("SELECT * FROM login where email = (?)",    [email])
-    user = list(curs.fetchone())
-    Us = load_user(user[0])
-    print(Us)
-    if email == Us.email and password == Us.password:
-        login_user(Us)
-        Umail = list({form.email.data})[0].split('@')[0]
-        flash('Logged in successfully '+Umail)
-        redirect(url_for('profile'))
-        return 
-    else:
-        flash('Login Unsuccessfull.')
+    print(request.json)
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    if email != "test" or password != "test":
+        return jsonify({"msg": "Bad email or password"}), 401
+
+    access_token = create_access_token(identity=email)
+    return jsonify(access_token=access_token)
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
+    print("inside get questions")
     #Query for all that we need
     questions = query_db("SELECT * FROM questions")
 
@@ -178,7 +145,7 @@ def getQuestions():
             newQuestion["kwargs"] = currentKwargs
             newQuestion["fileName"] = filePath
             questionsDicts.append(newQuestion)
-    return questionsDicts
+    return Response(json.dumps(questionsDicts))
 
 @app.route("/createDocument", methods=["POST"])
 def CreateDocument(Resource):
@@ -210,7 +177,7 @@ def getFile(userID, nameOfDoc):
     return file
 
 @app.route("/<path>", methods=["GET"])
-def getImage():
+def getImage(path):
     path = "".join([c for c in path if c.isalpha() or c.isdigit() or c==' ' or c == "=" or c == "," or c=="."]).rstrip()
     return send_from_directory('creatingWorksheets/images', path)
 
