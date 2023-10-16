@@ -10,7 +10,7 @@ import os
 import json
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
-
+from flask_jwt_extended import jwt_required
 
 DATABASE = 'eagerSheets.db'
 parser = reqparse.RequestParser()
@@ -46,14 +46,31 @@ CORS(app)
 # create_access_token() function is used to actually generate the JWT.
 @app.route("/login", methods=["POST"])
 def login():
-    print(request.json)
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if email != "test" or password != "test":
-        return jsonify({"msg": "Bad email or password"}), 401
+
+    #Need to work on hashing the password
+    if not query_db(f"SELECT email from login where email='{email}' AND Password='{password}'"):
+        return jsonify({msg: "Bad email and password"}), 401
 
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
+
+@app.route("/register", methods=["POST"])
+def register():
+    print(request)
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    print(email, password)
+
+    if not query_db(f"SELECT email from login where email='{email}'"):
+        query_db(f"INSERT into login(email,password) VALUES('{email}','{password}')")
+        get_db().commit()
+        get_db().close()
+        access_token = create_access_token(identity=email)
+        return jsonify(access_token=access_token)
+    else:
+        return jsonify({msg: "Email already exists"}), 401
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
@@ -147,7 +164,9 @@ def getQuestions():
             questionsDicts.append(newQuestion)
     return Response(json.dumps(questionsDicts))
 
+
 @app.route("/createDocument", methods=["POST"])
+@jwt_required()
 def CreateDocument(Resource):
     data = request.get_json()["data"]           
     document = data["document"]
@@ -166,6 +185,7 @@ def CreateDocument(Resource):
     return nameOfDoc
 
 @app.route("/getFile/<userID>/<nameOfDoc>", methods=["GET"])
+@jwt_required()
 def getFile(userID, nameOfDoc):
     #Path safe doc name
     nameOfDoc = "".join([c for c in nameOfDoc if c.isalpha() or c.isdigit() or c==' ']).rstrip()
