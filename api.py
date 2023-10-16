@@ -11,6 +11,7 @@ import json
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
+from flask_bcrypt import Bcrypt
 
 DATABASE = 'eagerSheets.db'
 parser = reqparse.RequestParser()
@@ -34,6 +35,8 @@ def query_db(query, args=(), one=False):
 
 app = Flask(__name__)
 
+bcrypt = Bcrypt(app)
+
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = "super secret"
 app.config["JWT_ALGORITHM"] = "HS256" 
@@ -50,9 +53,10 @@ def login():
     password = request.json.get("password", None)
 
     #Need to work on hashing the password
-    if not query_db(f"SELECT email from login where email='{email}' AND Password='{password}'"):
-        return jsonify({msg: "Bad email and password"}), 401
-
+    passwordHash = bcrypt.generate_password_hash(password)
+    if not bcrypt.check_password_hash(passwordHash, password) or not query_db(f"SELECT email from login where email='{email}' AND Password='{passwordHash}'"):
+        return jsonify({msg: "Bad email or password"}), 401
+    
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
@@ -61,10 +65,10 @@ def register():
     print(request)
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    print(email, password)
-
+    
+    passwordHash = bcrypt.generate_password_hash(password).decode("utf-8")
     if not query_db(f"SELECT email from login where email='{email}'"):
-        query_db(f"INSERT into login(email,password) VALUES('{email}','{password}')")
+        query_db(f"INSERT into login(email,password) VALUES('{email}','{passwordHash}')")
         get_db().commit()
         get_db().close()
         access_token = create_access_token(identity=email)
