@@ -299,7 +299,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 	
 			#Clear Page Before next Version Answer Key
 			doc.append(Command("clearpage"))
-
+	print(path + nameOfDoc)
 	doc.generate_pdf(path + nameOfDoc, clean=True)
 
 def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False):

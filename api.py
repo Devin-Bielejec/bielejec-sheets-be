@@ -52,21 +52,20 @@ def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    #Need to work on hashing the password
-    passwordHash = bcrypt.generate_password_hash(password)
-    if not bcrypt.check_password_hash(passwordHash, password) or not query_db(f"SELECT email from login where email='{email}' AND Password='{passwordHash}'"):
-        return jsonify({msg: "Bad email or password"}), 401
+    passwordHash = bcrypt.generate_password_hash(password).decode('utf-8') 
+    isValid = bcrypt.check_password_hash(passwordHash, password)
+    print(email,passwordHash)
+    if not isValid or not query_db(f"SELECT email from login where email='{email}'"):
+        return jsonify({"msg": "Bad email or password"}), 401
     
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
 @app.route("/register", methods=["POST"])
 def register():
-    print(request)
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    
-    passwordHash = bcrypt.generate_password_hash(password).decode("utf-8")
+    passwordHash = bcrypt.generate_password_hash(password).decode('utf-8') 
     if not query_db(f"SELECT email from login where email='{email}'"):
         query_db(f"INSERT into login(email,password) VALUES('{email}','{passwordHash}')")
         get_db().commit()
@@ -166,13 +165,16 @@ def getQuestions():
             newQuestion["kwargs"] = currentKwargs
             newQuestion["fileName"] = filePath
             questionsDicts.append(newQuestion)
-    return Response(json.dumps(questionsDicts))
+    return jsonify(questionsDicts)
 
 
 @app.route("/createDocument", methods=["POST"])
 @jwt_required()
-def CreateDocument(Resource):
+def CreateDocument():
+    print('inside createoducment')
+
     data = request.get_json()["data"]           
+    print(data, request)
     document = data["document"]
 
     ids = [question["id"] for question in document["questions"]]
@@ -189,7 +191,6 @@ def CreateDocument(Resource):
     return nameOfDoc
 
 @app.route("/getFile/<userID>/<nameOfDoc>", methods=["GET"])
-@jwt_required()
 def getFile(userID, nameOfDoc):
     #Path safe doc name
     nameOfDoc = "".join([c for c in nameOfDoc if c.isalpha() or c.isdigit() or c==' ']).rstrip()
