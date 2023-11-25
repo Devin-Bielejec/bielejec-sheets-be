@@ -34,6 +34,10 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 app = Flask(__name__)
+#Configure Flask-CORS
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 bcrypt = Bcrypt(app)
 
@@ -41,9 +45,6 @@ bcrypt = Bcrypt(app)
 app.config["JWT_SECRET_KEY"] = "super secret"
 app.config["JWT_ALGORITHM"] = "HS256" 
 jwt = JWTManager(app)
-
-#Configure Flask-CORS
-CORS(app)
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
