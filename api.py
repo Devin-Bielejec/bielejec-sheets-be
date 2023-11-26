@@ -36,16 +36,16 @@ def query_db(query, args=(), one=False):
 app = Flask(__name__)
 
 
-bcrypt = Bcrypt(app)
+# bcrypt = Bcrypt(app)
+# jwt = JWTManager(app)
 
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = "super secret"
 app.config["JWT_ALGORITHM"] = "HS256" 
-jwt = JWTManager(app)
 
 #Configure Flask-CORS
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
@@ -170,7 +170,7 @@ def getQuestions():
 
 
 @app.route("/createDocument", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def CreateDocument():
     print('inside createoducment')
 
