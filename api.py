@@ -35,7 +35,7 @@ def query_db(query, args=(), one=False):
 
 app = Flask(__name__)
 #Configure Flask-CORS
-cors = CORS(app)
+cors = CORS(app, resources={r'/*' : {"origins": ["http://localhost:3000", "https://bielejec-sheets-fe.vercel.app"]}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
