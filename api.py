@@ -15,7 +15,6 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
-
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
@@ -47,6 +46,9 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
+@app.route("/")
+def helloWorld():
+    return "Hello, cross-origin-world"
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
