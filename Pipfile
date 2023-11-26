@@ -11,4 +11,4 @@ pypdf2 = "*"
 pdf2image = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.12"
