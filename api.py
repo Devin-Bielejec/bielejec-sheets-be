@@ -35,7 +35,7 @@ def query_db(query, args=(), one=False):
 
 app = Flask(__name__)
 #Configure Flask-CORS
-CORS(app)
+cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
@@ -78,7 +78,6 @@ def register():
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
-    print("inside get questions")
     #Query for all that we need
     questions = query_db("SELECT * FROM questions")
 
