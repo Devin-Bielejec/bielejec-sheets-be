@@ -15,19 +15,19 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
-bcrypt = Bcrypt(app)
-jwt = JWTManager(app)
+# bcrypt = Bcrypt(app)
+# jwt = JWTManager(app)
 
-# Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "super secret"
-app.config["JWT_ALGORITHM"] = "HS256" 
+# # Setup the Flask-JWT-Extended extension
+# app.config["JWT_SECRET_KEY"] = "super secret"
+# app.config["JWT_ALGORITHM"] = "HS256" 
 
 #Configure Flask-CORS
 CORS(app)
 
-DATABASE = 'eagerSheets.db'
-parser = reqparse.RequestParser()
-parser.add_argument("data")
+# DATABASE = 'eagerSheets.db'
+# parser = reqparse.RequestParser()
+# parser.add_argument("data")
 
 def get_db():
     db = getattr(g, '_database', None)
