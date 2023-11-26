@@ -2,7 +2,6 @@ from flask import Flask, g, request, send_file, send_from_directory, Response, j
 from flask_restful import Resource, Api, reqparse
 from requests import put, get
 import sqlite3
-from flask_cors import CORS, cross_origin
 import sys
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets")
 from documentCreation import createVersions
@@ -12,6 +11,15 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from flask_bcrypt import Bcrypt
+
+app = Flask(__name__)
+
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
+
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super secret"
+app.config["JWT_ALGORITHM"] = "HS256" 
 
 DATABASE = 'eagerSheets.db'
 parser = reqparse.RequestParser()
@@ -28,23 +36,15 @@ def make_dicts(cursor, row):
                 for idx, value in enumerate(row))
 
 def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
-
-app = Flask(__name__)
-#Configure Flask-CORS
-CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+#     cur = get_db().execute(query, args)
+#     rv = cur.fetchall()
+#     cur.close()
+#     return (rv[0] if rv else None) if one else rv
 
 
-bcrypt = Bcrypt(app)
-
-# Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "super secret"
-app.config["JWT_ALGORITHM"] = "HS256" 
-jwt = JWTManager(app)
+@app.route("/")
+def helloWorld():
+    return "Hello questions!"
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
@@ -78,7 +78,6 @@ def register():
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
-    print("inside get questions")
     #Query for all that we need
     questions = query_db("SELECT * FROM questions")
 
@@ -204,8 +203,8 @@ def getFile(userID, nameOfDoc):
 
 @app.route("/<path>", methods=["GET"])
 def getImage(path):
-    path = "".join([c for c in path if c.isalpha() or c.isdigit() or c==' ' or c == "=" or c == "," or c=="."]).rstrip()
-    return send_from_directory('creatingWorksheets/images', path)
+#     path = "".join([c for c in path if c.isalpha() or c.isdigit() or c==' ' or c == "=" or c == "," or c=="."]).rstrip()
+#     return send_from_directory('creatingWorksheets/images', path)
 
 if __name__ == '__main__':
     app.run(debug=True)
