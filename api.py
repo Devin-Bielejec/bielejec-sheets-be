@@ -13,6 +13,19 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from flask_bcrypt import Bcrypt
 
+app = Flask(__name__)
+
+
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
+
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super secret"
+app.config["JWT_ALGORITHM"] = "HS256" 
+
+#Configure Flask-CORS
+CORS(app)
+
 DATABASE = 'eagerSheets.db'
 parser = reqparse.RequestParser()
 parser.add_argument("data")
@@ -33,19 +46,7 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-app = Flask(__name__)
 
-
-# bcrypt = Bcrypt(app)
-# jwt = JWTManager(app)
-
-# Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "super secret"
-app.config["JWT_ALGORITHM"] = "HS256" 
-
-#Configure Flask-CORS
-cors = CORS(app)
-# app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
@@ -170,7 +171,7 @@ def getQuestions():
 
 
 @app.route("/createDocument", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def CreateDocument():
     print('inside createoducment')
 
