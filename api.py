@@ -11,6 +11,10 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from flask_bcrypt import Bcrypt
+from pymongo import MongoClient
+from dotenv import load_dotenv
+load_dotenv()
+import pprint
 
 app = Flask(__name__)
 
@@ -18,33 +22,23 @@ bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "super secret"
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ALGORITHM"] = "HS256" 
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 
-DATABASE = 'eagerSheets.db'
-parser = reqparse.RequestParser()
-parser.add_argument("data")
+client = MongoClient(os.environ.get("MONGO_URI"))
 
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
+db = client["bielejecSheets"]
 
-def make_dicts(cursor, row):
-    return dict((cursor.description[idx][0], value)
-                for idx, value in enumerate(row))
+# def make_dicts(cursor, row):
+#     return dict((cursor.description[idx][0], value)
+#                 for idx, value in enumerate(row))
 
-def query_db(query, args=(), one=False):
-#     cur = get_db().execute(query, args)
-#     rv = cur.fetchall()
-#     cur.close()
-#     return (rv[0] if rv else None) if one else rv
-
-
-@app.route("/")
-def helloWorld():
-    return "Hello questions!"
+# def query_db(query, args=(), one=False):
+# #     cur = get_db().execute(query, args)
+# #     rv = cur.fetchall()
+# #     cur.close()
+# #     return (rv[0] if rv else None) if one else rv
 
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
@@ -54,11 +48,15 @@ def login():
     password = request.json.get("password", None)
 
     passwordHash = bcrypt.generate_password_hash(password).decode('utf-8') 
-    isValid = bcrypt.check_password_hash(passwordHash, password)
-    print(email,passwordHash)
-    if not isValid or not query_db(f"SELECT email from login where email='{email}'"):
+    #Check if email already exists in db and is valid
+    if not db.users.find_one({"email":email}):
         return jsonify({"msg": "Bad email or password"}), 401
-    
+
+    #Check if hash from db doesn't match with current password given
+    hashFromDB = db.users.find_one({"email": email})["password"]
+    if not bcrypt.check_password_hash(passwordHash, hashFromDB):
+        return jsonify({"msg": "Bad email or password"})
+
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
@@ -67,14 +65,13 @@ def register():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
     passwordHash = bcrypt.generate_password_hash(password).decode('utf-8') 
-    if not query_db(f"SELECT email from login where email='{email}'"):
-        query_db(f"INSERT into login(email,password) VALUES('{email}','{passwordHash}')")
-        get_db().commit()
-        get_db().close()
+    #Check if email is already taken
+    if not db.users.find_one({"email": email}):
+        db.users.insert_one({"email": email, "password": passwordHash}).inserted_id
         access_token = create_access_token(identity=email)
         return jsonify(access_token=access_token)
     else:
-        return jsonify({msg: "Email already exists"}), 401
+        return jsonify({"msg": "Email already exists"}), 401
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
@@ -203,8 +200,8 @@ def getFile(userID, nameOfDoc):
 
 @app.route("/<path>", methods=["GET"])
 def getImage(path):
-#     path = "".join([c for c in path if c.isalpha() or c.isdigit() or c==' ' or c == "=" or c == "," or c=="."]).rstrip()
-#     return send_from_directory('creatingWorksheets/images', path)
+    path = "".join([c for c in path if c.isalpha() or c.isdigit() or c==' ' or c == "=" or c == "," or c=="."]).rstrip()
+    return send_from_directory('creatingWorksheets/images', path)
 
 if __name__ == '__main__':
     app.run(debug=True)
