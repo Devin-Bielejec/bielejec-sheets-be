@@ -15,8 +15,10 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 load_dotenv()
 import pprint
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
