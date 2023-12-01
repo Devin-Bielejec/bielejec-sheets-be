@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from utils.equations import formatMathString, toLatexFraction, randomBetweenNot, getFactorPairs
 from utils.shapes import triangleCoordinates
@@ -47,25 +47,25 @@ class _19():
             a2 = aList[1]
 
         if option == "++":
-            f1 = random.choice([num for num in range(1,13) if gcd(num,a1) == 1])
-            f2 = random.choice([num for num in range(1,13) if gcd(num,a2) == 1])
+            f1 = random.choice([num for num in range(1,13) if math.gcd(num,a1) == 1])
+            f2 = random.choice([num for num in range(1,13) if math.gcd(num,a2) == 1])
         elif option == "-+":
-            f1 = -1*random.choice([num for num in range(1,13) if gcd(num,a1) == 1])
-            f2 = -1*random.choice([num for num in range(1,13) if gcd(num,a2) == 1])
+            f1 = -1*random.choice([num for num in range(1,13) if math.gcd(num,a1) == 1])
+            f2 = -1*random.choice([num for num in range(1,13) if math.gcd(num,a2) == 1])
         #Pos factor is bigger
         elif option == "+-":
-            f1 = random.choice([num for num in range(1,13) if gcd(num,a1) == 1])
+            f1 = random.choice([num for num in range(1,13) if math.gcd(num,a1) == 1])
             #and make sure f1*a2 does not equal f2*a1 which would create 0 in the middle
-            f2 = random.choice([num for num in range(1,13) if gcd(num,a2) == 1 and f1*a2 != num*a1])
+            f2 = random.choice([num for num in range(1,13) if math.gcd(num,a2) == 1 and f1*a2 != num*a1])
             #check if f1 * a2 is bigger, then make f1 positive else f2 positive
             if f1 * a2 > f2 * a1:
                 f2 = -1*f2
             else:
                 f1 = -1*f1
         elif option == "--":
-            f1 = random.choice([num for num in range(1,13) if gcd(num,a1) == 1])
+            f1 = random.choice([num for num in range(1,13) if math.gcd(num,a1) == 1])
             #and make sure f1*a2 does not equal f2*a1 which would create 0 in the middle
-            f2 = random.choice([num for num in range(1,13) if gcd(num,a2) == 1 and f1*a2 != num*a1])
+            f2 = random.choice([num for num in range(1,13) if math.gcd(num,a2) == 1 and f1*a2 != num*a1])
             #check if f1 * a2 is bigger, then make f1 positive else f2 positive
             if f1 * a2 < f2 * a1:
                 f2 = -1*f2

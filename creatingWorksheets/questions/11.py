@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from equations import formatMathString, toLatexFraction, randomBetweenNot
 import math
@@ -77,7 +77,7 @@ def createMatrix(variables=2,typeOfSolution="unique"):
 #System of 2x2 equations with finite solutions
 class _11():
   def __init__(self, variables=2, typeOfSolution="unique"):
-    self.kwargs = {"variables":[2,3,4,5,6,7,8,9,10], "typeOfSolution": ["unique", "infinite", "infinite same equations", "none"]}
+    self.kwargs = {"variables":[2,3,4], "typeOfSolution": ["unique", "infinite", "infinite same equations", "none"]}
     self.toolTips = {"variables": "Number of Variables", "typeOfSolution": "Type of Solution"}
     
     v1 = "x"

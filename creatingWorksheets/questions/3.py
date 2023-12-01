@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from equations import formatMathString, toLatexFraction, randomBetweenNot
 import math
@@ -41,7 +41,7 @@ class _3():
         denos = []
         for ansNum in range(-20,21):
             for ansDenom in range(2,11):
-                if ansNum not in [-1,0,1] and ansDenom not in [-1,0,1] and gcd(ansDenom, ansNum) == 1:
+                if ansNum not in [-1,0,1] and ansDenom not in [-1,0,1] and math.gcd(ansDenom, ansNum) == 1:
                     denos.append([ansDenom, ansNum])
         random.shuffle(denos)
         ansNum = denos[0][1]

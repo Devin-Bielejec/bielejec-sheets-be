@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from utils.equations import formatMathString, toLatexFraction, randomBetweenNot, getFactorPairs
 from utils.shapes import triangleCoordinates

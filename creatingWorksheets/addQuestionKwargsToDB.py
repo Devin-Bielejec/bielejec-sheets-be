@@ -1,29 +1,25 @@
-import sqlite3
 import sys
 from importlib import import_module
 import questions
 from createSnippet import createSnippet
+import json
+
 
 def addQuestionKwargsToDB():
-    db = sqlite3.connect('../eagerSheets.db')
+    #questions as list
+    f = open('questions.json')
+    data = json.load(f)
+    questions = []
+    for i in data:
+        questions.append(data[i])
 
-    cur = db.cursor()
+    #get ids from questions - create all new questionsKwargs everytime
+    ids = [i["id"] for i in questions]
     
-    #Get ids - use this to grab classes from files
-    cur.execute("SELECT id FROM questions")
-    ids = [i[0] for i in cur.fetchall()]
-
-    cur.execute("SELECT questionID FROM questionsKwargs")
-    idsFromKwargs = [i[0] for i in cur.fetchall()]
-    print(ids)
-    
-    print(idsFromKwargs)
-    idsToAdd = [x for x in ids if x not in idsFromKwargs]
-    print("ids to add",ids)
+    questionsKwargs = []
 
     #instantiate class instances to get kwargs and toolTips
-    for _id in idsToAdd:
-        print(_id)
+    for _id in ids:
         mod = import_module(f"questions.{_id}")
         class_ = getattr(mod, f"_{_id}")
         i = class_()
@@ -34,14 +30,14 @@ def addQuestionKwargsToDB():
                 #There is a tool tip for each kwarg
                 if isinstance(i.toolTips[key], dict):
                     for item in i.kwargs[key]:
-                        cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)",(_id,key,item,i.toolTips[key][item]))
+                        questionsKwargs.append({"questionID": _id, "key": key, "value": item, "toolTip": i.toolTips[key][item]})
                 #Tool tip is same for everything
                 else:
                     for item in i.kwargs[key]:
-                        cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)",(_id,key,item,i.toolTips[key]))
+                        questionsKwargs.append({"questionID": _id, "key": key, "value": item, "toolTip": i.toolTips[key]})
             elif isinstance(i.kwargs[key], bool):
-                cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)", (_id,key,True,i.toolTips[key]))
-                cur.execute(f"INSERT INTO questionsKwargs VALUES (?,?,?,?)", (_id,key,False,i.toolTips[key]))
+                questionsKwargs.append({"questionID": _id, "key": key, "value": True, "toolTip": i.toolTips[key]})
+                questionsKwargs.append({"questionID": _id, "key": key, "value": False, "toolTip": i.toolTips[key]})
 
     #Make snippet if doesn't exists - nice for troulbe shooting
     for _id in ids:
@@ -76,13 +72,8 @@ def addQuestionKwargsToDB():
             if not Path(f"../creatingWorksheets/images/{filePath}.jpg").is_file():
                 createSnippet(class_, currentKwargs, filePath)
 
-
-    # # Save (commit) the changes
-    db.commit()
-
-    # We can also close the connection if we are done with it.
-    # Just be sure any changes have been committed or they will be lost.
-    db.close()
+        with open("./questionsKwargs.json", "w") as outfile:
+            json.dump(questionsKwargs, outfile, indent=2)
 
 
 

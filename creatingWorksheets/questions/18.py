@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from utils.equations import formatMathString, toLatexFraction, randomBetweenNot
 from utils.shapes import triangleCoordinates
@@ -39,7 +39,7 @@ class _18():
         else:
             factor = random.randint(2,5)
             coA = randomBetweenNot(-12,12,[-1,0,1]) * factor
-            coB = randomBetweenNot(-12,12, [x for x in range(-12,13) if gcd(coA,x) == 1 or gcd(coA,x) == -1])
+            coB = randomBetweenNot(-12,12, [x for x in range(-12,13) if math.gcd(coA,x) == 1 or math.gcd(coA,x) == -1])
             
         #Create variables and shuffle
         variables = list(string.ascii_lowercase)
