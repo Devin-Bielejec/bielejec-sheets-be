@@ -9,6 +9,14 @@ verify_ssl = true
 pylatex = "*"
 pypdf2 = "*"
 pdf2image = "*"
+flask = "*"
+flask-restful = "*"
+requests = "*"
+flask-jwt-extended = "*"
+flask-bcrypt = "*"
+pymongo = "*"
+python-dotenv = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.12"

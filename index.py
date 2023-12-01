@@ -1,7 +1,6 @@
 from flask import Flask, g, request, send_file, send_from_directory, Response, jsonify
 from flask_restful import Resource, Api, reqparse
 from requests import put, get
-import sqlite3
 import sys
 sys.path.insert(0, "./creatingWorksheets")
 from documentCreation import createVersions
@@ -19,6 +18,10 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route("/test", methods = ["GET"])
+def helloWorld():
+    return "<p>hello world<p>"
 
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
@@ -65,9 +68,7 @@ def register():
     else:
         return jsonify({"msg": "Email already exists"}), 401
 
-@app.route("/test", methods = ["GET"])
-def helloWorld():
-    return "<p>hello world<p>"
+
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
