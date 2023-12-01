@@ -20,6 +20,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/test", methods = ["GET"])
+def helloWorld():
+    return "<p>hello world<p>"
+
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
@@ -65,9 +69,7 @@ def register():
     else:
         return jsonify({"msg": "Email already exists"}), 401
 
-@app.route("/test", methods = ["GET"])
-def helloWorld():
-    return "<p>hello world<p>"
+
 
 @app.route("/questions", methods=["GET"])
 def getQuestions():
