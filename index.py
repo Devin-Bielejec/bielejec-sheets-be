@@ -3,7 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from requests import put, get
 import sqlite3
 import sys
-sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets")
+sys.path.insert(0, "./creatingWorksheets")
 from documentCreation import createVersions
 import os
 import json
