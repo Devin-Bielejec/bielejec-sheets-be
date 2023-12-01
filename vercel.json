@@ -12,7 +12,16 @@
         {
           "key": "Access-Control-Allow-Headers",
           "value": "append,delete,entries,foreach,get,has,keys,set,values,Authorization,X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-        }
+        },
+        {
+          "key": "RewriteEngine",
+          "value": "on"
+        },
+        {
+          "key": "RewriteCond",
+          "value": "%{REQUEST_METHOD} OPTIONS"
+        },
+        { "key": "RewriteRule", "value": "^(.*)$ $1 [R=200,L]" }
       ]
     }
   ]
