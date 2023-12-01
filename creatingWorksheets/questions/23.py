@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from utils.equations import formatMathString, toLatexFraction, randomBetweenNot
 from utils.shapes import triangleCoordinates
@@ -33,7 +33,7 @@ class _23():
           #difficulty 1 - one step linear
           #d/a + x/b = e/f
           a = random.randint(2,10)
-          d = random.choice([i for i in range(2,30) if gcd(i,a) == 1])
+          d = random.choice([i for i in range(2,30) if math.gcd(i,a) == 1])
           a = a*random.choice([-1,1])
           
           b = random.randint(2,20)
@@ -42,9 +42,9 @@ class _23():
           e = random.randint(1,20)
           #Keep fraction smaller side
           try:
-            f = random.choice([i for i in range(2,30) if gcd(e,i) == 1 and (abs(Fraction(e/i-d/a)*b).limit_denominator().numerator) <= 100])
+            f = random.choice([i for i in range(2,30) if math.gcd(e,i) == 1 and (abs(Fraction(e/i-d/a)*b).limit_denominator().numerator) <= 100])
           except:
-            f = random.choice([i for i in range(2,30) if gcd(e,i) == 1])
+            f = random.choice([i for i in range(2,30) if math.gcd(e,i) == 1])
 
           e = e*random.choice([-1,1])
           f = f*random.choice([-1,1])
@@ -62,13 +62,13 @@ class _23():
         elif difficulty == 2:
           #ax/bx + c/d = e/fx
           a = randomBetweenNot(-10,10,[0])
-          b = random.choice([b for b in range(-20,21) if abs(gcd(a,b)) == 1])
+          b = random.choice([b for b in range(-20,21) if abs(math.gcd(a,b)) == 1])
           
           c = randomBetweenNot(-10,10,[0])
-          d = random.choice([d for d in range(-20,21) if abs(gcd(c,d)) == 1])
+          d = random.choice([d for d in range(-20,21) if abs(math.gcd(c,d)) == 1])
           
           e = randomBetweenNot(-10,10,[0])
-          f = random.choice([f for f in range(-20,21) if abs(gcd(e,f)) == 1])
+          f = random.choice([f for f in range(-20,21) if abs(math.gcd(e,f)) == 1])
           
         self.directions = "Solve for x:"
         self.question = [{"text": formatMathString(questionString)}]

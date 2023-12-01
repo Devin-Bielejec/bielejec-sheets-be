@@ -30,16 +30,6 @@ client = MongoClient(os.environ.get("MONGO_URI"))
 
 db = client["bielejecSheets"]
 
-# def make_dicts(cursor, row):
-#     return dict((cursor.description[idx][0], value)
-#                 for idx, value in enumerate(row))
-
-# def query_db(query, args=(), one=False):
-# #     cur = get_db().execute(query, args)
-# #     rv = cur.fetchall()
-# #     cur.close()
-# #     return (rv[0] if rv else None) if one else rv
-
 # Create a route to authenticate your users and return JWTs. The
 # create_access_token() function is used to actually generate the JWT.
 @app.route("/login", methods=["POST"])
@@ -55,7 +45,7 @@ def login():
     #Check if hash from db doesn't match with current password given
     hashFromDB = db.users.find_one({"email": email})["password"]
     if not bcrypt.check_password_hash(passwordHash, hashFromDB):
-        return jsonify({"msg": "Bad email or password"})
+        return jsonify({"msg": "Bad email or password"}), 401
 
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
@@ -76,30 +66,25 @@ def register():
 @app.route("/questions", methods=["GET"])
 def getQuestions():
     #Query for all that we need
-    questions = query_db("SELECT * FROM questions")
+    f = open('./creatingWorksheets/questions.json')
+    data = json.load(f)
+    questions = []
+    for i in data:
+        questions.append(data[i])
 
     questionsDicts = []
-    for q in questions:
-        d = {}
-        d["id"] = q[0]
-        d["standard"] = q[1]
-        d["skill"] = q[2]
-        d["subSkill"] = q[3]
-        d["topic"] = q[4]
-        d["subTopic"] = q[5]
-        d["notes"] = q[6]
-        d["type"] = q[7]
-        d["subject"] = q[8]
-
-        #Get kwargs
-        kwargs = query_db("SELECT * FROM questionsKwargs WHERE questionID=:id", {"id":d["id"]})
+    for d in questions:
+        f = open('./creatingWorksheets/questionsKwargs.json')
+        kwargs = json.load(f)
+        #Get kwargs by id
+        kwargs = [item for item in kwargs if item["questionID"] == d["id"]]
 
         #turn database return into kwargs from class structure
         #(id,key,value,toolTip) -> kwargs = {key1: bool, key2: [o1,o2]}
         newKwargs = {}
-        for (i,row) in enumerate(kwargs):
-            curKey = row[1]
-            curValue = row[2]
+        for (i,k) in enumerate(kwargs):
+            curKey = k["key"]
+            curValue = k["value"]
             
             if curKey in newKwargs:
                 #Already a list
@@ -168,10 +153,8 @@ def getQuestions():
 @app.route("/createDocument", methods=["POST"])
 @jwt_required()
 def CreateDocument():
-    print('inside createoducment')
-
     data = request.get_json()["data"]           
-    print(data, request)
+
     document = data["document"]
 
     ids = [question["id"] for question in document["questions"]]

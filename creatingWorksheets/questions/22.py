@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from utils.equations import formatMathString, toLatexFraction, randomBetweenNot
 from utils.shapes import triangleCoordinates
@@ -35,7 +35,7 @@ class _22():
         var2Exp = random.randint(1,5)
       num1 = random.randint(1,12)
       #num2 cubed needs to be coprime of num1 cubed
-      num2 = random.choice([item for item in range(1,13) if gcd(item**3,num1**3) == 1 or gcd(item**3,num1**3) == -1])
+      num2 = random.choice([item for item in range(1,13) if math.gcd(item**3,num1**3) == 1 or math.gcd(item**3,num1**3) == -1])
       sign = "+" if option == "sum" else "-"
       oppSign = "-" if option == "sum" else "+"
       if difficulty == 1:

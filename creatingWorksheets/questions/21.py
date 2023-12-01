@@ -1,5 +1,5 @@
 import sys
-from fractions import gcd, Fraction
+from fractions import Fraction
 sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
 from utils.equations import formatMathString, toLatexFraction, randomBetweenNot
 from utils.shapes import triangleCoordinates
@@ -30,11 +30,11 @@ class _21():
         elif difficulty == 2:
           a = random.randint(1,12)
           exp = 1
-          b = random.choice([x for x in range(1,13) if x != a and gcd(a,x) == 1])
+          b = random.choice([x for x in range(1,13) if x != a and math.gcd(a,x) == 1])
         else:
           a = random.randint(1,12)
           exp = random.choice([x for x in range(2,4,1)])
-          b = random.choice([x for x in range(1,13) if x != a and gcd(a,x) == 1]) 
+          b = random.choice([x for x in range(1,13) if x != a and math.gcd(a,x) == 1]) 
 
         answerString = formatMathString(f"({a}{var}^{exp}+{b})({a}{var}^{exp}-{b})")
         questionString = formatMathString(f"{a**2}{var}^{{{exp*2}}}-{b**2}")

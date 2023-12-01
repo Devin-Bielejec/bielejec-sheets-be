@@ -1,0 +1,752 @@
+[
+  {
+    "questionID": "1",
+    "key": "firstStep",
+    "value": "add",
+    "toolTip": "Operation to solve"
+  },
+  {
+    "questionID": "1",
+    "key": "firstStep",
+    "value": "subtract",
+    "toolTip": "Operation to solve"
+  },
+  {
+    "questionID": "1",
+    "key": "firstStep",
+    "value": "multiply",
+    "toolTip": "Operation to solve"
+  },
+  {
+    "questionID": "1",
+    "key": "firstStep",
+    "value": "divide",
+    "toolTip": "Operation to solve"
+  },
+  {
+    "questionID": "1",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "Positive number result"
+  },
+  {
+    "questionID": "1",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "Postive number result with larger numbers"
+  },
+  {
+    "questionID": "1",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "Negative number result"
+  },
+  {
+    "questionID": "2",
+    "key": "firstStep",
+    "value": "add",
+    "toolTip": "1st operation to solve"
+  },
+  {
+    "questionID": "2",
+    "key": "firstStep",
+    "value": "subtract",
+    "toolTip": "1st operation to solve"
+  },
+  {
+    "questionID": "2",
+    "key": "secondStep",
+    "value": "multiply",
+    "toolTip": "2nd operation to solve"
+  },
+  {
+    "questionID": "2",
+    "key": "secondStep",
+    "value": "divide",
+    "toolTip": "2nd operation to solve"
+  },
+  {
+    "questionID": "2",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "ax+b=c"
+  },
+  {
+    "questionID": "2",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "includes negative numbers and fractions"
+  },
+  {
+    "questionID": "2",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "b+ax=c"
+  },
+  {
+    "questionID": "3",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "ax+b=cx"
+  },
+  {
+    "questionID": "3",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "ax+b=cx+d"
+  },
+  {
+    "questionID": "3",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "fractions in answer"
+  },
+  {
+    "questionID": "4",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "a(bx+c)=d"
+  },
+  {
+    "questionID": "4",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "a(bx+c)=dx"
+  },
+  {
+    "questionID": "4",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "a(bx+c)=d(ex+f)"
+  },
+  {
+    "questionID": "5",
+    "key": "pictureDrawn",
+    "value": true,
+    "toolTip": "Picture is drawn"
+  },
+  {
+    "questionID": "5",
+    "key": "pictureDrawn",
+    "value": false,
+    "toolTip": "Picture is drawn"
+  },
+  {
+    "questionID": "6",
+    "key": "pictureDrawn",
+    "value": true,
+    "toolTip": "Picture is drawn"
+  },
+  {
+    "questionID": "6",
+    "key": "pictureDrawn",
+    "value": false,
+    "toolTip": "Picture is drawn"
+  },
+  {
+    "questionID": "7",
+    "key": "wholeFigureRotation",
+    "value": null,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "7",
+    "key": "wholeFigureRotation",
+    "value": 0,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "7",
+    "key": "wholeFigureRotation",
+    "value": 45,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "7",
+    "key": "wholeFigureRotation",
+    "value": 90,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "7",
+    "key": "wholeFigureRotation",
+    "value": 135,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "7",
+    "key": "wholeFigureRotation",
+    "value": 180,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "roundingInTermsOfPi",
+    "value": true,
+    "toolTip": "Round final answer in terms of pi"
+  },
+  {
+    "questionID": "8",
+    "key": "roundingInTermsOfPi",
+    "value": false,
+    "toolTip": "Round final answer in terms of pi"
+  },
+  {
+    "questionID": "8",
+    "key": "wholeFigureRotation",
+    "value": null,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "wholeFigureRotation",
+    "value": 0,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "wholeFigureRotation",
+    "value": 45,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "wholeFigureRotation",
+    "value": 90,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "wholeFigureRotation",
+    "value": 135,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "wholeFigureRotation",
+    "value": 180,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "8",
+    "key": "option",
+    "value": "Given radius",
+    "toolTip": "Given Information"
+  },
+  {
+    "questionID": "8",
+    "key": "option",
+    "value": "Given diameter",
+    "toolTip": "Given Information"
+  },
+  {
+    "questionID": "9",
+    "key": "option",
+    "value": "Given radius",
+    "toolTip": "Given Information"
+  },
+  {
+    "questionID": "9",
+    "key": "option",
+    "value": "Given diameter",
+    "toolTip": "Given Information"
+  },
+  {
+    "questionID": "9",
+    "key": "roundingInTermsOfPi",
+    "value": true,
+    "toolTip": "Round final answer in terms of pi"
+  },
+  {
+    "questionID": "9",
+    "key": "roundingInTermsOfPi",
+    "value": false,
+    "toolTip": "Round final answer in terms of pi"
+  },
+  {
+    "questionID": "9",
+    "key": "wholeFigureRotation",
+    "value": null,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "9",
+    "key": "wholeFigureRotation",
+    "value": 0,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "9",
+    "key": "wholeFigureRotation",
+    "value": 45,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "9",
+    "key": "wholeFigureRotation",
+    "value": 90,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "9",
+    "key": "wholeFigureRotation",
+    "value": 135,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "9",
+    "key": "wholeFigureRotation",
+    "value": 180,
+    "toolTip": "Degrees Rotated"
+  },
+  {
+    "questionID": "10",
+    "key": "pictureDrawn",
+    "value": true,
+    "toolTip": "Picture is drawn"
+  },
+  {
+    "questionID": "10",
+    "key": "pictureDrawn",
+    "value": false,
+    "toolTip": "Picture is drawn"
+  },
+  {
+    "questionID": "10",
+    "key": "roundingInTermsOfPi",
+    "value": true,
+    "toolTip": "Round final answer in terms of pi"
+  },
+  {
+    "questionID": "10",
+    "key": "roundingInTermsOfPi",
+    "value": false,
+    "toolTip": "Round final answer in terms of pi"
+  },
+  {
+    "questionID": "10",
+    "key": "option",
+    "value": "Given radius",
+    "toolTip": "Given Information"
+  },
+  {
+    "questionID": "10",
+    "key": "option",
+    "value": "Given diameter",
+    "toolTip": "Given Information"
+  },
+  {
+    "questionID": "11",
+    "key": "variables",
+    "value": 2,
+    "toolTip": "Number of Variables"
+  },
+  {
+    "questionID": "11",
+    "key": "variables",
+    "value": 3,
+    "toolTip": "Number of Variables"
+  },
+  {
+    "questionID": "11",
+    "key": "variables",
+    "value": 4,
+    "toolTip": "Number of Variables"
+  },
+  {
+    "questionID": "11",
+    "key": "typeOfSolution",
+    "value": "unique",
+    "toolTip": "Type of Solution"
+  },
+  {
+    "questionID": "11",
+    "key": "typeOfSolution",
+    "value": "infinite",
+    "toolTip": "Type of Solution"
+  },
+  {
+    "questionID": "11",
+    "key": "typeOfSolution",
+    "value": "infinite same equations",
+    "toolTip": "Type of Solution"
+  },
+  {
+    "questionID": "11",
+    "key": "typeOfSolution",
+    "value": "none",
+    "toolTip": "Type of Solution"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "0+",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "0-",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "+0",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "-0",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "++",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "+-",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "--",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "xyChange",
+    "value": "-+",
+    "toolTip": "Amount of x Change followed by amount of y change"
+  },
+  {
+    "questionID": "12",
+    "key": "overlap",
+    "value": true,
+    "toolTip": "Will Overlap"
+  },
+  {
+    "questionID": "12",
+    "key": "overlap",
+    "value": false,
+    "toolTip": "Will Overlap"
+  },
+  {
+    "questionID": "12",
+    "key": "prime",
+    "value": true,
+    "toolTip": "Prime Notation"
+  },
+  {
+    "questionID": "12",
+    "key": "prime",
+    "value": false,
+    "toolTip": "Prime Notation"
+  },
+  {
+    "questionID": "12",
+    "key": "algebraic",
+    "value": true,
+    "toolTip": "Algebraic Notation"
+  },
+  {
+    "questionID": "12",
+    "key": "algebraic",
+    "value": false,
+    "toolTip": "Algebraic Notation"
+  },
+  {
+    "questionID": "13",
+    "key": "overlap",
+    "value": true,
+    "toolTip": "Will Overlap"
+  },
+  {
+    "questionID": "13",
+    "key": "overlap",
+    "value": false,
+    "toolTip": "Will Overlap"
+  },
+  {
+    "questionID": "13",
+    "key": "prime",
+    "value": true,
+    "toolTip": "Prime Notation"
+  },
+  {
+    "questionID": "13",
+    "key": "prime",
+    "value": false,
+    "toolTip": "Prime Notation"
+  },
+  {
+    "questionID": "13",
+    "key": "line",
+    "value": "x=not0",
+    "toolTip": "Line to relfect over"
+  },
+  {
+    "questionID": "13",
+    "key": "line",
+    "value": "y=not0",
+    "toolTip": "Line to relfect over"
+  },
+  {
+    "questionID": "13",
+    "key": "line",
+    "value": "yaxis",
+    "toolTip": "Line to relfect over"
+  },
+  {
+    "questionID": "13",
+    "key": "line",
+    "value": "xaxis",
+    "toolTip": "Line to relfect over"
+  },
+  {
+    "questionID": "13",
+    "key": "line",
+    "value": "x=0",
+    "toolTip": "Line to relfect over"
+  },
+  {
+    "questionID": "13",
+    "key": "line",
+    "value": "y=0",
+    "toolTip": "Line to relfect over"
+  },
+  {
+    "questionID": "14",
+    "key": "prime",
+    "value": true,
+    "toolTip": "Prime Notation"
+  },
+  {
+    "questionID": "14",
+    "key": "prime",
+    "value": false,
+    "toolTip": "Prime Notation"
+  },
+  {
+    "questionID": "14",
+    "key": "overlap",
+    "value": true,
+    "toolTip": "Will Overlap"
+  },
+  {
+    "questionID": "14",
+    "key": "overlap",
+    "value": false,
+    "toolTip": "Will Overlap"
+  },
+  {
+    "questionID": "14",
+    "key": "center",
+    "value": "origin",
+    "toolTip": "Center point of rotation"
+  },
+  {
+    "questionID": "14",
+    "key": "center",
+    "value": "other",
+    "toolTip": "Center point of rotation"
+  },
+  {
+    "questionID": "14",
+    "key": "variation",
+    "value": "90 cw",
+    "toolTip": "Degrees and direction of rotation"
+  },
+  {
+    "questionID": "14",
+    "key": "variation",
+    "value": "90 ccw",
+    "toolTip": "Degrees and direction of rotation"
+  },
+  {
+    "questionID": "14",
+    "key": "variation",
+    "value": "180",
+    "toolTip": "Degrees and direction of rotation"
+  },
+  {
+    "questionID": "16",
+    "key": "coefficients",
+    "value": true,
+    "toolTip": "There will be coeffecients in front of the terms"
+  },
+  {
+    "questionID": "16",
+    "key": "coefficients",
+    "value": false,
+    "toolTip": "There will be coeffecients in front of the terms"
+  },
+  {
+    "questionID": "16",
+    "key": "multiVariables",
+    "value": true,
+    "toolTip": "Some terms will have multiple variables"
+  },
+  {
+    "questionID": "16",
+    "key": "multiVariables",
+    "value": false,
+    "toolTip": "Some terms will have multiple variables"
+  },
+  {
+    "questionID": "16",
+    "key": "someExponentIsOne",
+    "value": true,
+    "toolTip": "There will be an exponent of 1"
+  },
+  {
+    "questionID": "16",
+    "key": "someExponentIsOne",
+    "value": false,
+    "toolTip": "There will be an exponent of 1"
+  },
+  {
+    "questionID": "17",
+    "key": "option",
+    "value": "++",
+    "toolTip": "all positive coefficients"
+  },
+  {
+    "questionID": "17",
+    "key": "option",
+    "value": "-+",
+    "toolTip": "- b coefficent + c coefficient"
+  },
+  {
+    "questionID": "17",
+    "key": "option",
+    "value": "+-",
+    "toolTip": "+ b coefficient - c coefficient"
+  },
+  {
+    "questionID": "17",
+    "key": "option",
+    "value": "--",
+    "toolTip": "all negative coefficients"
+  },
+  {
+    "questionID": "19",
+    "key": "option",
+    "value": "++",
+    "toolTip": "all positive coefficients"
+  },
+  {
+    "questionID": "19",
+    "key": "option",
+    "value": "-+",
+    "toolTip": "- b coefficent + c coefficient"
+  },
+  {
+    "questionID": "19",
+    "key": "option",
+    "value": "+-",
+    "toolTip": "+ b coefficient - c coefficient"
+  },
+  {
+    "questionID": "19",
+    "key": "option",
+    "value": "--",
+    "toolTip": "all negative coefficients"
+  },
+  {
+    "questionID": "19",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "a coefficient is prime"
+  },
+  {
+    "questionID": "19",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "a coefficient is not prime"
+  },
+  {
+    "questionID": "20",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "fewer coefficients"
+  },
+  {
+    "questionID": "20",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "more coefficients"
+  },
+  {
+    "questionID": "20",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "factor by dots afterwards"
+  },
+  {
+    "questionID": "21",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "basic"
+  },
+  {
+    "questionID": "21",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "two squares"
+  },
+  {
+    "questionID": "21",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "not 2 exponent"
+  },
+  {
+    "questionID": "22",
+    "key": "option",
+    "value": "sum",
+    "toolTip": "adding"
+  },
+  {
+    "questionID": "22",
+    "key": "option",
+    "value": "difference",
+    "toolTip": "subtracting"
+  },
+  {
+    "questionID": "22",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "var^3 +- num^3"
+  },
+  {
+    "questionID": "22",
+    "key": "difficulty",
+    "value": 2,
+    "toolTip": "var^(num%3) +- num^3"
+  },
+  {
+    "questionID": "22",
+    "key": "difficulty",
+    "value": 3,
+    "toolTip": "num^3var^(num%3) +- num^3"
+  },
+  {
+    "questionID": "22",
+    "key": "difficulty",
+    "value": 4,
+    "toolTip": "num^3var^(num%3) +- num^3var2^(num%3)"
+  },
+  {
+    "questionID": "23",
+    "key": "difficulty",
+    "value": 1,
+    "toolTip": "one step linear equation"
+  }
+]
