@@ -1,11 +1,2 @@
-package-fontenc
-package-inputenc
-package-lmodern
-package-textcomp
-package-lastpage
-package-parskip
-package-geometry
-package-subfig
-package-tkz-euclide
-package-ragged2e
-package-fancyhdr
+collection-pictures
+collection-latexextra
