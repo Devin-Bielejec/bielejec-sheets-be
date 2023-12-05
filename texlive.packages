@@ -1,2 +1,11 @@
-collection-pictures
-collection-latexextra
+fontenc
+inputenc
+lmodern
+textcomp
+lastpage
+parskip
+geometry
+subfig
+tkz-euclide
+ragged2e
+fancyhdr
