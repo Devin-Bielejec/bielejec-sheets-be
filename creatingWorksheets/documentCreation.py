@@ -358,7 +358,7 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 		questions.append(versionQuestions)
 
 	#Now have createWorksheet or Assessment take a list of lists
-	createPDF(worksheet=worksheet, path="creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns, texOnly = documentOptions['texOnly'])
+	createPDF(worksheet=worksheet, path="./creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns, texOnly = documentOptions['texOnly'])
 	
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', questionClass = "", questionKwargs = {}):
