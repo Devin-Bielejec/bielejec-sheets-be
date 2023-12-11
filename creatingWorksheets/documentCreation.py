@@ -168,7 +168,7 @@ def handleQuestionPart(doc, questionPart):
 				grid(doc = doc)
 				graphPolygon(doc = doc, x = currentDict["x"], y = currentDict["y"], annotations = currentDict["annotations"], color = currentDict["color"])
 
-def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False):
+def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False, textOnly = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
 	#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
@@ -300,7 +300,10 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 			#Clear Page Before next Version Answer Key
 			doc.append(Command("clearpage"))
 	print(path + nameOfDoc)
-	doc.generate_pdf(path + nameOfDoc, clean=True)
+	if texOnly == True:
+		doc.genereate_tex(path + nameOfDoc)
+	else:
+		doc.generate_pdf(path + nameOfDoc, clean=True)
 
 def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False):
 	#Attempt for no duplicates

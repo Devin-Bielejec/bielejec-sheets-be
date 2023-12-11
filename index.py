@@ -171,9 +171,15 @@ def CreateDocument():
     nameOfDoc = "".join([c for c in document["nameOfDoc"] if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
     #Testing BELOW
-    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge"}
+    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge", "textOnly":True}
 
     createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
+    
+    #Send tex file
+    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":"document.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/{nameOfDoc}.tex", 'rb'), "return":"pdf"})
+
+    with open(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf", 'wb') as f:
+        f.write(response.content)
 
     return nameOfDoc
 
