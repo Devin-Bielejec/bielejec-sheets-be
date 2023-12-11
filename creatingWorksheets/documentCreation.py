@@ -300,7 +300,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 			#Clear Page Before next Version Answer Key
 			doc.append(Command("clearpage"))
 	print(path + nameOfDoc)
-	print(os.getswd())
+	print(os.getcwd())
 	if texOnly == True:
 		doc.generate_tex(path + nameOfDoc)
 	else:
