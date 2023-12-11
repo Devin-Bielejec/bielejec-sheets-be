@@ -169,16 +169,17 @@ def CreateDocument():
     nameOfDoc = "".join([c for c in document["nameOfDoc"] if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
     #Testing BELOW
-    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge", "texOnly":True}
+    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": "document", "spacingBetween": document["spacingBetween"], "font":"Huge", "texOnly":True}
 
     createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
     
     #Send tex file
-    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"{nameOfDoc}.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/{nameOfDoc}.tex", 'rb'), "return":"pdf"})
+    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"document.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/document.tex", 'rb'), "return":"pdf"})
+
 
     with open(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf", 'wb') as f:
         f.write(response.content)
-
+        
     return nameOfDoc
 
 @app.route("/getFile/<userID>/<nameOfDoc>", methods=["GET"])
