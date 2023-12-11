@@ -171,12 +171,12 @@ def CreateDocument():
     #Testing BELOW
     documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge", "texOnly":True}
 
-    createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
+    createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"], path = "/tmp/")
     
     #Send tex file
     response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"document.tex", "filecontents[]": open(f"document.tex", 'rb'), "return":"pdf"})
 
-    with open(f"{nameOfDoc}.pdf", 'wb') as f:
+    with open(f"/tmp/{nameOfDoc}.pdf", 'wb') as f:
         f.write(response.content)
 
     return nameOfDoc
