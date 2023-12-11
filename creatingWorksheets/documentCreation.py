@@ -169,7 +169,7 @@ def handleQuestionPart(doc, questionPart):
 				graphPolygon(doc = doc, x = currentDict["x"], y = currentDict["y"], annotations = currentDict["annotations"], color = currentDict["color"])
 
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False, texOnly = False):
-	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
+	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font, default_filepath=(os.getcwd() + "/creatingWorksheets/pdfs/"))
 
 	#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
 	answerKeyVersions = []
@@ -299,14 +299,9 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 	
 			#Clear Page Before next Version Answer Key
 			doc.append(Command("clearpage"))
-	print(path + nameOfDoc)
 	
-	#Testing
-	print(os.getcwd() + "creatingWorksheets/pdfs/")
-
-
 	if texOnly == True:
-		doc.generate_tex(os.getcwd() + "creatingWorksheets/pdfs/" + nameOfDoc)
+		doc.generate_tex(nameOfDoc)
 	else:
 		doc.generate_pdf(path + nameOfDoc, clean=True)
 
