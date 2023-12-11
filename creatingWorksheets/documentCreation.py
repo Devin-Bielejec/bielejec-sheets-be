@@ -28,7 +28,7 @@ def createDocument(
 	if standalone == False:
 		#Can make rmargin bigger for more work etc usually for MC to provide a column of work
 		geometry_options = {"top": "1in", "lmargin": ".5in", "rmargin": ".5in"}
-		doc = Document(documentclass='article', document_options = 'twoside', geometry_options = geometry_options, indent=False, font_size=font, page_numbers=pageNumbers, default_filepath=(os.getcwd() + "/creatingWorksheets/pdfs/"))
+		doc = Document(documentclass='article', document_options = 'twoside', geometry_options = geometry_options, indent=False, font_size=font, page_numbers=pageNumbers)
 
 
 	# # float separation, does something important
@@ -301,11 +301,11 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 			doc.append(Command("clearpage"))
 	
 	if texOnly == True:
-		doc.generate_tex(nameOfDoc)
+		doc.generate_tex(path + nameOfDoc)
 	else:
 		doc.generate_pdf(path + nameOfDoc, clean=True)
 
-def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False):
+def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = False, collatedAnswerKey = False, path="/"):
 	#Attempt for no duplicates
 	hash = {}
 	defaultDocName = documentOptions["nameOfDoc"]
