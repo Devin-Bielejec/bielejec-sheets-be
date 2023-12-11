@@ -176,10 +176,9 @@ def CreateDocument():
     #Send tex file
     response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"document.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/document.tex", 'rb'), "return":"pdf"})
 
-
     with open(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf", 'wb') as f:
         f.write(response.content)
-        
+
     return nameOfDoc
 
 @app.route("/getFile/<userID>/<nameOfDoc>", methods=["GET"])
