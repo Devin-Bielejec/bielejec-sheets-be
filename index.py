@@ -42,15 +42,12 @@ db = client["bielejecSheets"]
 def login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-
-    passwordHash = bcrypt.generate_password_hash(password).decode('utf-8') 
-    #Check if email already exists in db and is valid
-    if not db.users.find_one({"email":email}):
-        return jsonify({"msg": "Bad email or password"}), 401
+    print(email,password)
 
     #Check if hash from db doesn't match with current password given
     hashFromDB = db.users.find_one({"email": email})["password"]
-    if not bcrypt.check_password_hash(passwordHash, hashFromDB):
+    if not bcrypt.check_password_hash(hashFromDB, password):
+        print('here')
         return jsonify({"msg": "Bad email or password"}), 401
 
     access_token = create_access_token(identity=email)
