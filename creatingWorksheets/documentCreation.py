@@ -28,7 +28,7 @@ def createDocument(
 	if standalone == False:
 		#Can make rmargin bigger for more work etc usually for MC to provide a column of work
 		geometry_options = {"top": "1in", "lmargin": ".5in", "rmargin": ".5in"}
-		doc = Document(documentclass='article', document_options = 'twoside', geometry_options = geometry_options, indent=False, font_size=font, page_numbers=pageNumbers)
+		doc = Document(documentclass='article', document_options = 'twoside', geometry_options = geometry_options, indent=False, font_size=font, page_numbers=pageNumbers, default_filepath=(os.getcwd() + "/creatingWorksheets/pdfs/"))
 
 
 	# # float separation, does something important
@@ -169,7 +169,7 @@ def handleQuestionPart(doc, questionPart):
 				graphPolygon(doc = doc, x = currentDict["x"], y = currentDict["y"], annotations = currentDict["annotations"], color = currentDict["color"])
 
 def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False, texOnly = False):
-	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font, default_filepath=(os.getcwd() + "/creatingWorksheets/pdfs/"))
+	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
 	#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
 	answerKeyVersions = []
