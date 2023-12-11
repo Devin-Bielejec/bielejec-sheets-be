@@ -302,11 +302,11 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 	print(path + nameOfDoc)
 	
 	#Testing
-	print(os.getgwd() + "creatingWorksheets/pdfs/")
+	print(os.getcwd() + "creatingWorksheets/pdfs/")
 
 
 	if texOnly == True:
-		doc.generate_tex(os.getgwd() + "creatingWorksheets/pdfs/" + nameOfDoc)
+		doc.generate_tex(os.getcwd() + "creatingWorksheets/pdfs/" + nameOfDoc)
 	else:
 		doc.generate_pdf(path + nameOfDoc, clean=True)
 
