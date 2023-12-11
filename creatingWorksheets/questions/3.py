@@ -1,6 +1,6 @@
 import sys
 from fractions import Fraction
-sys.path.insert(0, "F:/code/bielejec-sheets-be/creatingWorksheets/utils")
+sys.path.insert(0, "./creatingWorksheets/utils")
 from equations import formatMathString, toLatexFraction, randomBetweenNot
 import math
 import string
