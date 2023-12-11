@@ -186,7 +186,7 @@ def getFile(userID, nameOfDoc):
     #Path safe doc name
     nameOfDoc = "".join([c for c in nameOfDoc if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
-    file = send_file(f"{nameOfDoc}.pdf", download_name = f"{nameOfDoc}.pdf")
+    file = send_file(f"/tmp/{nameOfDoc}.pdf", download_name = f"{nameOfDoc}.pdf")
     
     return file
 
