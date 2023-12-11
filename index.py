@@ -174,7 +174,7 @@ def CreateDocument():
     createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
     
     #Send tex file
-    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":"document.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/{nameOfDoc}.tex", 'rb'), "return":"pdf"})
+    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"{nameOfDoc}.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/{nameOfDoc}.tex", 'rb'), "return":"pdf"})
 
     with open(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf", 'wb') as f:
         f.write(response.content)
