@@ -174,9 +174,9 @@ def CreateDocument():
     createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
     
     #Send tex file
-    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"document.tex", "filecontents[]": open(f"./creatingWorksheets/pdfs/document.tex", 'rb'), "return":"pdf"})
+    response = requests.post("https://texlive.net/cgi-bin/latexcgi", files={"filename[]":f"document.tex", "filecontents[]": open(f"document.tex", 'rb'), "return":"pdf"})
 
-    with open(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf", 'wb') as f:
+    with open(f"{nameOfDoc}.pdf", 'wb') as f:
         f.write(response.content)
 
     return nameOfDoc
@@ -186,10 +186,8 @@ def getFile(userID, nameOfDoc):
     #Path safe doc name
     nameOfDoc = "".join([c for c in nameOfDoc if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
-    file = send_file(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf", download_name = f"{nameOfDoc}.pdf")
+    file = send_file(f"{nameOfDoc}.pdf", download_name = f"{nameOfDoc}.pdf")
     
-    # os.remove(f"./creatingWorksheets/pdfs/{nameOfDoc}.pdf")
-
     return file
 
 @app.route("/<path>", methods=["GET"])
