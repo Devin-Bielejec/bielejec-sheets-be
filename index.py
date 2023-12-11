@@ -169,7 +169,7 @@ def CreateDocument():
     nameOfDoc = "".join([c for c in document["nameOfDoc"] if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
     #Testing BELOW
-    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": "document", "spacingBetween": document["spacingBetween"], "font":"Huge", "texOnly":True}
+    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge", "texOnly":True}
 
     createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
     
