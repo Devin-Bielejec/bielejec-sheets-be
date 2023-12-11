@@ -1,6 +1,7 @@
 from flask import Flask, g, request, send_file, send_from_directory, Response, jsonify
 from flask_restful import Resource, Api, reqparse
 from requests import put, get
+import requests
 import sys
 sys.path.insert(0, "./creatingWorksheets")
 from documentCreation import createVersions
@@ -171,7 +172,7 @@ def CreateDocument():
     nameOfDoc = "".join([c for c in document["nameOfDoc"] if c.isalpha() or c.isdigit() or c==' ']).rstrip()
 
     #Testing BELOW
-    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge", "textOnly":True}
+    documentOptions = {"ids": ids, "kwargs": kwargs, "nameOfDoc": nameOfDoc, "spacingBetween": document["spacingBetween"], "font":"Huge", "texOnly":True}
 
     createVersions(documentOptions, collatedAnswerKey = document["collatedAnswerKey"], columns = document["columns"], numberOfVersions = document["numberOfVersions"])
     

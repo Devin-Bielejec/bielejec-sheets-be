@@ -168,7 +168,7 @@ def handleQuestionPart(doc, questionPart):
 				grid(doc = doc)
 				graphPolygon(doc = doc, x = currentDict["x"], y = currentDict["y"], annotations = currentDict["annotations"], color = currentDict["color"])
 
-def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False, textOnly = False):
+def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 1, font = "normalsize", answers = False, collatedAnswerKey = False, solutions = False, spacingBetween="0in", worksheet = False, texOnly = False):
 	doc = createDocument(path=path, nameOfDoc=nameOfDoc, font=font)
 
 	#List of lists used indexed by version to provide answer key information - HELPFUL FOR MULTIPLE CHOICE!
@@ -301,7 +301,7 @@ def createPDF(path="/", nameOfDoc = "default", versionQuestions = [], columns = 
 			doc.append(Command("clearpage"))
 	print(path + nameOfDoc)
 	if texOnly == True:
-		doc.genereate_tex(path + nameOfDoc)
+		doc.generate_tex(path + nameOfDoc)
 	else:
 		doc.generate_pdf(path + nameOfDoc, clean=True)
 
@@ -358,7 +358,7 @@ def createVersions(documentOptions, numberOfVersions, columns = 1, worksheet = F
 		questions.append(versionQuestions)
 
 	#Now have createWorksheet or Assessment take a list of lists
-	createPDF(worksheet=worksheet, path="creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns)
+	createPDF(worksheet=worksheet, path="creatingWorksheets/pdfs/", nameOfDoc=nameOfDoc, versionQuestions=questions, answers = True, collatedAnswerKey=collatedAnswerKey, spacingBetween=documentOptions["spacingBetween"], columns=columns, texOnly = documentOptions['texOnly'])
 	
 
 def createPDFsnippet(path="/", nameOfDoc = 'default', font = 'normalsize', questionClass = "", questionKwargs = {}):
